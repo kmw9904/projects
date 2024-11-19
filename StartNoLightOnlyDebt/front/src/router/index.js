@@ -8,6 +8,7 @@ import MortgageView from "@/components/MortgageView.vue";
 import MortgageDetailView from "@/components/MortgageDetailView.vue";
 import JeonseDetailView from "@/components/JeonseDetailView.vue";
 import CreditLoanDetailView from "@/components/CreditLoanDetailView.vue";
+import ExchangeView from "@/components/ExchangeView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -56,6 +57,11 @@ const router = createRouter({
       path: "/credit-loan/detail",
       name: "CreditLoanDetailView",
       component: CreditLoanDetailView,
+    },
+    {
+      path: "/exchange",
+      name: "ExchangeView",
+      component: ExchangeView,
     },
   ],
 });
