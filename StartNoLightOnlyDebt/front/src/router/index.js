@@ -10,6 +10,7 @@ import MortgageDetailView from "@/components/MortgageDetailView.vue";
 import JeonseDetailView from "@/components/JeonseDetailView.vue";
 import CreditLoanDetailView from "@/components/CreditLoanDetailView.vue";
 import ExchangeView from "@/components/ExchangeView.vue";
+import AlgorithmView from "@/algorithm/AlgorithmView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -48,6 +49,8 @@ const router = createRouter({
       path: "/map",
       name: "map",
       component: MapView,
+    },
+    {
       path: "/mortgage/detail",
       name: "MortgageDetailView",
       component: MortgageDetailView,
@@ -66,6 +69,11 @@ const router = createRouter({
       path: "/exchange",
       name: "ExchangeView",
       component: ExchangeView,
+    },
+    {
+      path: "/algorithm",
+      name: "AlgorithmView",
+      component: AlgorithmView,
     },
   ],
 });

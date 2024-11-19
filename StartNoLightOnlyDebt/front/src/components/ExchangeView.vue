@@ -42,10 +42,14 @@ const result = ref(null); // 계산 결과
 
 // 환율 계산 함수
 const calculateExchange = () => {
-  const fromRate = rates.find((rate) => rate.cur_unit === fromCurrency.value)?.deal_bas_r || 1;
-  const toRate = rates.find((rate) => rate.cur_unit === toCurrency.value)?.deal_bas_r || 1;
+  // 출발 통화의 매매 기준율 (숫자로 변환)
+  const fromRate = parseFloat(rates.find((rate) => rate.cur_unit === fromCurrency.value)?.deal_bas_r || 1);
 
-  result.value = (amount.value / fromRate) * toRate; // 계산 결과
+  // 도착 통화의 매매 기준율 (숫자로 변환)
+  const toRate = parseFloat(rates.find((rate) => rate.cur_unit === toCurrency.value)?.deal_bas_r || 1);
+
+  // 올바른 환율 계산 로직: 모든 경우에 동일한 방식으로 계산
+  result.value = amount.value * (fromRate / toRate);
 };
 </script>
 
