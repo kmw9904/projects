@@ -3,6 +3,11 @@
     <div>
       <template v-if="store.isLoggedIn">
         <button @click="Logout">로그아웃</button>
+        |
+        <RouterLink :to="{ name: 'AccountView' }">프로필</RouterLink>
+        |
+        <RouterLink :to="{ name: 'MainView' }">홈</RouterLink>
+        |
         <RouterLink :to="{ name: 'map' }">은행찾기</RouterLink>
         |
         <RouterLink :to="{ name: 'ExchangeView' }">환율</RouterLink>
@@ -11,6 +16,9 @@
         <RouterLink :to="{ name: 'SignUpView' }">회원가입</RouterLink>
         |
         <RouterLink :to="{ name: 'LoginView' }">로그인</RouterLink>
+        |
+        <RouterLink :to="{ name: 'MainView' }">홈</RouterLink>
+        |
         <RouterLink :to="{ name: 'article' }" v-if="storecommunity.isLogin">커뮤니티</RouterLink>
       </template>
     </div>

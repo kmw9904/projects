@@ -26,9 +26,15 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.name = self.cleaned_data.get('name')  # name 필드 저장
         user.save()
 
+        # 로그 추가
+        print(f"Saved user: {user.username}, name: {user.name}")
+
         # 선호 은행 저장
         preferred_banks = self.cleaned_data.get('preferred_banks')
         if preferred_banks:
             user.preferred_banks.set(preferred_banks)
+            print(f"Preferred banks set for user {user.username}: {preferred_banks}")
+        else:
+            print(f"No preferred banks provided for user {user.username}")
 
         return user

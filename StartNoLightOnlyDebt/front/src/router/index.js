@@ -11,6 +11,7 @@ import JeonseDetailView from "@/components/JeonseDetailView.vue";
 import CreditLoanDetailView from "@/components/CreditLoanDetailView.vue";
 import ExchangeView from "@/components/ExchangeView.vue";
 import AlgorithmView from "@/algorithm/AlgorithmView.vue";
+import AccountView from "@/views/AccountView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,11 @@ const router = createRouter({
       path: "/algorithm",
       name: "AlgorithmView",
       component: AlgorithmView,
+    },
+    {
+      path: "/account-detail",
+      name: "AccountView",
+      component: AccountView,
     },
   ],
 });
