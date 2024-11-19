@@ -25,6 +25,7 @@
           {{ option.lend_rate_max }} |
           <strong>평균 금리:</strong>
           {{ option.lend_rate_avg }}
+          <RouterLink :to="{name : CalculatorView}"></RouterLink>
         </p>
         <hr />
       </div>
@@ -41,6 +42,7 @@
 import { onMounted, watch, ref, computed } from "vue";
 import { useBankStore } from "@/stores/bank";
 import { useNavigationStore } from "@/stores/navigation";
+import CalculatorView from "./CalculatorView.vue";
 
 // BankStore 및 NavigationStore 초기화
 const store = useBankStore();

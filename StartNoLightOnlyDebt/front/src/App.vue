@@ -3,6 +3,7 @@
     <div>
       <template v-if="store.isLoggedIn">
         <button @click="Logout">로그아웃</button>
+        <RouterLink :to="{ name: 'ExchangeView' }">환율</RouterLink>
       </template>
       <template v-else>
         <RouterLink :to="{ name: 'SignUpView' }">회원가입</RouterLink>
