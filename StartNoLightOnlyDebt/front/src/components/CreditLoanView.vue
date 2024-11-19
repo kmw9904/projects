@@ -6,54 +6,30 @@
 
     <!-- 신용 대출 상품 조회 제목 -->
     <h2>신용 대출 상품 조회</h2>
-    <h4>조건에 맞는 금융 조건</h4>
 
-    <!-- 데이터가 로드된 경우 렌더링 -->
-    <div v-if="mergedProducts.length > 0">
-      <!-- 금융회사 및 상품 정보와 옵션 -->
-      <div v-for="product in mergedProducts" :key="product.fin_prdt_cd">
-        <p>
-          <strong>금융 회사:</strong>
-          {{ product.kor_co_nm }}
-        </p>
-        <p>
-          <strong>상품명:</strong>
-          {{ product.fin_prdt_nm }}
-        </p>
-        <p>
-          <strong>대출 종류:</strong>
-          {{ product.crdt_prdt_type_nm }}
-        </p>
-        <p v-for="option in product.options" :key="option.crdt_lend_rate_type">
-          <strong>금리 유형:</strong>
-          {{ option.crdt_lend_rate_type_nm }} |
-          <strong>900점 초과:</strong>
-          {{ option.crdt_grad_1 }} |
-          <strong>801~900:</strong>
-          {{ option.crdt_grad_4 }} |
-          <strong>701~800:</strong>
-          {{ option.crdt_grad_5 }} |
-          <strong>601~700:</strong>
-          {{ option.crdt_grad_6 }} |
-          <strong>501~600:</strong>
-          {{ option.crdt_grad_10 }} |
-          <strong>401~500:</strong>
-          {{ option.crdt_grad_11 }} |
-          <strong>301~400:</strong>
-          {{ option.crdt_grad_12 }} |
-          <strong>300점 이하:</strong>
-          {{ option.crdt_grad_13 }} |
-          <strong>평균 금리:</strong>
-          {{ option.crdt_grad_avg }}
-        </p>
-        <hr />
-      </div>
-    </div>
+    <!-- 조건 검색 폼 -->
+    <form @submit.prevent="handleSearch">
+      <label for="loanAmount">대출금액:</label>
+      <input type="number" id="loanAmount" v-model="filters.loanAmount" />
+      <br />
 
-    <!-- 데이터 로딩 중 표시 -->
-    <div v-else>
-      <p>데이터를 받아오는 중....</p>
-    </div>
+      <label for="loanPeriod">대출기간:</label>
+      <input type="number" id="loanPeriod" v-model="filters.loanPeriod" />
+      <br />
+
+      <label for="loanType">대출 종류:</label>
+      <select id="loanType" v-model="filters.loanType">
+        <option value="전체">전체</option>
+        <option value="일반신용대출">일반신용대출</option>
+        <option value="장기카드대출">장기카드대출</option>
+      </select>
+      <br />
+
+      <button type="submit">검색</button>
+    </form>
+
+    <!-- 결과 출력 -->
+    <CreditLoanDetailView :products="filteredProducts" />
   </div>
 </template>
 
@@ -61,12 +37,22 @@
 import { onMounted, watch, ref, computed } from "vue";
 import { useBankStore } from "@/stores/bank";
 import { useNavigationStore } from "@/stores/navigation";
+import CreditLoanDetailView from "./CreditLoanDetailView.vue";
 
-// BankStore 및 NavigationStore 초기화
-const store = useBankStore();
+// NavigationStore 초기화
 const navigationStore = useNavigationStore();
 
-// 데이터 상태 초기화
+// BankStore 초기화
+const store = useBankStore();
+
+// 필터링 조건
+const filters = ref({
+  loanAmount: null,
+  loanPeriod: null,
+  loanType: "전체",
+});
+
+// 원본 데이터 상태
 const products = ref({
   credit: {
     result: {
@@ -81,12 +67,32 @@ const mergedProducts = computed(() => {
   const baseList = products.value.credit.result.baseList || [];
   const optionList = products.value.credit.result.optionList || [];
 
-  // baseList와 optionList를 fin_prdt_cd 기준으로 매핑
+  // baseList와 optionList를 매핑하여 옵션 추가
   return baseList.map((base) => {
     const options = optionList.filter((option) => option.fin_prdt_cd === base.fin_prdt_cd && option.crdt_prdt_type === base.crdt_prdt_type);
-    return { ...base, options };
+
+    // 중복 제거
+    const uniqueOptions = Array.from(new Map(options.map((opt) => [opt.crdt_lend_rate_type, opt])).values());
+
+    return { ...base, options: uniqueOptions };
   });
 });
+
+// 필터링된 결과
+const filteredProducts = computed(() => {
+  // "전체" 선택 시 필터링 없이 모든 데이터 반환
+  if (filters.value.loanType === "전체") {
+    return mergedProducts.value;
+  }
+
+  // 필터 조건: 대출 종류 포함 여부 확인
+  return mergedProducts.value.filter((product) => product.fin_prdt_nm.includes(filters.value.loanType) || product.crdt_prdt_type_nm.includes(filters.value.loanType));
+});
+
+// 검색 버튼 클릭 시 필터링 로직 실행
+const handleSearch = () => {
+  console.log("검색 조건:", filters.value);
+};
 
 // 컴포넌트 마운트 시 API 호출
 onMounted(() => {
@@ -99,7 +105,7 @@ watch(
   (newValue) => {
     if (newValue) {
       products.value = newValue; // 업데이트된 데이터를 products에 반영
-      console.log(products.value); // 디버깅을 위해 데이터 출력
+      console.log("Updated Products:", products.value); // 디버깅
     }
   }
 );

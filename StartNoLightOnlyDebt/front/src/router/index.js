@@ -5,6 +5,9 @@ import MainView from "@/views/MainView.vue";
 import JeonseView from "@/components/JeonseView.vue";
 import CreditLoanView from "@/components/CreditLoanView.vue";
 import MortgageView from "@/components/MortgageView.vue";
+import MortgageDetailView from "@/components/MortgageDetailView.vue";
+import JeonseDetailView from "@/components/JeonseDetailView.vue";
+import CreditLoanDetailView from "@/components/CreditLoanDetailView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,9 +38,24 @@ const router = createRouter({
       component: CreditLoanView,
     },
     {
-      path: "/",
+      path: "/mortgage",
       name: "MortgageView",
       component: MortgageView,
+    },
+    {
+      path: "/mortgage/detail",
+      name: "MortgageDetailView",
+      component: MortgageDetailView,
+    },
+    {
+      path: "/jeonse/detail",
+      name: "JeonseDetailView",
+      component: JeonseDetailView,
+    },
+    {
+      path: "/credit-loan/detail",
+      name: "CreditLoanDetailView",
+      component: CreditLoanDetailView,
     },
   ],
 });
