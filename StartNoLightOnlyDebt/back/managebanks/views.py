@@ -2,6 +2,8 @@ import requests
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny
+from .serializers import FinancialCompanySerializer
 from .models import FinancialProduct, MortgageOption, JeonseOption, CreditLoanOption, FinancialCompany
 from datetime import datetime
 
@@ -154,3 +156,12 @@ class FetchFinancialData(APIView):
                         'fin_prdt_cd': product,
                     },
                 )
+
+
+class BankListView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        banks = FinancialCompany.objects.all()
+        serializer = FinancialCompanySerializer(banks, many=True)
+        return Response(serializer.data)
