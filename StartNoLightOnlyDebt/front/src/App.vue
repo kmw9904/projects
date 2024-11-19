@@ -10,6 +10,8 @@
         <RouterLink :to="{ name: 'LoginView' }">로그인</RouterLink>
         |
         <RouterLink :to="{ name: 'map' }">은행찾기</RouterLink>
+        |
+        <RouterLink :to="{ name: 'article' }" v-if="storecommunity.isLogin">커뮤니티</RouterLink>
       </template>
     </div>
     <RouterView />
@@ -19,8 +21,10 @@
 <script setup>
 import { RouterView, RouterLink } from "vue-router";
 import { useBankStore } from "@/stores/bank";
+import { useCommunityStore } from "@/stores/community";
 
 const store = useBankStore();
+const storecommunity = useCommunityStore();
 
 const Logout = function () {
   store.Logout();
