@@ -108,7 +108,7 @@ class FetchFinancialData(APIView):
 
             if key == 'credit':
                 CreditLoanOption.objects.update_or_create(
-                    option_id=option_data['fin_prdt_cd'] + "_opt",
+                    option_id=f"{option_data['fin_prdt_cd']}_{option_data['crdt_lend_rate_type']}_opt",
                     defaults={
                         'dcls_month': parse_date(option_data.get('dcls_month')),
                         'crdt_prdt_type': option_data.get('crdt_prdt_type'),
@@ -124,7 +124,7 @@ class FetchFinancialData(APIView):
                 )
             elif key == 'jeonse':
                 JeonseOption.objects.update_or_create(
-                    option_id=option_data['fin_prdt_cd'] + "_opt",
+                    option_id=f"{option_data['fin_prdt_cd']}_{option_data['rpay_type']}_{option_data['lend_rate_type']}_opt",
                     defaults={
                         'dcls_month': parse_date(option_data.get('dcls_month')),
                         'rpay_type': option_data.get('rpay_type'),
@@ -139,7 +139,7 @@ class FetchFinancialData(APIView):
                 )
             elif key == 'mortgage':
                 MortgageOption.objects.update_or_create(
-                    option_id=option_data['fin_prdt_cd'] + "_opt",
+                    option_id=f"{option_data['fin_prdt_cd']}_{option_data['rpay_type']}_{option_data['lend_rate_type']}_opt",
                     defaults={
                         'dcls_month': parse_date(option_data.get('dcls_month')),
                         'mrtg_type': option_data.get('mrtg_type'),
