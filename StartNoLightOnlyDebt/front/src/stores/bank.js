@@ -52,7 +52,7 @@ export const useBankStore = defineStore(
         url: `${API_URL}/api/v1/fetch-financial-data/`,
       })
         .then((res) => {
-          mortgages.value = res.data;
+          mortgages.value = res.data; 
         })
         .catch((err) => console.log(err));
     };
@@ -117,5 +117,11 @@ export const useBankStore = defineStore(
     };
     return { SignUp, Login, token, Logout, isLoggedIn, creditLoans, getCreditLoan, jeonses, getJeonse, mortgages, getMortgage };
   },
-  { persist: true }
+  {
+    // 기본 설정으로 locakStorage에 데이터를 저장하도록 구성해야 함
+    persist: {
+      key: "bank", // localStorage에 저장될 키 이름
+      storage: window.localStorage, // localStorage에 저장
+    },
+  }
 );
