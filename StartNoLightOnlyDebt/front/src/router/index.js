@@ -5,6 +5,7 @@ import MainView from "@/views/MainView.vue";
 import JeonseView from "@/components/JeonseView.vue";
 import CreditLoanView from "@/components/CreditLoanView.vue";
 import MortgageView from "@/components/MortgageView.vue";
+import MapView from "@/views/MapView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +39,11 @@ const router = createRouter({
       path: "/",
       name: "MortgageView",
       component: MortgageView,
+    },
+    {
+      path: "/map",
+      name: "map",
+      component: MapView,
     },
   ],
 });

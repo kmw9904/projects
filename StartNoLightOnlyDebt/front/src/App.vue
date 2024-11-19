@@ -8,6 +8,8 @@
         <RouterLink :to="{ name: 'SignUpView' }">회원가입</RouterLink>
         |
         <RouterLink :to="{ name: 'LoginView' }">로그인</RouterLink>
+        |
+        <RouterLink :to="{ name: 'map' }">은행찾기</RouterLink>
       </template>
     </div>
     <RouterView />
