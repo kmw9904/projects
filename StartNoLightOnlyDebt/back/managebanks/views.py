@@ -62,8 +62,13 @@ class CalculateMonthlyPayment(APIView):
                 annual_rate = option.crdt_grad_avg
                 if not annual_rate:
                     continue
-                min_payment = calculate_installment_repayment(loan_amount, annual_rate, months)
-                max_payment = min_payment  # 신용 대출에서는 단일 금리 사용
+                payment = calculate_installment_repayment(loan_amount, annual_rate, months)
+                
+                results.append({
+                    "option_id": option.option_id,
+                    "lend_rate": annual_rate,
+                    "monthly_payment": round(payment, 2),
+                })
             else:
                 # 전세, 주택담보 대출: lend_rate_min, lend_rate_max 사용
                 lend_rate_min = option.lend_rate_min
@@ -82,14 +87,14 @@ class CalculateMonthlyPayment(APIView):
                 else:
                     continue
 
-            results.append({
-                "option_id": option.option_id,
-                "rpay_type_nm": getattr(option, "rpay_type_nm", "분할상환방식"),
-                "lend_rate_min": lend_rate_min if product_type != "credit" else annual_rate,
-                "lend_rate_max": lend_rate_max if product_type != "credit" else annual_rate,
-                "monthly_payment_min": round(min_payment, 2),
-                "monthly_payment_max": round(max_payment, 2),
-            })
+                results.append({
+                    "option_id": option.option_id,
+                    "rpay_type_nm": getattr(option, "rpay_type_nm", "분할상환방식"),
+                    "lend_rate_min": lend_rate_min,
+                    "lend_rate_max": lend_rate_max,
+                    "monthly_payment_min": round(min_payment, 2),
+                    "monthly_payment_max": round(max_payment, 2),
+                })
 
         return Response({"calculations": results}, status=status.HTTP_200_OK)
 
@@ -196,20 +201,25 @@ class FetchFinancialData(APIView):
                 continue
 
             if key == 'credit':
-                CreditLoanOption.objects.update_or_create(
-                    option_id=f"{option_data['fin_prdt_cd']}_{option_data['crdt_lend_rate_type']}_opt",
-                    defaults={
-                        'dcls_month': parse_date(option_data.get('dcls_month')),
-                        'crdt_prdt_type': option_data.get('crdt_prdt_type'),
-                        'crdt_lend_rate_type': option_data.get('crdt_lend_rate_type'),
-                        'crdt_lend_rate_type_nm': option_data.get('crdt_lend_rate_type_nm'),
-                        'crdt_grad_1': option_data.get('crdt_grad_1'),
-                        'crdt_grad_4': option_data.get('crdt_grad_4'),
-                        'crdt_grad_5': option_data.get('crdt_grad_5'),
-                        'crdt_grad_6': option_data.get('crdt_grad_6'),
-                        'crdt_grad_avg': option_data.get('crdt_grad_avg'),
-                        'fin_prdt_cd': product,
-                    },
+                if option_data['crdt_lend_rate_type'] == 'A':
+                    CreditLoanOption.objects.update_or_create(
+                        option_id=option_data['fin_prdt_cd'],
+                        defaults={
+                            'dcls_month': parse_date(option_data.get('dcls_month')),
+                            'crdt_prdt_type': option_data.get('crdt_prdt_type'),
+                            'crdt_lend_rate_type': option_data.get('crdt_lend_rate_type'),
+                            'crdt_lend_rate_type_nm': option_data.get('crdt_lend_rate_type_nm'),
+                            'crdt_grad_1': option_data.get('crdt_grad_1'),
+                            'crdt_grad_4': option_data.get('crdt_grad_4'),
+                            'crdt_grad_5': option_data.get('crdt_grad_5'),
+                            'crdt_grad_6': option_data.get('crdt_grad_6'),
+                            'crdt_grad_10': option_data.get('crdt_grad_10'),
+                            'crdt_grad_11': option_data.get('crdt_grad_11'),
+                            'crdt_grad_12': option_data.get('crdt_grad_12'),
+                            'crdt_grad_13': option_data.get('crdt_grad_13'),
+                            'crdt_grad_avg': option_data.get('crdt_grad_avg'),
+                            'fin_prdt_cd': product,
+                        },
                 )
             elif key == 'jeonse':
                 JeonseOption.objects.update_or_create(
