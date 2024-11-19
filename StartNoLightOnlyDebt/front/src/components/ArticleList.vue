@@ -23,25 +23,35 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import ArticleListItem from "@/components/ArticleListItem.vue";
 import ArticleCreate from "@/components/ArticleCreate.vue";
 import { ref, onMounted, computed } from "vue";
-import { useCommunityStore } from "@/stores/community";
+import { useBankStore } from "@/stores/bank"; // 병합된 스토어 사용
 
-// 스토어와 상태 관리
-const store = useCommunityStore();
-const page = ref(1);
+export default {
+  components: {
+    ArticleListItem,
+    ArticleCreate,
+  },
+  setup() {
+    const store = useBankStore(); // 병합된 스토어 호출
+    const page = ref(1);
 
-// 게시글 정렬
-const sortedArticles = computed(() => {
-  return store.articles.sort((a, b) => b.id - a.id);
-});
+    const sortedArticles = computed(() => {
+      return store.articles.sort((a, b) => b.id - a.id);
+    });
 
-// 마운트 시점에서 데이터 가져오기
-onMounted(() => {
-  store.getArticles();
-});
+    onMounted(() => {
+      store.getArticles();
+    });
+
+    return {
+      page,
+      sortedArticles,
+    };
+  },
+};
 </script>
 
 <style scoped></style>

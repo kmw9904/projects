@@ -8,6 +8,12 @@ from managebanks.models import FinancialCompany
 User = get_user_model()
 
 
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'name', 'email']
+
+
 class CustomRegisterSerializer(RegisterSerializer):
     username = serializers.CharField(required=True)  # 기본 필드
     name = serializers.CharField(required=True)  # 추가 필드

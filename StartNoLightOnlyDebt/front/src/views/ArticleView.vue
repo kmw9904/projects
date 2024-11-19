@@ -7,16 +7,20 @@
   </div>
 </template>
 
-<script setup>
+<script>
 import { onMounted } from "vue";
 import ArticleList from "@/components/ArticleList.vue";
-import { useCommunityStore } from "@/stores/community";
+import { useBankStore } from "@/stores/bank";
 
-const store = useCommunityStore();
+const store = useBankStore();
 
-onMounted(() => {
-  store.getArticles();
-});
+export default {
+  setup() {
+    onMounted(() => {
+      store.getArticles();
+    });
+  },
+};
 </script>
 
 <style scoped></style>
