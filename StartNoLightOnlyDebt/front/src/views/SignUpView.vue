@@ -54,7 +54,8 @@ const selectedBanks = ref([]); // 선택된 은행 ID 저장
 const store = useBankStore();
 
 onMounted(() => {
-  store.getBanks()
+  store
+    .getBanks()
     .then((response) => {
       console.log("받은 데이터:", response); // 데이터가 제대로 왔는지 확인
       banks.value = response; // banks 변수 업데이트
@@ -72,9 +73,10 @@ const SignUp = function () {
     email: email.value,
     password1: password1.value,
     password2: password2.value,
-    preferred_banks: selectedBanks.value,
+    preferred_banks: [...selectedBanks.value], // 선택된 은행 목록 할당
   };
   store.SignUp(payload);
+  console.log("선호 은행 :", payload.preferred_banks); // 올바른 값 출력
 };
 </script>
 

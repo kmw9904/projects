@@ -16,11 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from accounts.views import preferred_loan_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('managebanks.urls')),  # accounts 앱 URL 포함
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
-    
+    path('accounts/profile/', preferred_loan_list, name='accounts-profile'),
 ]

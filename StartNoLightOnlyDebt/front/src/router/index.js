@@ -21,6 +21,7 @@ import CreditLoanDetailView from "@/components/CreditLoanDetailView.vue";
 // Exchange and Algorithms
 import ExchangeView from "@/components/ExchangeView.vue";
 import AlgorithmView from "@/algorithm/AlgorithmView.vue";
+import AccountView from "@/views/AccountView.vue";
 
 // Community Components
 import ArticleView from "@/views/ArticleView.vue";
@@ -136,6 +137,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+<<<<<<< HEAD
   routes,
 });
 
@@ -147,6 +149,75 @@ router.beforeEach((to, from, next) => {
   } else {
     next(); // Proceed if authorized or route doesn't require auth
   }
+=======
+  routes: [
+    {
+      path: "/signup",
+      name: "SignUpView",
+      component: SignUpView,
+    },
+    {
+      path: "/login",
+      name: "LoginView",
+      component: LoginView,
+    },
+    {
+      path: "/",
+      name: "MainView",
+      component: MainView,
+    },
+    {
+      path: "/jeonse",
+      name: "JeonseView",
+      component: JeonseView,
+    },
+    {
+      path: "/credit-loan",
+      name: "CreditLoanView",
+      component: CreditLoanView,
+    },
+    {
+      path: "/mortgage",
+      name: "MortgageView",
+      component: MortgageView,
+    },
+    {
+      path: "/map",
+      name: "map",
+      component: MapView,
+    },
+    {
+      path: "/mortgage/detail",
+      name: "MortgageDetailView",
+      component: MortgageDetailView,
+    },
+    {
+      path: "/jeonse/detail",
+      name: "JeonseDetailView",
+      component: JeonseDetailView,
+    },
+    {
+      path: "/credit-loan/detail",
+      name: "CreditLoanDetailView",
+      component: CreditLoanDetailView,
+    },
+    {
+      path: "/exchange",
+      name: "ExchangeView",
+      component: ExchangeView,
+    },
+    {
+      path: "/algorithm",
+      name: "AlgorithmView",
+      component: AlgorithmView,
+    },
+    {
+      path: "/account-detail",
+      name: "AccountView",
+      component: AccountView,
+    },
+  ],
+>>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
 });
 
 export default router;
