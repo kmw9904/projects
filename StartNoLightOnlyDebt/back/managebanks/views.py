@@ -6,6 +6,93 @@ from rest_framework.permissions import AllowAny
 from .serializers import FinancialCompanySerializer
 from .models import FinancialProduct, MortgageOption, JeonseOption, CreditLoanOption, FinancialCompany
 from datetime import datetime
+from decimal import Decimal
+
+
+def calculate_bullet_repayment(loan_amount, annual_rate):
+    """만기일시상환방식: 월 이자액 계산"""
+    monthly_rate = Decimal(annual_rate) / 12 / 100
+    return loan_amount * monthly_rate
+
+
+def calculate_installment_repayment(loan_amount, annual_rate, months):
+    """분할상환방식: 원리금 균등상환 월 상환액 계산"""
+    monthly_rate = Decimal(annual_rate) / 12 / 100
+    numerator = loan_amount * monthly_rate * (1 + monthly_rate) ** months
+    denominator = (1 + monthly_rate) ** months - 1
+    return numerator / denominator
+
+
+class CalculateMonthlyPayment(APIView):
+    """
+    대출 상품 월 상환액 계산 API
+    """
+    def get(self, request, product_type, product_id):
+        loan_amount = request.query_params.get('loan_amount')
+        months = request.query_params.get('months')
+
+        # 필수 파라미터 검증
+        if not loan_amount or not months:
+            return Response({"error": "loan_amount와 months는 필수 입력값입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            loan_amount = Decimal(loan_amount)
+            months = int(months)
+        except (ValueError, TypeError):
+            return Response({"error": "loan_amount는 숫자, months는 정수여야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # 데이터베이스 조회
+        if product_type == "jeonse":
+            options = JeonseOption.objects.filter(option_id__icontains=product_id)
+        elif product_type == "mortgage":
+            options = MortgageOption.objects.filter(option_id__icontains=product_id)
+        elif product_type == "credit":
+            options = CreditLoanOption.objects.filter(option_id__icontains=product_id)
+        else:
+            return Response({"error": "지원하지 않는 상품 유형입니다."}, status=status.HTTP_400_BAD_REQUEST)
+
+        if not options.exists():
+            return Response({"error": f"{product_type} 상품에 대한 옵션 데이터를 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+        # 월 상환액 계산
+        results = []
+        for option in options:
+            if product_type == "credit":
+                # 신용 대출: crdt_grad_avg(평균 금리) 사용
+                annual_rate = option.crdt_grad_avg
+                if not annual_rate:
+                    continue
+                min_payment = calculate_installment_repayment(loan_amount, annual_rate, months)
+                max_payment = min_payment  # 신용 대출에서는 단일 금리 사용
+            else:
+                # 전세, 주택담보 대출: lend_rate_min, lend_rate_max 사용
+                lend_rate_min = option.lend_rate_min
+                lend_rate_max = option.lend_rate_max
+                rpay_type_nm = getattr(option, "rpay_type_nm", "분할상환방식")
+
+                if not lend_rate_min or not lend_rate_max:
+                    continue
+
+                if rpay_type_nm == "만기일시상환방식":
+                    min_payment = calculate_bullet_repayment(loan_amount, lend_rate_min)
+                    max_payment = calculate_bullet_repayment(loan_amount, lend_rate_max)
+                elif rpay_type_nm == "분할상환방식":
+                    min_payment = calculate_installment_repayment(loan_amount, lend_rate_min, months)
+                    max_payment = calculate_installment_repayment(loan_amount, lend_rate_max, months)
+                else:
+                    continue
+
+            results.append({
+                "option_id": option.option_id,
+                "rpay_type_nm": getattr(option, "rpay_type_nm", "분할상환방식"),
+                "lend_rate_min": lend_rate_min if product_type != "credit" else annual_rate,
+                "lend_rate_max": lend_rate_max if product_type != "credit" else annual_rate,
+                "monthly_payment_min": round(min_payment, 2),
+                "monthly_payment_max": round(max_payment, 2),
+            })
+
+        return Response({"calculations": results}, status=status.HTTP_200_OK)
+
 
 def parse_date(date_str):
     try:
