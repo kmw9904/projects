@@ -52,9 +52,27 @@ export const useBankStore = defineStore(
         url: `${API_URL}/api/v1/fetch-financial-data/`,
       })
         .then((res) => {
-          mortgages.value = res.data; 
+          mortgages.value = res.data;
         })
         .catch((err) => console.log(err));
+    };
+
+    // 은행 목록 가져오기
+    const banks = ref([]);
+    const getBanks = function () {
+      return axios({
+        method: "get",
+        url: `${API_URL}/api/v1/banks/`,
+      })
+        .then((res) => {
+          console.log("은행 목록 가져오기 성공:", res.data);
+          banks.value = res.data; // 받은 데이터를 banks에 저장
+          return res.data; // 명시적으로 데이터를 반환
+        })
+        .catch((err) => {
+          console.error("은행 목록 가져오기 실패:", err);
+          throw err; // 에러를 던져서 호출자에게 알림
+        });
     };
 
     // 회원가입 요청 액션
@@ -69,6 +87,7 @@ export const useBankStore = defineStore(
           password2,
           email,
           name,
+          preferred_banks, // 선택된 선호 은행 추가
         },
       })
         .then((res) => {
@@ -115,7 +134,7 @@ export const useBankStore = defineStore(
           console.log("로그아웃 실패:", err.data);
         });
     };
-    return { SignUp, Login, token, Logout, isLoggedIn, creditLoans, getCreditLoan, jeonses, getJeonse, mortgages, getMortgage };
+    return { SignUp, Login, token, Logout, isLoggedIn, creditLoans, getCreditLoan, jeonses, getJeonse, mortgages, getMortgage, banks, getBanks };
   },
   {
     // 기본 설정으로 locakStorage에 데이터를 저장하도록 구성해야 함
