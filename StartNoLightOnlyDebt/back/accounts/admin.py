@@ -1,6 +1,7 @@
+# accounts/admin.py
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from .models import User
-# Register your models here.
+from managebanks.models import FinancialCompany
 
-admin.site.register(User, UserAdmin)
+admin.site.register(User)
+admin.site.register(FinancialCompany)

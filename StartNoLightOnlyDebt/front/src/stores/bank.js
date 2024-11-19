@@ -45,6 +45,7 @@ export const useBankStore = defineStore(
         console.warn("로그아웃 실패: 토큰이 없습니다.");
         return;
       }
+    
       axios({
         method: "post",
         url: `${API_URL}/accounts/logout/`,
@@ -62,6 +63,10 @@ export const useBankStore = defineStore(
         })
         .catch((err) => {
           console.error("로그아웃 실패:", err.response?.data || err.message);
+          // 추가 디버깅
+          if (err.response) {
+            console.log("에러 응답 데이터:", err.response.data);
+          }
         });
     };
 
@@ -99,12 +104,19 @@ export const useBankStore = defineStore(
           password1,
           password2,
           email,
-          name, // name 데이터 포함
-          preferred_banks, // 선호 은행 포함
+          name,
+          preferred_banks: preferred_banks || [], // 선호 은행 데이터
         },
       })
         .then((res) => {
-          console.log("회원가입 성공");
+          console.log("회원가입 성공", res.data);
+
+          // 회원가입 성공 후 자동 로그인
+          const loginPayload = {
+            username, // 회원가입 시 입력했던 사용자 이름
+            password: password1, // 회원가입 시 사용한 비밀번호
+          };
+          Login(loginPayload); // 로그인 호출
         })
         .catch((err) => {
           console.error("회원가입 실패:", err.response?.data || err.message);

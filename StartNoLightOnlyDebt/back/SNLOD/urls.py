@@ -17,11 +17,19 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from accounts.views import preferred_loan_list
+from django.urls import path
+from django.http import HttpResponse
+from dj_rest_auth.views import LogoutView
+
+def custom_email_confirmation(request, *args, **kwargs):
+    return HttpResponse("Email confirmed successfully.", content_type="text/plain")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('managebanks.urls')),  # accounts 앱 URL 포함
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/signup/', include('dj_rest_auth.registration.urls')),
+    path('accounts/logout/', LogoutView.as_view(), name='rest_logout'),
     path('accounts/profile/', preferred_loan_list, name='accounts-profile'),
+    path('accounts/signup/account-confirm-email/<key>/', custom_email_confirmation, name="account_confirm_email"),
 ]

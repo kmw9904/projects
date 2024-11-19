@@ -1,46 +1,29 @@
-from allauth.account.adapter import get_adapter
-from allauth.account.utils import setup_user_email
-from dj_rest_auth.registration.serializers import RegisterSerializer
+# accounts/serializers.py
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from managebanks.models import FinancialCompany
 
 User = get_user_model()
 
+class CustomRegisterSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(required=True)
+    name = serializers.CharField(required=True)
+    preferred_banks = serializers.PrimaryKeyRelatedField(queryset=FinancialCompany.objects.all(), many=True, required=False)
 
-class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'name', 'email']
+        fields = ['username', 'email', 'password', 'name', 'preferred_banks']
 
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
 
-class CustomRegisterSerializer(RegisterSerializer):
-    username = serializers.CharField(required=True)  # 기본 필드
-    name = serializers.CharField(required=True)  # 추가 필드
-    preferred_banks = serializers.PrimaryKeyRelatedField(
-        queryset=FinancialCompany.objects.all(), many=True, required=False
-    )
-
-    def get_cleaned_data(self):
-        data = super().get_cleaned_data()
-        data['name'] = self.validated_data.get('name', '')  # name 필드 포함
-        data['preferred_banks'] = self.validated_data.get('preferred_banks', [])
-        return data
-
-    def save(self, request):
-        user = super().save(request)
-        user.name = self.cleaned_data.get('name')  # name 필드 저장
-        user.save()
-
-        # 로그 추가
-        print(f"Saved user: {user.username}, name: {user.name}")
-
-        # 선호 은행 저장
-        preferred_banks = self.cleaned_data.get('preferred_banks')
-        if preferred_banks:
+        # preferred_banks 처리: ManyToMany 관계 설정
+        if 'preferred_banks' in validated_data:
+            preferred_banks = validated_data['preferred_banks']
+            print(f"Assigning preferred_banks: {preferred_banks}")  # 디버깅 로그
             user.preferred_banks.set(preferred_banks)
-            print(f"Preferred banks set for user {user.username}: {preferred_banks}")
-        else:
-            print(f"No preferred banks provided for user {user.username}")
+            user.save()
 
         return user
+
+    

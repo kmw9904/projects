@@ -54,29 +54,36 @@ const selectedBanks = ref([]); // 선택된 은행 ID 저장
 const store = useBankStore();
 
 onMounted(() => {
+  // 회원가입 페이지에서 은행 데이터를 미리 가져옵니다.
   store
     .getBanks()
     .then((response) => {
-      console.log("받은 데이터:", response); // 데이터가 제대로 왔는지 확인
-      banks.value = response; // banks 변수 업데이트
+      console.log("받은 은행 데이터:", response);
+      banks.value = response;
     })
     .catch((error) => {
-      console.error("은행 데이터 로드 실패:", error);
+      console.error("은행 목록 로드 실패:", error);
     });
 });
 
 // 회원가입 요청
 const SignUp = function () {
+  // 은행 목록이 로드된 후에만 회원가입 진행
+  if (banks.value.length === 0) {
+    console.warn("은행 목록을 먼저 불러오세요.");
+    return;
+  }
+
   const payload = {
     username: username.value,
-    name: name.value, // name 필드를 포함
+    name: name.value,
     email: email.value,
     password1: password1.value,
     password2: password2.value,
-    preferred_banks: [...selectedBanks.value], // 선택된 은행 목록 할당
+    preferred_banks: [...selectedBanks.value],
   };
+  console.log("회원가입 요청 데이터:", payload); // 데이터 확인
   store.SignUp(payload);
-  console.log("선호 은행 :", payload.preferred_banks); // 올바른 값 출력
 };
 </script>
 

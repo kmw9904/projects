@@ -9,14 +9,14 @@ def preferred_loan_list(request):
     if user.is_authenticated:
         # 선호 은행 데이터 가져오기
         preferred_banks = user.preferred_banks.all()  # ManyToMany 관계 데이터
-        preferred_banks_data = list(preferred_banks.values('company_id', 'company_name'))  # 필드 수정
+        preferred_banks_data = list(preferred_banks.values('company_id', 'company_name'))  # 필요한 필드만 반환
 
         response = {
             "profile_user": {
                 "username": user.username,
                 "name": user.name,
                 "email": user.email,
-                "password": "********",  # 실제 비밀번호는 반환하지 않음
+                "password": "********",  # 비밀번호는 반환하지 않음
                 "preferred_banks": preferred_banks_data,  # 선호 은행 데이터
             }
         }
@@ -27,3 +27,4 @@ def preferred_loan_list(request):
         return JsonResponse(response, status=401)
 
     return JsonResponse(response)
+
