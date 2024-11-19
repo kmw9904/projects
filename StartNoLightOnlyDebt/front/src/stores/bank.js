@@ -19,18 +19,9 @@ export const useBankStore = defineStore(
 
     // ------------------ 주요 기능들 ------------------
 
-<<<<<<< HEAD
-    // 게시글 목록 데이터 저장
-    const creditLoans = ref(null);
-    const jeonses = ref(null);
-    const mortgages = ref(null);
-
-    const getCreditLoan = function () {
-=======
     // 로그인 요청
     const Login = function (payload) {
       const { username, password } = payload;
->>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
       axios({
         method: "post",
         url: `${API_URL}/accounts/login/`,
@@ -48,16 +39,12 @@ export const useBankStore = defineStore(
         });
     };
 
-<<<<<<< HEAD
-    const getJeonse = function () {
-=======
     // 로그아웃 요청
     const Logout = function () {
       if (!token.value) {
         console.warn("로그아웃 실패: 토큰이 없습니다.");
         return;
       }
->>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
       axios({
         method: "post",
         url: `${API_URL}/accounts/logout/`,
@@ -78,16 +65,12 @@ export const useBankStore = defineStore(
         });
     };
 
-<<<<<<< HEAD
-    const getMortgage = function () {
-=======
     // 유저 프로필 가져오기
     const getUserProfile = function () {
       if (!token.value) {
         console.warn("프로필 가져오기 실패: 토큰이 없습니다.");
         return;
       }
->>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
       axios({
         method: "get",
         url: `${API_URL}/accounts/profile/`,
@@ -136,37 +119,6 @@ export const useBankStore = defineStore(
         url: `${API_URL}/api/v1/banks/`,
       })
         .then((res) => {
-<<<<<<< HEAD
-          banks.value = res.data;
-          return res.data;
-        })
-        .catch((err) => {
-          console.error("은행 목록 가져오기 실패:", err);
-          throw err;
-        });
-    };
-
-    // 회원가입 요청 액션
-    const SignUp = function (payload) {
-      const { username, password1, password2, email, name, preferred_banks } = payload;
-      axios({
-        method: "post",
-        url: `${API_URL}/accounts/signup/`,
-        data: {
-          username,
-          password1,
-          password2,
-          email,
-          name,
-          preferred_banks,
-        },
-      })
-        .then(() => {
-          const password = password1;
-          Login({ username, password });
-        })
-        .catch((err) => console.error(err));
-=======
           console.log("은행 목록 가져오기 성공:", res.data);
           banks.value = res.data; // 받은 데이터를 저장
           return res.data; // 반환
@@ -184,12 +136,14 @@ export const useBankStore = defineStore(
       axios({
         method: "get",
         url: `${API_URL}/api/v1/fetch-financial-data/`,
+        headers: {
+          Authorization: `Token ${token.value}`, // 인증 토큰 추가
+        },
       })
         .then((res) => {
           creditLoans.value = res.data;
         })
         .catch((err) => console.error("Credit Loan 가져오기 실패:", err));
->>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
     };
 
     const jeonses = ref(null);
@@ -197,19 +151,14 @@ export const useBankStore = defineStore(
       axios({
         method: "get",
         url: `${API_URL}/api/v1/fetch-financial-data/`,
+        headers: {
+          Authorization: `Token ${token.value}`, // 인증 토큰 추가
+        },
       })
         .then((res) => {
-<<<<<<< HEAD
-          token.value = res.data.key;
-          isLoggedIn.value = true;
-          router.push({ name: "MainView" });
-        })
-        .catch((err) => console.error(err));
-=======
           jeonses.value = res.data;
         })
         .catch((err) => console.error("Jeonse 가져오기 실패:", err));
->>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
     };
 
     const mortgages = ref(null);
@@ -217,125 +166,10 @@ export const useBankStore = defineStore(
       axios({
         method: "get",
         url: `${API_URL}/api/v1/fetch-financial-data/`,
-      })
-<<<<<<< HEAD
-        .then(() => {
-          isLoggedIn.value = false;
-        })
-        .catch((err) => console.error(err));
-    };
-
-    // Community 관련 추가
-    const articles = ref([]);
-    const search_username = ref(null);
-    const user_data = ref(null);
-
-    const isLogin = computed(() => {
-      return token.value !== null;
-    });
-
-    const signUpCommunity = function (payload) {
-      const { username, nickname, email, password1, password2 } = payload;
-      axios({
-        method: "post",
-        url: `${API_URL}/accounts/signup/`,
-        data: {
-          username,
-          nickname,
-          email,
-          password1,
-          password2,
-        },
-      })
-        .then(() => {
-          Login({ username, password: password1 });
-        })
-        .catch((err) => console.error(err));
-    };
-
-    const getArticles = function () {
-      axios({
-        method: "get",
-        url: `${API_URL}/articles/`,
         headers: {
-          Authorization: `Token ${token.value}`,
+          Authorization: `Token ${token.value}`, // 인증 토큰 추가
         },
       })
-        .then((res) => {
-          articles.value = res.data;
-        })
-        .catch((err) => console.error(err));
-    };
-
-    const editProfile = function (payload) {
-      const { nickname, email } = payload;
-      axios({
-        method: "put",
-        url: `${API_URL}/accounts/profile/edit/`,
-        headers: {
-          Authorization: `Token ${token.value}`,
-        },
-        data: {
-          nickname,
-          email,
-        },
-      })
-        .then(() => {
-          router.go(-1);
-        })
-        .catch((err) => console.error(err));
-    };
-
-    const changePassword = function (payload) {
-      const { old_password, new_password1, new_password2 } = payload;
-      axios({
-        method: "post",
-        url: `${API_URL}/accounts/password/change/`,
-        headers: {
-          Authorization: `Token ${token.value}`,
-        },
-        data: {
-          old_password,
-          new_password1,
-          new_password2,
-        },
-      })
-        .then(() => {
-          Logout();
-        })
-        .catch(() => console.error("비밀번호 변경 실패"));
-    };
-
-    const createComments = function (payload) {
-      axios({
-        method: "post",
-        url: `${API_URL}/articles/comment/${payload.article_pk}/${payload.parent_pk}/`,
-        data: { content: payload.content },
-        headers: {
-          Authorization: `Token ${token.value}`,
-        },
-      })
-        .then(() => router.go(-1))
-        .catch((err) => console.error(err));
-    };
-
-    const deleteComment = function (payload) {
-      axios({
-        method: "delete",
-        url: `${API_URL}/articles/comment/${payload.article_pk}/${payload.comment_pk}/delete/`,
-        headers: { Authorization: `Token ${token.value}` },
-      })
-        .then(() => router.go(-1))
-        .catch((err) => console.error(err));
-    };
-
-    return {
-      // Bank 관련
-      SignUp,
-      Login,
-      Logout,
-      isLoggedIn,
-=======
         .then((res) => {
           mortgages.value = res.data;
         })
@@ -367,29 +201,12 @@ export const useBankStore = defineStore(
       profile,
       banks,
       getBanks,
->>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
       creditLoans,
       getCreditLoan,
       jeonses,
       getJeonse,
       mortgages,
       getMortgage,
-<<<<<<< HEAD
-      banks,
-      getBanks,
-      // Community 관련
-      articles,
-      isLogin,
-      search_username,
-      user_data,
-      signUpCommunity,
-      getArticles,
-      editProfile,
-      changePassword,
-      createComments,
-      deleteComment,
-=======
->>>>>>> 45d47808643f6844e79a29e3441bff6838cf4c6a
     };
   },
   {
