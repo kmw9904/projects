@@ -9,6 +9,16 @@
 
     <!-- 조건 검색 폼 -->
     <form @submit.prevent="handleSearch">
+      <label for="loanAmount">대출금액:</label>
+      <input type="number" v-model.number="loanAmount" id="loanAmount" placeholder="대출금액 입력" />
+      원
+      <br />
+
+      <label for="loanPeriod">대출기간:</label>
+      <input type="number" v-model.number="loanPeriod" id="loanPeriod" placeholder="대출기간 입력" />
+      년
+      <br />
+
       <label for="repaymentType">상환 방식:</label>
       <select id="repaymentType" v-model="filters.repaymentType">
         <option value="전체">전체</option>
@@ -19,43 +29,8 @@
       <button type="submit">검색</button>
     </form>
 
-    <h4>조건에 맞는 금융 조건</h4>
-
-    <!-- 데이터가 로드된 경우 렌더링 -->
-    <div v-if="filteredProducts.length > 0">
-      <div v-for="product in filteredProducts" :key="product.product_id">
-        <p>
-          <strong>금융 회사:</strong>
-          {{ product.company_name }}
-        </p>
-        <p>
-          <strong>상품명:</strong>
-          {{ product.product_name }}
-        </p>
-
-        <!-- 옵션 리스트 출력 -->
-        <div v-for="option in product.options" :key="option.option_id">
-          <p>
-            <strong>상환 방식:</strong>
-            {{ option.rpay_type_nm || "정보 없음" }} |
-            <strong>금리 유형:</strong>
-            {{ option.lend_rate_type_nm || "정보 없음" }} |
-            <strong>최저 금리:</strong>
-            {{ option.lend_rate_min || "N/A" }} |
-            <strong>최고 금리:</strong>
-            {{ option.lend_rate_max || "N/A" }} |
-            <strong>평균 금리:</strong>
-            {{ option.lend_rate_avg || "N/A" }}
-          </p>
-        </div>
-        <hr />
-      </div>
-    </div>
-
-    <!-- 데이터가 없을 경우 -->
-    <div v-else>
-      <p>조건에 맞는 결과가 없습니다.</p>
-    </div>
+    <JeonseDetailView v-if="filteredProducts.length > 0" :products="filteredProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
+    <p v-else>조건에 맞는 결과가 없습니다.</p>
   </div>
 </template>
 
@@ -63,10 +38,14 @@
 import { ref, computed, onMounted, watch } from "vue";
 import { useBankStore } from "@/stores/bank";
 import { useNavigationStore } from "@/stores/navigation";
+import JeonseDetailView from "./JeonseDetailView.vue";
 
 // Stores 초기화
 const store = useBankStore();
 const navigationStore = useNavigationStore();
+
+const loanAmount = ref(0); // 대출 금액
+const loanPeriod = ref(0); // 대출 기간
 
 // 필터링 조건
 const filters = ref({
@@ -89,7 +68,6 @@ watch(
 
 // 특정 상품 ID로 옵션을 연결하고 상품과 함께 매핑
 const mergedProducts = computed(() => {
-  // product_id 기준으로 옵션을 그룹화
   const groupedByProductId = products.value.reduce((acc, option) => {
     const product = option.product;
     const productId = product.product_id;
@@ -121,13 +99,15 @@ const filteredProducts = computed(() => {
 
 // 검색 버튼 클릭 시 필터링 로직 실행
 const handleSearch = () => {
-  console.log("검색 조건:", filters.value);
-};
+  if (loanAmount.value <= 0 || loanPeriod.value <= 0) {
+    alert("대출금액과 대출기간을 올바르게 입력하세요.");
+    return;
+  }
 
-// 컴포넌트 마운트 시 API 호출
-onMounted(() => {
-  store.getJeonse();
-});
+  store.getJeonse(); // 필요한 데이터 호출
+};
 </script>
 
-<style scoped></style>
+<style scoped>
+/* 스타일 없음 */
+</style>
