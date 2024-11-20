@@ -41,6 +41,7 @@
               <strong>최고 상환 금액:</strong>
               {{ option.maxPayment !== undefined ? `${formatCurrency(option.maxPayment)}원` : "계산 중..." }}
             </p>
+            <MorgageDiscussionView />
           </div>
         </div>
         <div v-else>
@@ -61,6 +62,7 @@
 <script setup>
 import { defineProps, onMounted } from "vue";
 import axios from "axios";
+import MorgageDiscussionView from "./MorgageDiscussionView.vue";
 
 // 부모 컴포넌트에서 전달받은 props
 const props = defineProps({

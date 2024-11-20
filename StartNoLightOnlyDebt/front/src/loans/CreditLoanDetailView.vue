@@ -35,6 +35,8 @@
               <strong>월 상환 금액:</strong>
               {{ option.monthlyPayment !== undefined ? `${formatCurrency(option.monthlyPayment)}원` : "계산 중..." }}
             </p>
+            <!-- 댓글 및 좋아요 컴포넌트 추가 -->
+            <CreditLoanDiscussionView />
           </div>
         </div>
         <div v-else>
@@ -55,6 +57,7 @@
 <script setup>
 import { defineProps, onMounted } from "vue";
 import axios from "axios";
+import CreditLoanDiscussionView from "./CreditLoanDiscussionView.vue";
 
 // 부모 컴포넌트에서 전달받은 props
 const props = defineProps({

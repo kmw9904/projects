@@ -41,6 +41,8 @@
               <strong>최고 상환 금액:</strong>
               {{ option.maxPayment !== undefined ? `${formatCurrency(option.maxPayment)}원` : "계산 중..." }}
             </p>
+
+            <JeonseDiscussionView />
           </div>
         </div>
         <div v-else>
@@ -61,6 +63,7 @@
 <script setup>
 import { defineProps, onMounted } from "vue";
 import axios from "axios";
+import JeonseDiscussionView from "./JeonseDiscussionView.vue";
 
 // 부모 컴포넌트에서 전달받은 props
 const props = defineProps({
@@ -94,9 +97,7 @@ const calculateMonthlyPayment = (option) => {
   })
     .then((response) => {
       if (response.data.calculations && response.data.calculations.length > 0) {
-        const calculation = response.data.calculations.find(
-          (calc) => calc.option_id === option.option_id
-        );
+        const calculation = response.data.calculations.find((calc) => calc.option_id === option.option_id);
         if (calculation) {
           option.minPayment = calculation.monthly_payment_min || null;
           option.avgPayment = calculation.monthly_payment_avg || null;
