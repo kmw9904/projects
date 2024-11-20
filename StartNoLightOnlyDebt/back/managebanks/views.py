@@ -3,10 +3,11 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny
-from .serializers import FinancialCompanySerializer
+from .serializers import FinancialCompanySerializer, CreditLoanOptionSerializer, JeonseOptionSerializer, MortgageOptionSerializer
 from .models import FinancialProduct, MortgageOption, JeonseOption, CreditLoanOption, FinancialCompany
 from datetime import datetime
 from decimal import Decimal
+
 
 
 def calculate_bullet_repayment(loan_amount, annual_rate):
@@ -261,4 +262,28 @@ class BankListView(APIView):
     def get(self, request):
         banks = FinancialCompany.objects.all()
         serializer = FinancialCompanySerializer(banks, many=True)
+        return Response(serializer.data)
+    
+class CreditLoanView(APIView):
+    def get(self, request):
+        # 관련된 FinancialProduct 데이터를 미리 로드
+        credit_loans = CreditLoanOption.objects.select_related('fin_prdt_cd__fin_co_no').all()
+        serializer = CreditLoanOptionSerializer(credit_loans, many=True)
+        return Response(serializer.data)
+
+# JeonseLoanView
+class JeonseLoanView(APIView):
+    def get(self, request):
+        # 관련된 FinancialProduct 데이터를 미리 로드
+        jeonse_loans = JeonseOption.objects.select_related('fin_prdt_cd__fin_co_no').all()
+        serializer = JeonseOptionSerializer(jeonse_loans, many=True)
+        return Response(serializer.data)
+
+
+# MortgageLoanView
+class MortgageLoanView(APIView):
+    def get(self, request):
+        # 관련된 FinancialProduct 데이터를 미리 로드
+        mortgage_loans = MortgageOption.objects.select_related('fin_prdt_cd__fin_co_no').all()
+        serializer = MortgageOptionSerializer(mortgage_loans, many=True)
         return Response(serializer.data)

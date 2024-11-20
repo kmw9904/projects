@@ -166,4 +166,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+# 이메일 기본 설정
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'
+ACCOUNT_EMAIL_VERIFICATION = 'optional'
+ACCOUNT_EMAIL_REQUIRED = True
+
 # API_KEY = config('API_KEY')  # .env 파일에서 API_KEY 값을 읽어옴

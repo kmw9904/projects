@@ -22,7 +22,8 @@ export const useBankStore = defineStore(
     // 로그인 요청
     const Login = function (payload) {
       const { username, password } = payload;
-      axios({
+
+      return axios({
         method: "post",
         url: `${API_URL}/accounts/login/`,
         data: { username, password },
@@ -32,10 +33,16 @@ export const useBankStore = defineStore(
           token.value = res.data.key; // 토큰 저장
           localStorage.setItem("token", res.data.key); // 로컬스토리지에 저장
           isLoggedIn.value = true; // 로그인 상태 갱신
+
+          // 프로필 정보 가져오기
+          return getUserProfile();
+        })
+        .then(() => {
           router.push({ name: "MainView" }); // 메인 페이지로 이동
         })
         .catch((err) => {
           console.error("로그인 실패:", err.response?.data || err.message);
+          throw err; // 에러를 상위로 전달
         });
     };
 
@@ -45,7 +52,7 @@ export const useBankStore = defineStore(
         console.warn("로그아웃 실패: 토큰이 없습니다.");
         return;
       }
-    
+
       axios({
         method: "post",
         url: `${API_URL}/accounts/logout/`,
@@ -74,9 +81,10 @@ export const useBankStore = defineStore(
     const getUserProfile = function () {
       if (!token.value) {
         console.warn("프로필 가져오기 실패: 토큰이 없습니다.");
-        return;
+        return Promise.reject(new Error("토큰이 없습니다.")); // 실패 시 에러 반환
       }
-      axios({
+
+      return axios({
         method: "get",
         url: `${API_URL}/accounts/profile/`,
         headers: {
@@ -86,13 +94,13 @@ export const useBankStore = defineStore(
         .then((res) => {
           console.log("프로필 가져오기 성공:", res.data);
           profile.value = res.data; // 프로필 데이터 저장
+          return res.data; // 성공 데이터 반환
         })
         .catch((err) => {
           console.error("프로필 가져오기 실패:", err.response?.data || err.message);
+          throw err; // 에러 던지기
         });
     };
-
-    // 회원가입 요청
     const SignUp = function (payload) {
       const { username, password1, password2, email, name, preferred_banks } = payload;
 
@@ -109,17 +117,55 @@ export const useBankStore = defineStore(
         },
       })
         .then((res) => {
-          console.log("회원가입 성공", res.data);
+          console.log("회원가입 성공:", res.data);
 
           // 회원가입 성공 후 자동 로그인
           const loginPayload = {
             username, // 회원가입 시 입력했던 사용자 이름
             password: password1, // 회원가입 시 사용한 비밀번호
           };
-          Login(loginPayload); // 로그인 호출
+
+          // 로그인 호출
+          Login(loginPayload)
+            .then(() => {
+              // 로그인 성공 후 프로필 데이터 가져오기
+              return getUserProfile();
+            })
+            .then(() => {
+              // 프로필 페이지로 이동
+              router.push({ name: "ProfileView" });
+            })
+            .catch((err) => {
+              console.error("로그인 또는 프로필 가져오기 실패:", err.response?.data || err.message);
+            });
         })
         .catch((err) => {
           console.error("회원가입 실패:", err.response?.data || err.message);
+        });
+    };
+
+    // 비밀번호 변경
+    const changePassword = function (payload) {
+      return axios({
+        method: "post",
+        url: `${API_URL}/accounts/password/change/`,
+        data: {
+          old_password: payload.oldPassword,
+          new_password1: payload.newPassword1,
+          new_password2: payload.newPassword2,
+        },
+        headers: {
+          Authorization: `Token ${token.value}`, // 인증 토큰 추가
+        },
+      })
+        .then((res) => {
+          console.log("비밀번호 변경 성공:", res.data);
+          router.push({ name: "AccountView" });
+          return res.data; // 성공 데이터 반환
+        })
+        .catch((err) => {
+          console.error("비밀번호 변경 실패:", err.response?.data || err.message);
+          throw err; // 에러 던지기
         });
     };
 
@@ -141,13 +187,53 @@ export const useBankStore = defineStore(
         });
     };
 
+    // 사용자 선호 은행 가져오기
+    const selectedBanks = ref([]); // 사용자 선호 은행 ID 리스트
+    const getPreferredBanks = function () {
+      return axios({
+        method: "get",
+        url: `${API_URL}/accounts/preferred-banks/`,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((res) => {
+          console.log("전체 은행 목록 가져오기 성공:", res.data);
+          return res.data; // 응답 데이터를 그대로 반환
+        })
+        .catch((err) => {
+          console.error("전체 은행 목록 가져오기 실패:", err.response?.data || err.message);
+          throw err; // 에러를 던져 상위에서 처리
+        });
+    };
+
+    const updatePreferredBanks = function (newBanks) {
+      return axios({
+        method: "put",
+        url: `${API_URL}/accounts/preferred-banks/`,
+        data: {
+          preferred_banks: newBanks,
+        },
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
+      })
+        .then((res) => {
+          console.log("선호 은행 업데이트 성공:", res.data);
+          return res.data; // 성공적으로 업데이트된 데이터 반환
+        })
+        .catch((err) => {
+          console.error("선호 은행 업데이트 실패:", err.response?.data || err.message);
+          throw err; // 에러를 던져 상위에서 처리
+        });
+    };
     // ------------------ 게시글 관리 기능 ------------------
 
     const creditLoans = ref(null);
     const getCreditLoan = function () {
       axios({
         method: "get",
-        url: `${API_URL}/api/v1/fetch-financial-data/`,
+        url: `${API_URL}/api/v1/credit-loans/`,
         headers: {
           Authorization: `Token ${token.value}`, // 인증 토큰 추가
         },
@@ -162,30 +248,30 @@ export const useBankStore = defineStore(
     const getJeonse = function () {
       axios({
         method: "get",
-        url: `${API_URL}/api/v1/fetch-financial-data/`,
+        url: `${API_URL}/api/v1/jeonse-loans/`,
         headers: {
-          Authorization: `Token ${token.value}`, // 인증 토큰 추가
+          Authorization: `Token ${token.value}`,
         },
       })
         .then((res) => {
           jeonses.value = res.data;
         })
-        .catch((err) => console.error("Jeonse 가져오기 실패:", err));
+        .catch((err) => console.error("Jeonse Loan 가져오기 실패:", err));
     };
 
     const mortgages = ref(null);
     const getMortgage = function () {
       axios({
         method: "get",
-        url: `${API_URL}/api/v1/fetch-financial-data/`,
+        url: `${API_URL}/api/v1/mortgage-loans/`,
         headers: {
-          Authorization: `Token ${token.value}`, // 인증 토큰 추가
+          Authorization: `Token ${token.value}`,
         },
       })
         .then((res) => {
           mortgages.value = res.data;
         })
-        .catch((err) => console.error("Mortgage 가져오기 실패:", err));
+        .catch((err) => console.error("Mortgage Loan 가져오기 실패:", err));
     };
 
     // ------------------ 초기화 ------------------
@@ -219,6 +305,10 @@ export const useBankStore = defineStore(
       getJeonse,
       mortgages,
       getMortgage,
+      changePassword,
+      getPreferredBanks,
+      updatePreferredBanks,
+      selectedBanks,
     };
   },
   {

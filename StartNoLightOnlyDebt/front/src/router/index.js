@@ -1,17 +1,19 @@
 import { createRouter, createWebHistory } from "vue-router";
-import SignUpView from "@/views/SignUpView.vue";
-import LoginView from "@/views/LoginView.vue";
+import SignUpView from "@/accounts/SignUpView.vue";
+import LoginView from "@/accounts/LoginView.vue";
 import MainView from "@/views/MainView.vue";
-import JeonseView from "@/components/JeonseView.vue";
-import CreditLoanView from "@/components/CreditLoanView.vue";
-import MortgageView from "@/components/MortgageView.vue";
+import JeonseView from "@/loans/JeonseView.vue";
+import CreditLoanView from "@/loans/CreditLoanView.vue";
+import MortgageView from "@/loans/MortgageView.vue";
 import MapView from "@/views/MapView.vue";
-import MortgageDetailView from "@/components/MortgageDetailView.vue";
-import JeonseDetailView from "@/components/JeonseDetailView.vue";
-import CreditLoanDetailView from "@/components/CreditLoanDetailView.vue";
+import MortgageDetailView from "@/loans/MortgageDetailView.vue";
+import JeonseDetailView from "@/loans/JeonseDetailView.vue";
+import CreditLoanDetailView from "@/loans/CreditLoanDetailView.vue";
 import ExchangeView from "@/components/ExchangeView.vue";
 import AlgorithmView from "@/algorithm/AlgorithmView.vue";
-import AccountView from "@/views/AccountView.vue";
+import AccountView from "@/accounts/AccountView.vue";
+import PasswordChangeView from "@/accounts/PasswordChangeView.vue";
+import PreferredBanksView from "@/accounts/PreferredBanksView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -80,6 +82,16 @@ const router = createRouter({
       path: "/profile",
       name: "AccountView",
       component: AccountView,
+    },
+    {
+      path: "/change-password",
+      name: "PasswordChangeView",
+      component: PasswordChangeView,
+    },
+    {
+      path: "/change-preferredbanks",
+      name: "PreferredBanksView",
+      component: PreferredBanksView,
     },
   ],
 });

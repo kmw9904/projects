@@ -4,35 +4,29 @@
 
     <!-- 데이터가 로드된 경우 렌더링 -->
     <div v-if="products.length > 0">
-      <div v-for="product in products" :key="product.fin_prdt_cd">
+      <div v-for="product in products" :key="product.product_id">
         <p>
           <strong>금융 회사:</strong>
-          {{ product.kor_co_nm }}
+          {{ product.company_name }}
         </p>
         <p>
           <strong>상품명:</strong>
-          {{ product.fin_prdt_nm }}
-        </p>
-        <p>
-          <strong>대출 종류:</strong>
-          {{ product.crdt_prdt_type_nm }}
+          {{ product.product_name }}
         </p>
 
         <!-- 옵션 리스트 출력 -->
-        <div v-for="option in product.options" :key="option.crdt_lend_rate_type">
+        <div v-for="option in product.options" :key="option.option_id">
           <p>
+            <strong>상환 방식:</strong>
+            {{ option.rpay_type_nm || "정보 없음" }} |
             <strong>금리 유형:</strong>
-            {{ option.crdt_lend_rate_type_nm }} |
-            <strong>900점 초과:</strong>
-            {{ option.crdt_grad_1 }} |
-            <strong>801~900:</strong>
-            {{ option.crdt_grad_4 }} |
-            <strong>701~800:</strong>
-            {{ option.crdt_grad_5 }} |
-            <strong>601~700:</strong>
-            {{ option.crdt_grad_6 }} |
+            {{ option.lend_rate_type_nm || "정보 없음" }} |
+            <strong>최저 금리:</strong>
+            {{ option.lend_rate_min || "N/A" }} |
+            <strong>최고 금리:</strong>
+            {{ option.lend_rate_max || "N/A" }} |
             <strong>평균 금리:</strong>
-            {{ option.crdt_grad_avg }}
+            {{ option.lend_rate_avg || "N/A" }}
           </p>
         </div>
         <hr />

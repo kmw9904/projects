@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import { onMounted, watch, ref, computed } from "vue";
+import { onMounted, ref, computed, watch } from "vue";
 import { useBankStore } from "@/stores/bank";
 import { useNavigationStore } from "@/stores/navigation";
 import CreditLoanDetailView from "./CreditLoanDetailView.vue";
@@ -53,40 +53,39 @@ const filters = ref({
 });
 
 // 원본 데이터 상태
-const products = ref({
-  credit: {
-    result: {
-      baseList: [], // 금융회사와 상품 정보 목록
-      optionList: [], // 옵션 목록
-    },
-  },
-});
+const products = ref([]);
 
-// 특정 상품 ID로 옵션을 연결하고 상품과 함께 매핑
+// 옵션 매핑
 const mergedProducts = computed(() => {
-  const baseList = products.value.credit.result.baseList || [];
-  const optionList = products.value.credit.result.optionList || [];
+  const groupedByProductId = products.value.reduce((acc, option) => {
+    const product = option.product;
+    const productId = product.product_id;
 
-  // baseList와 optionList를 매핑하여 옵션 추가
-  return baseList.map((base) => {
-    const options = optionList.filter((option) => option.fin_prdt_cd === base.fin_prdt_cd && option.crdt_prdt_type === base.crdt_prdt_type);
+    if (!acc[productId]) {
+      acc[productId] = {
+        product_id: productId,
+        product_name: product.product_name || "알 수 없음",
+        company_name: product.company_name || "금융 회사 정보 없음",
+        options: [], // 옵션 리스트 초기화
+      };
+    }
 
-    // 중복 제거
-    const uniqueOptions = Array.from(new Map(options.map((opt) => [opt.crdt_lend_rate_type, opt])).values());
+    // 옵션 추가
+    acc[productId].options.push(option);
 
-    return { ...base, options: uniqueOptions };
-  });
+    return acc;
+  }, {});
+
+  // 결과 반환
+  return Object.values(groupedByProductId);
 });
 
 // 필터링된 결과
 const filteredProducts = computed(() => {
-  // "전체" 선택 시 필터링 없이 모든 데이터 반환
   if (filters.value.loanType === "전체") {
     return mergedProducts.value;
   }
-
-  // 필터 조건: 대출 종류 포함 여부 확인
-  return mergedProducts.value.filter((product) => product.fin_prdt_nm.includes(filters.value.loanType) || product.crdt_prdt_type_nm.includes(filters.value.loanType));
+  return mergedProducts.value.filter((product) => product.product_name.includes(filters.value.loanType));
 });
 
 // 검색 버튼 클릭 시 필터링 로직 실행
@@ -94,21 +93,21 @@ const handleSearch = () => {
   console.log("검색 조건:", filters.value);
 };
 
-// 컴포넌트 마운트 시 API 호출
-onMounted(() => {
-  store.getCreditLoan();
-});
-
-// store.creditLoans가 업데이트되면 products.value에 데이터를 반영
+// store.creditLoans를 products에 반영
 watch(
   () => store.creditLoans,
   (newValue) => {
     if (newValue) {
       products.value = newValue; // 업데이트된 데이터를 products에 반영
-      console.log("Updated Products:", products.value); // 디버깅
+      console.log("Updated Products:", products.value);
     }
   }
 );
+
+// 컴포넌트 마운트 시 API 호출
+onMounted(() => {
+  store.getCreditLoan();
+});
 </script>
 
 <style scoped></style>

@@ -82,7 +82,6 @@ const SignUp = function () {
     password2: password2.value,
     preferred_banks: [...selectedBanks.value],
   };
-  console.log("회원가입 요청 데이터:", payload); // 데이터 확인
   store.SignUp(payload);
 };
 </script>
