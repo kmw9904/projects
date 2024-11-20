@@ -88,7 +88,8 @@ class CalculateMonthlyPayment(APIView):
                     max_payment = calculate_installment_repayment(loan_amount, lend_rate_max, months)
                 else:
                     continue
-
+                
+                avg_payment = (min_payment+max_payment) / 2
                 results.append({
                     "option_id": option.option_id,
                     "rpay_type_nm": getattr(option, "rpay_type_nm", "분할상환방식"),
@@ -96,6 +97,7 @@ class CalculateMonthlyPayment(APIView):
                     "lend_rate_max": lend_rate_max,
                     "monthly_payment_min": round(min_payment, 2),
                     "monthly_payment_max": round(max_payment, 2),
+                    "monthly_payment_avg": round(avg_payment, 2),
                 })
 
         return Response({"calculations": results}, status=status.HTTP_200_OK)
@@ -288,3 +290,6 @@ class MortgageLoanView(APIView):
         mortgage_loans = MortgageOption.objects.select_related('fin_prdt_cd__fin_co_no').all()
         serializer = MortgageOptionSerializer(mortgage_loans, many=True)
         return Response(serializer.data)
+
+
+

@@ -9,4 +9,5 @@ urlpatterns = [
     path("jeonse-loans/", JeonseLoanView.as_view(), name="jeonse_loans"),
     path("mortgage-loans/", MortgageLoanView.as_view(), name="mortgage_loans"),
     path("banks/", BankListView.as_view(), name="bank-list"),
+    
 ]

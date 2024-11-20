@@ -58,3 +58,4 @@ class CreditLoanOptionSerializer(serializers.ModelSerializer):
             'crdt_grad_1', 'crdt_grad_4', 'crdt_grad_5', 'crdt_grad_6', 'crdt_grad_avg',
             'product',  # 포함된 FinancialProduct 데이터
         ]
+
