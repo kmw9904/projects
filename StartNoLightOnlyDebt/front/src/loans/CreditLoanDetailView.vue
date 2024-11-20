@@ -113,7 +113,3 @@ onMounted(() => {
   calculateAllPayments();
 });
 </script>
-
-<style scoped>
-/* 스타일 없음 */
-</style>

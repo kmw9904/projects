@@ -94,9 +94,7 @@ const calculateMonthlyPayment = (option) => {
   })
     .then((response) => {
       if (response.data.calculations && response.data.calculations.length > 0) {
-        const calculation = response.data.calculations.find(
-          (calc) => calc.option_id === option.option_id
-        );
+        const calculation = response.data.calculations.find((calc) => calc.option_id === option.option_id);
         if (calculation) {
           option.minPayment = calculation.monthly_payment_min || null;
           option.avgPayment = calculation.monthly_payment_avg || null;

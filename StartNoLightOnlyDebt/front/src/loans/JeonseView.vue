@@ -26,16 +26,23 @@
         <option value="변동금리">변동금리</option>
       </select>
       <br />
+
+      <!-- 최저 상환 금액 기준 정렬 체크박스 -->
+      <label>
+        <input type="checkbox" v-model="sortByMinPayment" />
+        최저 상환 금액 기준 정렬
+      </label>
+      <br />
       <button type="submit">검색</button>
     </form>
 
-    <JeonseDetailView v-if="filteredProducts.length > 0" :products="filteredProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
+    <JeonseDetailView v-if="sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
     <p v-else>조건에 맞는 결과가 없습니다.</p>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from "vue";
+import { ref, computed, watch } from "vue";
 import { useBankStore } from "@/stores/bank";
 import { useNavigationStore } from "@/stores/navigation";
 import JeonseDetailView from "./JeonseDetailView.vue";
@@ -46,6 +53,7 @@ const navigationStore = useNavigationStore();
 
 const loanAmount = ref(0); // 대출 금액
 const loanPeriod = ref(0); // 대출 기간
+const sortByMinPayment = ref(false); // 최저 상환 금액 기준 정렬 여부
 
 // 필터링 조건
 const filters = ref({
@@ -97,6 +105,28 @@ const filteredProducts = computed(() => {
   return mergedProducts.value.filter((product) => product.options.some((option) => option.rpay_type_nm?.includes(filters.value.repaymentType)));
 });
 
+// 최저 상환 금액 기준 정렬
+const sortedProducts = computed(() => {
+  if (!sortByMinPayment.value) {
+    return filteredProducts.value;
+  }
+
+  return filteredProducts.value
+    .map((product) => {
+      const sortedOptions = [...product.options].sort((a, b) => {
+        const aPayment = a.avgPayment || Infinity;
+        const bPayment = b.avgPayment || Infinity;
+        return aPayment - bPayment;
+      });
+      return { ...product, options: sortedOptions };
+    })
+    .sort((a, b) => {
+      const aMin = a.options[0]?.avgPayment || Infinity;
+      const bMin = b.options[0]?.avgPayment || Infinity;
+      return aMin - bMin;
+    });
+});
+
 // 검색 버튼 클릭 시 필터링 로직 실행
 const handleSearch = () => {
   if (loanAmount.value <= 0 || loanPeriod.value <= 0) {
@@ -108,6 +138,4 @@ const handleSearch = () => {
 };
 </script>
 
-<style scoped>
-/* 스타일 없음 */
-</style>
+<style scoped></style>
