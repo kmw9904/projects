@@ -21,7 +21,15 @@ class CommentSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)  # 게시글 작성자 정보를 포함
     comments = CommentSerializer(many=True, read_only=True)  # 댓글 목록 포함
+    likes_count = serializers.IntegerField(source='likes_count', read_only=True)
+    is_liked = serializers.SerializerMethodField()
 
     class Meta:
         model = Article
-        fields = ['id', 'user', 'title', 'content', 'created_at', 'updated_at', 'comments']
+        fields = ['id', 'user', 'title', 'content', 'likes_count', 'is_liked', 'created_at', 'updated_at', 'comments']
+        
+    def get_is_liked(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated:
+            return request.user in obj.likes.all()
+        return False
