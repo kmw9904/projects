@@ -31,7 +31,7 @@
 
       <!-- 선호 은행만 보기 체크박스 -->
       <label>
-        <input type="checkbox" v-model="showPreferredBanksOnly" />
+        <input type="checkbox" v-model="filterByPreferredBanks" />
         선호 은행만 보기
       </label>
       <br />
@@ -40,7 +40,7 @@
     </form>
 
     <!-- 결과 출력 -->
-    <CreditLoanDetailView v-if="sortedAndFilteredProducts.length > 0" :products="sortedAndFilteredProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
+    <CreditLoanDetailView v-if="sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
     <p v-else>검색 결과가 없습니다.</p>
   </div>
 </template>
@@ -53,33 +53,30 @@ import axios from "axios";
 // API URL 설정
 const API_URL = "http://127.0.0.1:8000/api/v1";
 
-// 검색 조건 상태
-const loanAmount = ref(0);
-const loanPeriod = ref(0);
-const loanType = ref("전체");
-const sortByMinPayment = ref(false); // 최저 상환 금액 정렬 여부
-const showPreferredBanksOnly = ref(false); // 선호 은행 필터링 여부
+const loanAmount = ref(0); // 대출 금액
+const loanPeriod = ref(0); // 대출 기간
+const loanType = ref("전체"); // 대출 종류
+const sortByMinPayment = ref(false); // 최저 상환 금액 기준 정렬 여부
+const filterByPreferredBanks = ref(false); // 선호 은행 필터링 여부
 
 // 결과 데이터
 const products = ref([]);
-const preferredBanks = ref([]); // 선호 은행 ID 리스트
+const preferredBanks = ref([]);
 
 // 사용자 선호 은행 가져오기
-const getPreferredBanks = function () {
+const getPreferredBanks = () => {
   return axios({
     method: "get",
-    url: `${API_URL}/accounts/preferred-banks/`,
+    url: `http://127.0.0.1:8000/accounts/preferred-banks/`,
     headers: {
       Authorization: `Token ${localStorage.getItem("token")}`,
     },
   })
     .then((res) => {
-      console.log("선호 은행 목록 가져오기 성공:", res.data);
-      preferredBanks.value = res.data; // 선호 은행 ID 리스트 저장
+      preferredBanks.value = res.data.banks.filter((bank) => bank.is_preferred).map((bank) => bank.company_name);
     })
     .catch((err) => {
-      console.error("선호 은행 목록 가져오기 실패:", err.response?.data || err.message);
-      alert("선호 은행 데이터를 가져오지 못했습니다.");
+      console.error("선호 은행 데이터 가져오기 실패:", err.response?.data || err.message);
     });
 };
 
@@ -118,12 +115,7 @@ const handleSearch = () => {
         groupedProducts[productId].options.push(option);
       });
 
-      // 결과를 배열로 변환
       products.value = Object.values(groupedProducts);
-
-      if (products.value.length === 0) {
-        alert("조건에 맞는 결과가 없습니다.");
-      }
     })
     .catch((error) => {
       console.error("검색 중 오류:", error.response || error.message);
@@ -131,34 +123,61 @@ const handleSearch = () => {
     });
 };
 
-// 정렬 및 필터링된 결과
-const sortedAndFilteredProducts = computed(() => {
-  let filteredProducts = products.value;
+// 필터링된 결과
+const filteredProducts = computed(() => {
+  let result = products.value;
+
+  // 대출 종류 필터링
+  if (loanType.value !== "전체") {
+    result = result
+      .map((product) => {
+        const filteredOptions = product.options.filter((option) => {
+          const type = option.product.product_name || ""; // 대출 상품명 확인
+          console.log("Product Name:", type);
+          console.log("Loan Type Filter:", loanType.value);
+
+          // "신용" 키워드 포함 여부로 필터링
+          if (loanType.value === "일반신용대출") {
+            return type.includes("신용");
+          } else {
+            return type === loanType.value; // 정확히 일치하는 경우
+          }
+        });
+
+        // 옵션이 존재하면 필터링된 상품 반환
+        return filteredOptions.length > 0 ? { ...product, options: filteredOptions } : null;
+      })
+      .filter((product) => product !== null);
+  }
 
   // 선호 은행 필터링
-  if (showPreferredBanksOnly.value) {
-    filteredProducts = filteredProducts.filter((product) => preferredBanks.value.some((bank) => bank === product.company_name));
+  if (filterByPreferredBanks.value) {
+    result = result.filter((product) => preferredBanks.value.includes(product.company_name));
   }
 
-  // 최저 상환 금액 기준 정렬
-  if (sortByMinPayment.value) {
-    return filteredProducts
-      .map((product) => {
-        const sortedOptions = [...product.options].sort((a, b) => {
-          const aPayment = a.monthlyPayment || Infinity;
-          const bPayment = b.monthlyPayment || Infinity;
-          return aPayment - bPayment;
-        });
-        return { ...product, options: sortedOptions };
-      })
-      .sort((a, b) => {
-        const aMin = a.options[0]?.monthlyPayment || Infinity;
-        const bMin = b.options[0]?.monthlyPayment || Infinity;
-        return aMin - bMin;
+  return result;
+});
+
+// 정렬된 결과
+const sortedProducts = computed(() => {
+  if (!sortByMinPayment.value) {
+    return filteredProducts.value;
+  }
+
+  return filteredProducts.value
+    .map((product) => {
+      const sortedOptions = [...product.options].sort((a, b) => {
+        const aPayment = a.monthly_payment || Infinity; // 월 상환 금액 필드명 확인 필요
+        const bPayment = b.monthly_payment || Infinity;
+        return aPayment - bPayment;
       });
-  }
-
-  return filteredProducts;
+      return { ...product, options: sortedOptions };
+    })
+    .sort((a, b) => {
+      const aMin = a.options[0]?.monthly_payment || Infinity;
+      const bMin = b.options[0]?.monthly_payment || Infinity;
+      return aMin - bMin;
+    });
 });
 
 // 초기화

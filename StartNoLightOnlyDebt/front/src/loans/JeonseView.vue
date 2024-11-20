@@ -33,6 +33,14 @@
         최저 상환 금액 기준 정렬
       </label>
       <br />
+
+      <!-- 선호 은행만 보기 체크박스 -->
+      <label>
+        <input type="checkbox" v-model="filterByPreferredBanks" />
+        선호 은행만 보기
+      </label>
+      <br />
+
       <button type="submit">검색</button>
     </form>
 
@@ -42,18 +50,40 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useBankStore } from "@/stores/bank";
 import { useNavigationStore } from "@/stores/navigation";
 import JeonseDetailView from "./JeonseDetailView.vue";
+import axios from "axios";
 
 // Stores 초기화
 const store = useBankStore();
 const navigationStore = useNavigationStore();
 
+const API_URL = "http://127.0.0.1:8000";
+
 const loanAmount = ref(0); // 대출 금액
 const loanPeriod = ref(0); // 대출 기간
 const sortByMinPayment = ref(false); // 최저 상환 금액 기준 정렬 여부
+const filterByPreferredBanks = ref(false); // 선호 은행 필터링 여부
+
+// 선호 은행 데이터
+const preferredBanks = ref([]);
+
+// 선호 은행 가져오기
+const getPreferredBanks = () => {
+  return axios({
+    method: "get",
+    url: `${API_URL}/accounts/preferred-banks/`,
+    headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+  })
+    .then((res) => {
+      preferredBanks.value = res.data.banks.filter((bank) => bank.is_preferred).map((bank) => bank.company_name);
+    })
+    .catch((err) => {
+      console.error("선호 은행 데이터 가져오기 실패:", err.response?.data || err.message);
+    });
+};
 
 // 필터링 조건
 const filters = ref({
@@ -68,8 +98,7 @@ watch(
   () => store.jeonses,
   (newValue) => {
     if (newValue) {
-      products.value = newValue; // 업데이트된 데이터를 products에 반영
-      console.log("Updated Products:", products.value);
+      products.value = newValue;
     }
   }
 );
@@ -99,10 +128,40 @@ const mergedProducts = computed(() => {
 
 // 필터링된 결과
 const filteredProducts = computed(() => {
-  if (filters.value.repaymentType === "전체") {
-    return mergedProducts.value;
+  let result = mergedProducts.value;
+
+  // 상환 방식(금리 유형) 필터링
+  if (filters.value.repaymentType !== "전체") {
+    result = result
+      .map((product) => {
+        // 조건에 맞는 옵션만 필터링
+        const filteredOptions = product.options.filter((option) => {
+          const repaymentType = (option.lend_rate_type_nm || "").trim().toLowerCase();
+          const filterType = filters.value.repaymentType.trim().toLowerCase();
+          console.log("Option Repayment Type:", repaymentType, "Filter Type:", filterType);
+          return repaymentType === filters.value.repaymentType.trim().toLowerCase();
+        });
+
+        // 옵션이 존재하면 상품을 반환
+        if (filteredOptions.length > 0) {
+          return {
+            ...product,
+            options: filteredOptions, // 조건에 맞는 옵션만 포함
+          };
+        }
+        return null; // 조건에 맞는 옵션이 없으면 상품 제외
+      })
+      .filter((product) => product !== null); // null 값을 제거
   }
-  return mergedProducts.value.filter((product) => product.options.some((option) => option.rpay_type_nm?.includes(filters.value.repaymentType)));
+
+  console.log("Filtered Products (After Repayment Type):", result);
+
+  // 선호 은행 필터링
+  if (filterByPreferredBanks.value) {
+    result = result.filter((product) => preferredBanks.value.includes(product.company_name));
+  }
+
+  return result;
 });
 
 // 최저 상환 금액 기준 정렬
@@ -134,8 +193,13 @@ const handleSearch = () => {
     return;
   }
 
-  store.getJeonse(); // 필요한 데이터 호출
+  store.getJeonse();
 };
+
+// 초기화
+onMounted(() => {
+  getPreferredBanks();
+});
 </script>
 
 <style scoped></style>
