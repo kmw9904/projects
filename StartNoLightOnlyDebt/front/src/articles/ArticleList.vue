@@ -12,7 +12,6 @@
     <!-- 게시글 목록 -->
     <div v-if="articles.length">
       <div v-for="article in articles" :key="article.id">
-        <!-- 제목 클릭 시 상세 페이지로 이동 -->
         <h3>
           <RouterLink :to="{ name: 'ArticleDetail', params: { id: article.id } }">
             {{ article.title }}
@@ -20,7 +19,9 @@
         </h3>
         <p>{{ article.content }}</p>
         <div>
-          <button @click="toggleLike(article.id)">{{ article.is_liked ? "좋아요 취소" : "좋아요" }} ({{ article.likes_count }})</button>
+          <button @click="toggleLike(article.id)">
+            {{ article.is_liked ? "좋아요 취소" : "좋아요" }} ({{ article.likes_count }})
+          </button>
         </div>
       </div>
     </div>
