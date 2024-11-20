@@ -47,6 +47,18 @@ def article_detail(request, article_pk):
         return Response({'message': '게시글이 삭제되었습니다.'}, status=204)
 
 
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def toggle_like(request, article_pk):
+    article = Article.objects.get(pk=article_pk)
+    if request.user in article.likes.all():
+        article.likes.remove(request.user)
+        return Response({'message': '좋아요 취소', 'likes_count': article.likes.count()})
+    else:
+        article.likes.add(request.user)
+        return Response({'message': '좋아요 추가', 'likes_count': article.likes.count()})
+
+
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def comment_list(request, article_pk):

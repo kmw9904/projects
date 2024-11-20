@@ -1,52 +1,35 @@
 <template>
   <div>
-    <h1>{{ article.title }}</h1>
+    <h2>{{ article.title }}</h2>
     <p>{{ article.content }}</p>
-    <p>
-      <strong>작성자:</strong>
-      {{ article.user }}
-    </p>
-    <hr />
-    <h2>댓글</h2>
-    <ul>
-      <li v-for="comment in article.comments" :key="comment.id">
-        {{ comment.content }} -
-        <strong>{{ comment.user }}</strong>
-        <button @click="deleteComment(comment.id)">삭제</button>
-      </li>
-    </ul>
-    <CommentForm :article-id="article.id" @refresh="fetchArticle" />
+    <button @click="toggleLike(article.id)">{{ article.is_liked ? "좋아요 취소" : "좋아요" }} ({{ article.likes_count }})</button>
   </div>
 </template>
 
 <script setup>
 import { useArticleStore } from "@/stores/articles";
-import CommentForm from "@/articles/CommentForm.vue";
 import { onMounted, computed } from "vue";
 import { useRoute } from "vue-router";
 
+// Pinia Store
 const store = useArticleStore();
 const route = useRoute();
 
-const fetchArticle = () => {
+// 게시글 상세 정보 가져오기
+onMounted(() => {
   store.fetchArticleDetail(route.params.id);
-};
-
-onMounted(fetchArticle);
+});
 
 const article = computed(() => store.selectedArticle);
 
-const deleteComment = async (commentId) => {
-  await store.deleteComment(article.value.id, commentId);
-  fetchArticle();
+// 좋아요 기능
+const toggleLike = (articleId) => {
+  store.toggleLike(articleId);
 };
 </script>
 
 <style scoped>
-h1 {
-  margin-bottom: 10px;
-}
-hr {
-  margin: 20px 0;
+button {
+  margin-top: 10px;
 }
 </style>
