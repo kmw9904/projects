@@ -11,10 +11,12 @@
     <form @submit.prevent="handleSearch">
       <label for="loanAmount">대출금액:</label>
       <input type="number" id="loanAmount" v-model="filters.loanAmount" />
+      원
       <br />
 
       <label for="loanPeriod">대출기간:</label>
       <input type="number" id="loanPeriod" v-model="filters.loanPeriod" />
+      년
       <br />
 
       <label for="loanType">대출 종류:</label>
@@ -25,16 +27,16 @@
       </select>
       <br />
 
-      <button type="submit">검색</button>
+      <button type="submit" :disabled="!isValidInput">검색</button>
     </form>
 
     <!-- 결과 출력 -->
-    <CreditLoanDetailView :products="filteredProducts" />
+    <CreditLoanDetailView :products="filteredProducts" :loanAmount="filters.loanAmount" :loanPeriod="filters.loanPeriod" />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import { useBankStore } from "@/stores/bank";
 import { useNavigationStore } from "@/stores/navigation";
 import CreditLoanDetailView from "./CreditLoanDetailView.vue";
@@ -47,10 +49,13 @@ const store = useBankStore();
 
 // 필터링 조건
 const filters = ref({
-  loanAmount: null,
-  loanPeriod: null,
+  loanAmount: 0, // 초기값 설정
+  loanPeriod: 0, // 초기값 설정
   loanType: "전체",
 });
+
+// 입력값 유효성 검사
+const isValidInput = computed(() => filters.value.loanAmount > 0 && filters.value.loanPeriod > 0);
 
 // 원본 데이터 상태
 const products = ref([]);
@@ -76,7 +81,6 @@ const mergedProducts = computed(() => {
     return acc;
   }, {});
 
-  // 결과 반환
   return Object.values(groupedByProductId);
 });
 
@@ -98,7 +102,7 @@ watch(
   () => store.creditLoans,
   (newValue) => {
     if (newValue) {
-      products.value = newValue; // 업데이트된 데이터를 products에 반영
+      products.value = newValue;
       console.log("Updated Products:", products.value);
     }
   }
