@@ -30,17 +30,18 @@ class CalculateMonthlyPayment(APIView):
     """
     def get(self, request, product_type, product_id):
         loan_amount = request.query_params.get('loan_amount')
-        months = request.query_params.get('months')
+        years = request.query_params.get('years')  # 연 단위 입력값
 
         # 필수 파라미터 검증
-        if not loan_amount or not months:
-            return Response({"error": "loan_amount와 months는 필수 입력값입니다."}, status=status.HTTP_400_BAD_REQUEST)
+        if not loan_amount or not years:
+            return Response({"error": "loan_amount와 years는 필수 입력값입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             loan_amount = Decimal(loan_amount)
-            months = int(months)
+            years = int(years)
+            months = years * 12  # 연 단위를 월 단위로 변환
         except (ValueError, TypeError):
-            return Response({"error": "loan_amount는 숫자, months는 정수여야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "loan_amount는 숫자, years는 정수여야 합니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         # 데이터베이스 조회
         if product_type == "jeonse":
