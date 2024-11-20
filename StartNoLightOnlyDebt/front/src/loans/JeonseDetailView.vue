@@ -42,7 +42,7 @@
               {{ option.maxPayment !== undefined ? `${formatCurrency(option.maxPayment)}원` : "계산 중..." }}
             </p>
 
-            <JeonseDiscussionView />
+            <JeonseDiscussionView :productId="product.product_id" :productName="product.product_name" />
           </div>
         </div>
         <div v-else>

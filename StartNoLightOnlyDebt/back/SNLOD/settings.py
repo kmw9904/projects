@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'managebanks',
     'accounts',
     'articles',
+    'interactions',
     'rest_framework',
     'rest_framework.authtoken',
     'dj_rest_auth',
@@ -83,6 +84,13 @@ MIDDLEWARE = [
 CORS_ALLOWED_ORIGINS = [
     'http://127.0.0.1:5173',
     'http://localhost:5173',
+]
+
+CSRF_COOKIE_HTTPONLY = False
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:5173",  # Vue 앱의 URL
+    "http://127.0.0.1:5173",  # 추가: Vue 앱의 다른 도메인 (포트번호가 다를 경우)
 ]
 
 ROOT_URLCONF = 'SNLOD.urls'

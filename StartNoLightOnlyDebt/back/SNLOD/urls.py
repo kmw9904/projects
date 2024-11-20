@@ -31,4 +31,5 @@ urlpatterns = [
     path('accounts/', include('accounts.urls')),  # 여기서 모든 accounts 관련 URL 처리
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/', include('allauth.urls')),  # allauth URL 포함
+    path('interactions/', include('interactions.urls'))
 ]

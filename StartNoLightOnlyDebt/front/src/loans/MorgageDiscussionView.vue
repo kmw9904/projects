@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h3>댓글 및 좋아요</h3>
+    <h3>{{ productName }} 댓글 및 좋아요</h3>
 
     <!-- 좋아요 버튼 -->
-    <button @click="toggleLike">👍 좋아요 {{ likes }}</button>
+    <button @click="toggleLike">{{ isLiked ? "💔 좋아요 취소" : "❤️ 좋아요" }} {{ likes }}</button>
 
     <!-- 댓글 입력 -->
     <div>
@@ -13,49 +13,89 @@
 
     <!-- 댓글 리스트 -->
     <ul>
-      <li v-for="(comment, index) in comments" :key="index">
+      <li v-for="(comment, index) in comments" :key="comment.id">
         <strong>{{ comment.author }}</strong>
         : {{ comment.text }}
-        <button @click="deleteComment(index)">삭제</button>
+        <button @click="deleteComment(comment.id)">삭제</button>
       </li>
     </ul>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 
-const likes = ref(0); // 좋아요 카운트
-const isLiked = ref(false); // 좋아요 여부
-const comments = ref([]); // 댓글 목록
-const newComment = ref(""); // 새 댓글
+// Props
+const props = defineProps({
+  productId: String,
+  productName: String,
+});
 
-// 좋아요 토글
-const toggleLike = () => {
-  if (isLiked.value) {
-    likes.value--;
-  } else {
-    likes.value++;
+const API_URL = "http://127.0.0.1:8000/interactions";
+
+const likes = ref(0);
+const isLiked = ref(false);
+const comments = ref([]);
+const newComment = ref("");
+
+// API 경로 변경
+const fetchLikes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/mortgage/${props.productId}/likes/`);
+    likes.value = response.data.likes;
+    isLiked.value = response.data.is_liked;
+  } catch (error) {
+    console.error("좋아요 조회 실패:", error);
   }
-  isLiked.value = !isLiked.value;
 };
 
-// 댓글 추가
-const addComment = () => {
-  if (newComment.value.trim() === "") {
-    alert("댓글 내용을 입력하세요.");
-    return;
+const toggleLike = async () => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/mortgage/${props.productId}/likes/toggle/`,
+      {},
+      {
+        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+      }
+    );
+    likes.value = response.data.likes;
+    isLiked.value = response.data.is_liked;
+  } catch (error) {
+    console.error("좋아요 토글 실패:", error);
   }
-  comments.value.push({
-    author: "익명", // 기본 작성자 이름 (사용자 시스템과 연동 가능)
-    text: newComment.value.trim(),
-  });
-  newComment.value = "";
 };
 
-// 댓글 삭제
-const deleteComment = (index) => {
-  comments.value.splice(index, 1);
+const fetchComments = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/mortgage/${props.productId}/comments/`);
+    comments.value = response.data;
+  } catch (error) {
+    console.error("댓글 조회 실패:", error);
+  }
+};
+
+const addComment = async () => {
+  if (!newComment.value.trim()) return;
+
+  try {
+    const response = await axios.post(`${API_URL}/mortgage/${props.productId}/comments/`, { content: newComment.value }, { headers: { Authorization: `Token ${localStorage.getItem("token")}` } });
+    comments.value.push(response.data);
+    newComment.value = "";
+  } catch (error) {
+    console.error("댓글 추가 실패:", error);
+  }
+};
+
+const deleteComment = async (commentId) => {
+  try {
+    await axios.delete(`${API_URL}/mortgage/${props.productId}/comments/${commentId}/`, {
+      headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+    });
+    comments.value = comments.value.filter((comment) => comment.id !== commentId);
+  } catch (error) {
+    console.error("댓글 삭제 실패:", error);
+  }
 };
 </script>
 
