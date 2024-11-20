@@ -8,7 +8,7 @@
 
     <!-- 댓글 입력 폼 -->
     <form @submit.prevent="submitComment">
-      <textarea v-model="newComment" placeholder="댓글을 입력하세요" required></textarea>
+      <textarea v-model="newComment.content" placeholder="댓글을 입력하세요" required></textarea>
       <button type="submit">댓글 작성</button>
     </form>
 
@@ -33,7 +33,6 @@ import { useArticleStore } from "@/stores/articles";
 import { onMounted, computed, reactive } from "vue";
 import { useRoute } from "vue-router";
 
-// Pinia Store
 const store = useArticleStore();
 const route = useRoute();
 
@@ -52,10 +51,10 @@ const newComment = reactive({
 // 댓글 작성
 const submitComment = () => {
   if (newComment.content.trim() === "") {
-    alert("댓글을 입력해주세요."); // 댓글이 비어있는 경우, 경고 메시지 표시
+    alert("댓글을 입력해주세요.");
     return;
   }
-  
+
   store.createComment(route.params.id, { content: newComment.content });
   newComment.content = ""; // 댓글 작성 후 초기화
 };
