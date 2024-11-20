@@ -1,22 +1,34 @@
 from django.db import models
-from django.conf import settings
-
+from django.conf import settings  # settings.AUTH_USER_MODEL을 사용
 
 class Article(models.Model):
-    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_articles')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=100)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # 커스텀 사용자 모델 참조
+        on_delete=models.CASCADE,
+        related_name='articles'
+    )
+    title = models.CharField(max_length=200)
     content = models.TextField()
-    image= models.ImageField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Comment(models.Model):
-    parent_comment = models.ForeignKey('self', on_delete = models.CASCADE, null=True)
-    article = models.ForeignKey(Article, on_delete = models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,  # 커스텀 사용자 모델 참조
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+    article = models.ForeignKey(
+        Article,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
     content = models.TextField()
-    like_users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='liked_comments')
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.content[:20]

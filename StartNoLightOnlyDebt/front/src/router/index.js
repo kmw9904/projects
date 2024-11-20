@@ -14,6 +14,8 @@ import AlgorithmView from "@/algorithm/AlgorithmView.vue";
 import AccountView from "@/accounts/AccountView.vue";
 import PasswordChangeView from "@/accounts/PasswordChangeView.vue";
 import PreferredBanksView from "@/accounts/PreferredBanksView.vue";
+import ArticleView from "@/views/ArticleView.vue";
+import ArticleDetail from "@/views/ArticleDetail.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -93,6 +95,16 @@ const router = createRouter({
       name: "PreferredBanksView",
       component: PreferredBanksView,
     },
+    {
+      path: "/articles",
+      name: "article",
+      component: ArticleView,
+    },
+    {
+      path: "/articles/:id",
+      name: "ArticleDetail",
+      component: ArticleDetail,
+    }, // 게시글 상세 보기
   ],
 });
 

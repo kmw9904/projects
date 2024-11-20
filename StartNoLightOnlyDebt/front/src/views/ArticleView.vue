@@ -1,26 +1,23 @@
 <template>
-  <div class="article-view-wrapper d-flex flex-column my-3">
-    <h1 class="mt-5 half-highlight">자유 게시판</h1>
-    <v-container>
-      <ArticleList />
-    </v-container>
+  <div>
+    <h1>커뮤니티</h1>
+    <ArticleList />
   </div>
 </template>
 
 <script>
-import { onMounted } from "vue";
-import ArticleList from "@/components/ArticleList.vue";
-import { useBankStore } from "@/stores/bank";
-
-const store = useBankStore();
+import ArticleList from "@/articles/ArticleList.vue";
 
 export default {
-  setup() {
-    onMounted(() => {
-      store.getArticles();
-    });
+  components: {
+    ArticleList,
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+</style>

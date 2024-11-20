@@ -27,6 +27,7 @@ def custom_email_confirmation(request, *args, **kwargs):
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('managebanks.urls')),
+    path('articles/',include('articles.urls')),
     path('accounts/', include('accounts.urls')),  # 여기서 모든 accounts 관련 URL 처리
     path('accounts/', include('dj_rest_auth.urls')),
     path('accounts/', include('allauth.urls')),  # allauth URL 포함

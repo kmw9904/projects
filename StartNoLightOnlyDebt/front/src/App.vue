@@ -12,8 +12,9 @@
         <RouterLink :to="{ name: 'map' }">은행찾기</RouterLink>
         |
         <RouterLink :to="{ name: 'ExchangeView' }">환율</RouterLink>
+        |
+        <RouterLink :to="{ name: 'article' }">커뮤니티</RouterLink>
       </template>
-
       <!-- 로그인 상태가 아닐 때 -->
       <template v-else>
         <RouterLink :to="{ name: 'SignUpView' }">회원가입</RouterLink>
@@ -21,9 +22,6 @@
         <RouterLink :to="{ name: 'LoginView' }">로그인</RouterLink>
         |
         <RouterLink :to="{ name: 'MainView' }">홈</RouterLink>
-        |
-        <!-- 커뮤니티 링크를 로그인 상태일 때만 보이게 하세요 -->
-        <RouterLink :to="{ name: 'article' }" v-if="store.isLoggedIn">커뮤니티</RouterLink>
       </template>
     </div>
 
