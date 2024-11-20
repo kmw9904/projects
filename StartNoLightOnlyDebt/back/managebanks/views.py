@@ -290,3 +290,17 @@ class MortgageLoanView(APIView):
         mortgage_loans = MortgageOption.objects.select_related('fin_prdt_cd__fin_co_no').all()
         serializer = MortgageOptionSerializer(mortgage_loans, many=True)
         return Response(serializer.data)
+
+
+
+from rest_framework.permissions import IsAuthenticated
+from .serializers import BankSerializer 
+class PreferredBanksView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        # 현재 사용자와 연결된 선호 은행 가져오기
+        user = request.user
+        preferred_banks = user.preferred_banks.all()  # 사용자 선호 은행 ManyToMany 관계
+        serializer = BankSerializer(preferred_banks, many=True)
+        return Response(serializer.data)
