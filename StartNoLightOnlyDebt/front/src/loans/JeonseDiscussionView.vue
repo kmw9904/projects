@@ -129,7 +129,7 @@ const deleteComment = function (commentId) {
     },
   })
     .then(() => {
-      comments.value = comments.value.filter((comment) => comment.id !== commentId);
+      comments.value = comments.value.filter((comment) => comment.id !== commentId); // UI에서 제거
     })
     .catch((error) => {
       console.error("댓글 삭제 실패:", error.response?.data || error.message);

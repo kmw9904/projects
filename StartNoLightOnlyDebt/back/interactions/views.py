@@ -121,3 +121,24 @@ class CommentView(APIView):
 
         serializer = CommentSerializer(comments, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    # 댓글 삭제
+    def delete(self, request, option_type, option_id, comment_id):
+        user = request.user
+
+        try:
+            # 각 옵션 유형에 따른 댓글 삭제 처리
+            if option_type == "jeonse":
+                comment = Comment.objects.get(id=comment_id, jeonse_option__option_id=option_id, user=user)
+            elif option_type == "credit":
+                comment = Comment.objects.get(id=comment_id, credit_loan_option__option_id=option_id, user=user)
+            elif option_type == "mortgage":
+                comment = Comment.objects.get(id=comment_id, mortgage_option__option_id=option_id, user=user)
+            else:
+                return Response({"error": "Invalid option type"}, status=status.HTTP_400_BAD_REQUEST)
+
+            comment.delete()
+            return Response({"message": "댓글이 삭제되었습니다."}, status=status.HTTP_200_OK)
+
+        except Comment.DoesNotExist:
+            return Response({"error": "댓글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
