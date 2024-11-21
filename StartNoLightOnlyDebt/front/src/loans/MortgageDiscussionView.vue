@@ -102,7 +102,7 @@ const addComment = function () {
 
   axios({
     method: "post",
-    url: `${API_URL}/mortgage/${props.productId}/comments/add/`,
+    url: `${API_URL}/mortgage/${props.productId}/comments/`,
     headers: {
       Authorization: `Token ${token}`, // 인증 토큰 추가
     },
