@@ -1,52 +1,49 @@
 <template>
-  <div>
-    <!-- 네비게이션 버튼 -->
-    <button @click="navigationStore.goHome">홈으로 가기</button>
-    <button @click="navigationStore.goBack">뒤로 가기</button>
-
-    <!-- 주택담보 대출 상품 조회 제목 -->
-    <h2>주택담보 대출 상품 조회</h2>
+  <div class="mortgage-container">
+    <h2 class="mortgage-title text-center mb-4">주택담보 대출 상품 조회</h2>
 
     <!-- 조건 검색 폼 -->
-    <form @submit.prevent="handleSearch">
-      <label for="loanAmount">대출금액:</label>
-      <input type="number" v-model.number="loanAmount" id="loanAmount" placeholder="대출금액 입력" />
-      원
-      <br />
+    <form @submit.prevent="handleSearch" class="search-form mb-4 p-3 shadow-sm rounded">
+      <div class="form-group">
+        <label for="loanAmount" class="form-label">빚 금액:</label>
+        <input type="number" v-model.number="loanAmount" id="loanAmount" class="form-control" placeholder="대출금액 입력" />
+        <small class="text-muted">예: 50000000 (5천만원)</small>
+      </div>
 
-      <label for="loanPeriod">대출기간:</label>
-      <input type="number" v-model.number="loanPeriod" id="loanPeriod" placeholder="대출기간 입력" />
-      년
-      <br />
+      <div class="form-group">
+        <label for="loanPeriod" class="form-label">족쇄 기간:</label>
+        <input type="number" v-model.number="loanPeriod" id="loanPeriod" class="form-control" placeholder="대출기간 입력" />
+        <small class="text-muted">예: 5 (5년)</small>
+      </div>
 
-      <label for="repaymentType">금리 유형:</label>
-      <select id="repaymentType" v-model="filters.repaymentType">
-        <option value="전체">전체</option>
-        <option value="고정금리">고정금리</option>
-        <option value="변동금리">변동금리</option>
-      </select>
-      <br />
+      <div class="form-group">
+        <label for="repaymentType" class="form-label">족쇄 유형:</label>
+        <select v-model="filters.repaymentType" id="repaymentType" class="form-select">
+          <option value="전체">전체</option>
+          <option value="고정금리">고정금리</option>
+          <option value="변동금리">변동금리</option>
+        </select>
+      </div>
 
-      <!-- 최저 상환 금액 기준 정렬 체크박스 -->
-      <label>
-        <input type="checkbox" v-model="sortByMinPayment" />
-        최저 상환 금액 기준 정렬
-      </label>
-      <br />
+      <div class="form-check">
+        <input type="checkbox" v-model="sortByMinPayment" class="form-check-input" id="sortByMinPayment" />
+        <label for="sortByMinPayment" class="form-check-label">최저 상환 금액 기준 정렬</label>
+      </div>
 
-      <!-- 선호 은행만 보기 체크박스 -->
-      <label>
-        <input type="checkbox" v-model="filterByPreferredBanks" />
-        선호 은행만 보기
-      </label>
-      <br />
+      <div class="form-check">
+        <input type="checkbox" v-model="filterByPreferredBanks" class="form-check-input" id="filterByPreferredBanks" />
+        <label for="filterByPreferredBanks" class="form-check-label">선호 은행만 보기</label>
+      </div>
 
-      <button type="submit">검색</button>
+      <button type="submit" class="btn btn-secondary mt-3 w-100">검색</button>
     </form>
 
-    <MortgageDetailView v-if="isReady && sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
-    <p v-else-if="isReady">조건에 맞는 결과가 없습니다.</p>
-    <p v-else>결과를 로드 중입니다...</p>
+    <!-- 결과 출력 -->
+    <div class="results-container">
+      <MortgageDetailView v-if="isReady && sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
+      <p v-else-if="isReady" class="text-center text-muted">조건에 맞는 결과가 없습니다.</p>
+      <p v-else class="text-center text-muted">결과를 로드 중입니다...</p>
+    </div>
   </div>
 </template>
 
@@ -209,4 +206,62 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.mortgage-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+.mortgage-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: gray;
+}
+
+.search-form {
+  background: #ffffff;
+  border: 1px solid #ddd;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+small {
+  display: block;
+  margin-top: 5px;
+  color: #6c757d;
+}
+
+.form-check-label {
+  margin-left: 5px;
+}
+
+.btn {
+  display: block;
+  margin-top: 10px;
+  background-color: #6c757d;
+  color: white;
+}
+
+.btn:hover {
+  background-color: #5a6268;
+}
+
+.results-container {
+  margin-top: 20px;
+}
+
+.text-muted {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+</style>

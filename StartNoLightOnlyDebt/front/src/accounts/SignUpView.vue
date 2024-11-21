@@ -1,40 +1,52 @@
 <template>
-  <div>
-    <h1>SignUp Page</h1>
-    <form @submit.prevent="SignUp">
-      <label for="username">Username</label>
-      :
-      <input type="text" id="username" v-model="username" />
-      <br />
-
-      <label for="name">Name</label>
-      :
-      <input type="text" id="name" v-model="name" />
-      <br />
-
-      <label for="email">Email</label>
-      :
-      <input type="email" id="email" v-model="email" />
-      <br />
-
-      <label for="password1">Password</label>
-      :
-      <input type="password" id="password1" v-model="password1" />
-      <br />
-
-      <label for="password2">Confirm Password</label>
-      :
-      <input type="password" id="password2" v-model="password2" />
-      <br />
-
-      <label>선호 은행</label>
-      <br />
-      <div v-for="bank in banks" :key="bank.company_id">
-        <input type="checkbox" :value="bank.company_id" v-model="selectedBanks" />
-        {{ bank.company_name }}
+  <div class="signup-container">
+    <h1 class="signup-title text-center mb-4">Sign Up</h1>
+    <form @submit.prevent="SignUp" class="signup-form card shadow-sm p-4">
+      <!-- Username -->
+      <div class="form-group mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input type="text" id="username" class="form-control" v-model="username" placeholder="Enter your username" />
       </div>
 
-      <input type="submit" value="Sign Up" />
+      <!-- Name -->
+      <div class="form-group mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input type="text" id="name" class="form-control" v-model="name" placeholder="Enter your name" />
+      </div>
+
+      <!-- Email -->
+      <div class="form-group mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" class="form-control" v-model="email" placeholder="Enter your email" />
+      </div>
+
+      <!-- Password -->
+      <div class="form-group mb-3">
+        <label for="password1" class="form-label">Password</label>
+        <input type="password" id="password1" class="form-control" v-model="password1" placeholder="Enter your password" />
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group mb-3">
+        <label for="password2" class="form-label">Confirm Password</label>
+        <input type="password" id="password2" class="form-control" v-model="password2" placeholder="Confirm your password" />
+      </div>
+
+      <!-- Preferred Banks -->
+      <div class="form-group mb-3">
+        <label class="form-label">선호 은행</label>
+        <div v-for="bank in banks" :key="bank.company_id" class="form-check">
+          <input type="checkbox" :value="bank.company_id" v-model="selectedBanks" class="form-check-input" :id="'bank_' + bank.company_id" />
+          <label :for="'bank_' + bank.company_id" class="form-check-label">
+            {{ bank.company_name }}
+          </label>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="text-center">
+        <input type="submit" value="Sign Up" class="btn btn-secondary w-100" />
+      </div>
     </form>
   </div>
 </template>
@@ -86,4 +98,47 @@ const SignUp = function () {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.signup-container {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.signup-title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: gray;
+}
+
+.signup-form {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.form-label {
+  font-weight: bold;
+}
+
+.form-control {
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.form-check-input {
+  margin-right: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border: none;
+  padding: 10px 20px;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+</style>

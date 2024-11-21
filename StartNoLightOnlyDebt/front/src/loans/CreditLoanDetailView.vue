@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <h4>조건에 맞는 금융 조건</h4>
+  <div class="product-container">
+    <h4 class="product-title">조건에 맞는 금융 조건</h4>
 
-    <!-- 데이터가 로드된 경우 렌더링 -->
-    <div v-if="products.length > 0">
-      <div v-for="product in products" :key="product.product_id">
+    <!-- 데이터가 로드된 경우 -->
+    <div v-if="products.length > 0" class="product-list">
+      <div v-for="product in products" :key="product.product_id" class="product-item">
         <p>
           <strong>금융 회사:</strong>
           {{ product.company_name || "금융 회사 정보 없음" }}
@@ -14,12 +14,14 @@
           {{ product.product_name || "상품명 정보 없음" }}
         </p>
 
-        <!-- 옵션 리스트 출력 -->
-        <div v-if="product.options.length > 0">
-          <div v-for="option in product.options" :key="option.option_id">
+        <!-- 옵션 리스트 -->
+        <div v-if="product.options.length > 0" class="option-list">
+          <div v-for="option in product.options" :key="option.option_id" class="option-item">
             <p>
               <strong>금리 유형:</strong>
-              {{ option.crdt_lend_rate_type_nm || "정보 없음" }} |
+              {{ option.crdt_lend_rate_type_nm || "정보 없음" }}
+            </p>
+            <p>
               <strong>900점 초과:</strong>
               {{ option.crdt_grad_1 || "N/A" }} |
               <strong>801~900:</strong>
@@ -35,20 +37,18 @@
               <strong>월 상환 금액:</strong>
               {{ option.monthlyPayment !== undefined ? `${formatCurrency(option.monthlyPayment)}원` : "계산 중..." }}
             </p>
-            <!-- 댓글 및 좋아요 컴포넌트 추가 -->
+            <!-- 댓글 및 좋아요 컴포넌트 -->
             <CreditLoanDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="'credit'" />
           </div>
         </div>
         <div v-else>
-          <p>옵션이 없습니다.</p>
+          <p class="text-muted">옵션이 없습니다.</p>
         </div>
-
-        <hr />
       </div>
     </div>
 
     <!-- 데이터가 없을 경우 -->
-    <div v-else>
+    <div v-else class="text-center text-muted">
       <p>조건에 맞는 결과가 없습니다.</p>
     </div>
   </div>
@@ -116,3 +116,43 @@ onMounted(() => {
   calculateAllPayments();
 });
 </script>
+
+<style scoped>
+.product-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.product-list {
+  margin-top: 15px;
+}
+
+.product-item {
+  background: #ffffff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid #eaeaea;
+  border-radius: 5px;
+}
+
+.option-list {
+  margin-top: 15px;
+}
+
+.option-item {
+  background-color: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+</style>

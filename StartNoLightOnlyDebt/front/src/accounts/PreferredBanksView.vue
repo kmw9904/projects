@@ -1,13 +1,18 @@
 <template>
-  <div>
-    <h1>선호 은행 수정</h1>
-    <form @submit.prevent="updatePreferredBanks">
-      <div v-for="bank in banks" :key="bank.company_id">
-        <!-- 체크박스: selectedBanks에 해당 은행의 ID가 포함되어 있으면 체크 -->
-        <input type="checkbox" :value="bank.company_id" v-model="selectedBanks" />
-        {{ bank.company_name }}
+  <div class="preferred-banks-container">
+    <h1 class="text-center mb-4">선호 은행 수정</h1>
+    <form @submit.prevent="updatePreferredBanks" class="preferred-banks-form card shadow-sm p-4">
+      <div v-for="bank in banks" :key="bank.company_id" class="form-check mb-2">
+        <input type="checkbox" :value="bank.company_id" v-model="selectedBanks" class="form-check-input" :id="'bank_' + bank.company_id" />
+        <label :for="'bank_' + bank.company_id" class="form-check-label">
+          {{ bank.company_name }}
+        </label>
       </div>
-      <button type="submit">수정하기</button>
+
+      <!-- 제출 버튼 -->
+      <div class="text-center">
+        <button type="submit" class="btn btn-secondary w-100">수정하기</button>
+      </div>
     </form>
   </div>
 </template>
@@ -63,4 +68,32 @@ const updatePreferredBanks = () => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.preferred-banks-container {
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.preferred-banks-form {
+  background-color: #ffffff;
+  border-radius: 10px;
+}
+
+.form-check-label {
+  margin-left: 5px;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  border: none;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
+</style>

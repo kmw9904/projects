@@ -1,22 +1,26 @@
 <template>
-  <div>
-    <h3>{{ productName }} 댓글 및 좋아요</h3>
+  <div class="interaction-container">
+    <h3 class="interaction-title">{{ productName }} 댓글 및 좋아요</h3>
 
     <!-- 좋아요 버튼 -->
-    <button @click="toggleLike">{{ isLiked ? "💔 좋아요 취소" : "❤️ 좋아요" }} {{ likes }}</button>
+    <div class="like-section mb-3">
+      <button class="btn btn-like" @click="toggleLike">{{ isLiked ? "💔 좋아요 취소" : "❤️ 좋아요" }} {{ likes }}</button>
+    </div>
 
     <!-- 댓글 입력 -->
-    <div>
-      <textarea v-model="newComment" placeholder="댓글을 입력하세요"></textarea>
-      <button @click="addComment">댓글 달기</button>
+    <div class="comment-input">
+      <textarea v-model="newComment" class="form-control" placeholder="댓글을 입력하세요"></textarea>
+      <button class="btn btn-primary mt-2" @click="addComment">댓글 달기</button>
     </div>
 
     <!-- 댓글 리스트 -->
-    <ul>
-      <li v-for="(comment, index) in comments" :key="comment.id">
-        <strong>{{ comment.user }}</strong>
-        : {{ comment.content }}
-        <button @click="deleteComment(comment.id)">삭제</button>
+    <ul class="comment-list list-group mt-3">
+      <li v-for="(comment, index) in comments" :key="comment.id" class="list-group-item d-flex justify-content-between align-items-center">
+        <span>
+          <strong>{{ comment.user }}</strong>
+          : {{ comment.content }}
+        </span>
+        <button class="btn btn-sm btn-danger" @click="deleteComment(comment.id)">삭제</button>
       </li>
     </ul>
   </div>
@@ -144,23 +148,49 @@ onMounted(() => {
 </script>
 
 <style scoped>
-textarea {
+.interaction-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.interaction-title {
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.like-section {
+  margin-bottom: 20px;
+}
+
+.btn-like {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+}
+
+.btn-like:hover {
+  background-color: #fa5252;
+}
+
+.comment-input textarea {
   width: 100%;
-  margin-bottom: 10px;
+  resize: none;
+  padding: 10px;
 }
 
-button {
-  margin: 5px 0;
+.comment-list {
+  margin-top: 15px;
 }
 
-ul {
-  list-style: none;
-  padding: 0;
-}
-
-li {
+.list-group-item {
+  padding: 10px;
+  border-radius: 5px;
   margin-bottom: 5px;
-  border-bottom: 1px solid #ddd;
-  padding: 5px 0;
 }
 </style>

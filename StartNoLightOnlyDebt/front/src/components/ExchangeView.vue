@@ -1,31 +1,39 @@
 <template>
-  <div>
-    <h1>환율 계산기</h1>
-    <div>
+  <div class="exchange-calculator">
+    <h1 class="text-center mb-4">환율 계산기</h1>
+    <div class="card p-4 shadow-sm">
       <!-- 출발 통화 선택 -->
-      <label>출발 통화:</label>
-      <select v-model="fromCurrency">
-        <option v-for="rate in rates" :key="rate.cur_unit" :value="rate.cur_unit">{{ rate.cur_unit }} ({{ rate.cur_nm }})</option>
-      </select>
-    </div>
-    <div>
+      <div class="form-group mb-3">
+        <label for="fromCurrency" class="form-label">출발 통화:</label>
+        <select v-model="fromCurrency" id="fromCurrency" class="form-select">
+          <option v-for="rate in rates" :key="rate.cur_unit" :value="rate.cur_unit">{{ rate.cur_unit }} ({{ rate.cur_nm }})</option>
+        </select>
+      </div>
+
       <!-- 도착 통화 선택 -->
-      <label>도착 통화:</label>
-      <select v-model="toCurrency">
-        <option v-for="rate in rates" :key="rate.cur_unit" :value="rate.cur_unit">{{ rate.cur_unit }} ({{ rate.cur_nm }})</option>
-      </select>
-    </div>
-    <div>
+      <div class="form-group mb-3">
+        <label for="toCurrency" class="form-label">도착 통화:</label>
+        <select v-model="toCurrency" id="toCurrency" class="form-select">
+          <option v-for="rate in rates" :key="rate.cur_unit" :value="rate.cur_unit">{{ rate.cur_unit }} ({{ rate.cur_nm }})</option>
+        </select>
+      </div>
+
       <!-- 환전 금액 입력 -->
-      <label>환전 금액:</label>
-      <input type="number" v-model.number="amount" placeholder="금액을 입력하세요" />
+      <div class="form-group mb-3">
+        <label for="amount" class="form-label">환전 금액:</label>
+        <input type="number" id="amount" v-model.number="amount" class="form-control" placeholder="금액을 입력하세요" />
+      </div>
+
+      <!-- 계산 버튼 -->
+      <div class="text-center">
+        <button @click="calculateExchange" class="btn btn-secondary w-100">환율 계산</button>
+      </div>
     </div>
-    <button @click="calculateExchange">환율 계산</button>
 
     <!-- 계산 결과 -->
-    <div v-if="result !== null">
+    <div v-if="result !== null" class="result-container mt-4 text-center">
       <h2>환전 결과</h2>
-      <p>{{ amount }} {{ fromCurrency }} → {{ result.toFixed(2) }} {{ toCurrency }}</p>
+      <p class="fw-bold">{{ amount }} {{ fromCurrency }} → {{ result.toFixed(2) }} {{ toCurrency }}</p>
     </div>
   </div>
 </template>
@@ -54,26 +62,16 @@ const calculateExchange = () => {
 </script>
 
 <style scoped>
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
+.exchange-calculator {
+  padding: 20px;
+  max-width: 500px;
+  margin: 0 auto;
 }
-div {
-  margin: 10px 0;
-}
-select,
-input {
-  margin-left: 10px;
-}
-button {
-  margin-top: 20px;
-  padding: 10px 20px;
-  background-color: #4caf50;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-button:hover {
-  background-color: #45a049;
+
+.result-container {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>

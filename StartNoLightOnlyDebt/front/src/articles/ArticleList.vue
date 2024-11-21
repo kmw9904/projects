@@ -19,9 +19,7 @@
         </h3>
         <p>{{ article.content }}</p>
         <div>
-          <button @click="toggleLike(article.id)">
-            {{ article.is_liked ? "좋아요 취소" : "좋아요" }} ({{ article.likes_count }})
-          </button>
+          <button @click="toggleLike(article.id)">{{ article.is_liked ? "좋아요 취소" : "좋아요" }} ({{ article.likes_count }})</button>
         </div>
       </div>
     </div>

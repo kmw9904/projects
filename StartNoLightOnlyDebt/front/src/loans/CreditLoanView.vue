@@ -1,48 +1,49 @@
 <template>
-  <div>
-    <h2>신용 대출 상품 조회</h2>
+  <div class="credit-loan-container">
+    <h2 class="text-center mb-4">신용 대출 상품 조회</h2>
 
     <!-- 검색 조건 입력 -->
-    <form @submit.prevent="handleSearch">
-      <label for="loanAmount">대출금액:</label>
-      <input type="number" v-model.number="loanAmount" id="loanAmount" placeholder="대출금액 입력" />
-      원
-      <br />
+    <form @submit.prevent="handleSearch" class="search-form mb-4 p-3 shadow-sm rounded">
+      <div class="form-group">
+        <label for="loanAmount" class="form-label">빚 금액:</label>
+        <input type="number" class="form-control" v-model.number="loanAmount" id="loanAmount" placeholder="대출금액 입력" />
+        <small class="text-muted">예: 5000000 (5백만원)</small>
+      </div>
 
-      <label for="loanPeriod">대출기간:</label>
-      <input type="number" v-model.number="loanPeriod" id="loanPeriod" placeholder="대출기간 입력" />
-      년
-      <br />
+      <div class="form-group">
+        <label for="loanPeriod" class="form-label">족쇄 기간:</label>
+        <input type="number" class="form-control" v-model.number="loanPeriod" id="loanPeriod" placeholder="대출기간 입력" />
+        <small class="text-muted">예: 1 (1년)</small>
+      </div>
 
-      <label for="loanType">대출 종류:</label>
-      <select v-model="loanType" id="loanType">
-        <option value="전체">전체</option>
-        <option value="일반신용대출">일반신용대출</option>
-        <option value="장기카드대출">장기카드대출</option>
-      </select>
-      <br />
+      <div class="form-group">
+        <label for="loanType" class="form-label">족쇄 종류:</label>
+        <select v-model="loanType" id="loanType" class="form-select">
+          <option value="전체">전체</option>
+          <option value="일반신용대출">일반신용대출</option>
+          <option value="장기카드대출">장기카드대출</option>
+        </select>
+      </div>
 
-      <!-- 최저 상환 금액 기준 정렬 체크박스 -->
-      <label>
-        <input type="checkbox" v-model="sortByMinPayment" />
-        최저 상환 금액 기준 정렬
-      </label>
-      <br />
+      <div class="form-check">
+        <input type="checkbox" v-model="sortByMinPayment" class="form-check-input" id="sortByMinPayment" />
+        <label for="sortByMinPayment" class="form-check-label">최저 상환 금액 기준 정렬</label>
+      </div>
 
-      <!-- 선호 은행만 보기 체크박스 -->
-      <label>
-        <input type="checkbox" v-model="filterByPreferredBanks" />
-        선호 은행만 보기
-      </label>
-      <br />
+      <div class="form-check">
+        <input type="checkbox" v-model="filterByPreferredBanks" class="form-check-input" id="filterByPreferredBanks" />
+        <label for="filterByPreferredBanks" class="form-check-label">선호 은행만 보기</label>
+      </div>
 
-      <button type="submit">검색</button>
+      <button type="submit" class="btn btn-secondary mt-3">검색</button>
     </form>
 
     <!-- 결과 출력 -->
-    <CreditLoanDetailView v-if="isReady && sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
-    <p v-else-if="isReady">검색 결과가 없습니다.</p>
-    <p v-else>결과를 로드 중입니다...</p>
+    <div class="results-container">
+      <CreditLoanDetailView v-if="isReady && sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
+      <p v-else-if="isReady" class="text-center text-muted">검색 결과가 없습니다.</p>
+      <p v-else class="text-center text-muted">결과를 로드 중입니다...</p>
+    </div>
   </div>
 </template>
 
@@ -214,3 +215,52 @@ onMounted(() => {
   getPreferredBanks();
 });
 </script>
+
+<style scoped>
+.credit-loan-container {
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+  max-width: 800px;
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: gray;
+}
+
+.search-form {
+  background: #ffffff;
+  border: 1px solid #ddd;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-weight: bold;
+}
+
+small {
+  display: block;
+  margin-top: 5px;
+  color: #6c757d;
+}
+
+.btn {
+  width: 100%;
+}
+
+.results-container {
+  margin-top: 20px;
+}
+
+.text-muted {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+</style>
