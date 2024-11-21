@@ -44,7 +44,7 @@ const newComment = ref("");
 const fetchLikes = function () {
   axios({
     method: "get",
-    url: `${API_URL}/credit/${props.productId}/likes/`,
+    url: `${API_URL}/credit/${props.productId}/like/`,
     headers: {
       Authorization: `Token ${token}`, // 인증 토큰 추가
     },
@@ -62,7 +62,7 @@ const fetchLikes = function () {
 const toggleLike = function () {
   axios({
     method: "post",
-    url: `${API_URL}/credit/${props.productId}/likes/toggle/`,
+    url: `${API_URL}/credit/${props.productId}/like/`,
     headers: {
       Authorization: `Token ${token}`, // 인증 토큰 추가
     },
@@ -70,6 +70,7 @@ const toggleLike = function () {
     .then((response) => {
       likes.value = response.data.likes;
       isLiked.value = response.data.is_liked;
+      console.log(response.data);
     })
     .catch((error) => {
       console.error("좋아요 토글 실패:", error.response?.data || error.message);

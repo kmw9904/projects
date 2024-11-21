@@ -18,7 +18,7 @@ import ArticleView from "@/views/ArticleView.vue";
 import ArticleDetail from "@/views/ArticleDetail.vue";
 import CreditLoanDiscussionView from "@/loans/CreditLoanDiscussionView.vue";
 import JeonseDiscussionView from "@/loans/JeonseDiscussionView.vue";
-import MorgageDiscussionView from "@/loans/MorgageDiscussionView.vue";
+import MorgageDiscussionView from "@/loans/MortgageDiscussionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

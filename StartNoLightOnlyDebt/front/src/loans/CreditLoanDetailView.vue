@@ -36,7 +36,7 @@
               {{ option.monthlyPayment !== undefined ? `${formatCurrency(option.monthlyPayment)}원` : "계산 중..." }}
             </p>
             <!-- 댓글 및 좋아요 컴포넌트 추가 -->
-            <CreditLoanDiscussionView :productId="product.product_id" :productName="product.product_name" />
+            <CreditLoanDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="'credit'" />
           </div>
         </div>
         <div v-else>

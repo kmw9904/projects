@@ -44,7 +44,7 @@ const newComment = ref("");
 const fetchLikes = function () {
   axios({
     method: "get",
-    url: `${API_URL}/jeonse/${props.productId}/likes/`,
+    url: `${API_URL}/jeonse/${props.productId}/like/`,
     headers: {
       Authorization: `Token ${token}`, // 인증 토큰 추가
     },
@@ -62,7 +62,7 @@ const fetchLikes = function () {
 const toggleLike = function () {
   axios({
     method: "post",
-    url: `${API_URL}/jeonse/${props.productId}/likes/toggle/`,
+    url: `${API_URL}/jeonse/${props.productId}/like/`,
     headers: {
       Authorization: `Token ${token}`, // 인증 토큰 추가
     },

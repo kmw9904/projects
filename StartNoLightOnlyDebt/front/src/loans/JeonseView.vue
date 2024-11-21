@@ -107,7 +107,9 @@ const handleSearch = async () => {
 
     // 데이터 그룹화
     options.forEach((option) => {
-      const productId = option.product.product_id;
+      const productId = option.option_id;
+      console.log(option);
+      console.log(productId);
       if (!groupedProducts[productId]) {
         groupedProducts[productId] = {
           product_id: productId,

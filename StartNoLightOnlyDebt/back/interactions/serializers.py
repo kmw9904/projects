@@ -1,17 +1,12 @@
 from rest_framework import serializers
-from .models import CreditComment, JeonseComment, MortgageComment
+from .models import Like, Comment
 
-class CreditCommentSerializer(serializers.ModelSerializer):
+class LikeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = CreditComment
-        fields = ['id', 'user', 'product', 'content', 'created_at']
+        model = Like
+        fields = ["id", "user", "jeonse_option", "credit_loan_option", "mortgage_option", "created_at"]
 
-class JeonseCommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = JeonseComment
-        fields = ['id', 'user', 'product', 'content', 'created_at']
-
-class MortgageCommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = MortgageComment
-        fields = ['id', 'user', 'product', 'content', 'created_at']
+        model = Comment
+        fields = ["id", "user", "content", "jeonse_option", "credit_loan_option", "mortgage_option", "created_at"]
