@@ -48,6 +48,10 @@ def get_jeonse_comments(request, product_id):
 def add_jeonse_comment(request, product_id):
     return add_comment(JeonseComment, JeonseCommentSerializer, request.POST, request.user, product_id)
 
+@api_view(['DELETE'])
+def delete_jeonse_comment(request, product_id, comment_id):
+    return delete_comment(JeonseComment, request, product_id, comment_id)
+
 # 담보 대출
 
 @api_view(['GET'])
@@ -67,3 +71,7 @@ def get_mortgage_comments(request, product_id):
 @api_view(['POST'])
 def add_mortgage_comment(request, product_id):
     return add_comment(MortgageComment, MortgageCommentSerializer, request.POST, request.user, product_id)
+
+@api_view(['DELETE'])
+def delete_mortgage_comment(request, product_id, comment_id):
+    return delete_comment(MortgageComment, request, product_id, comment_id)
