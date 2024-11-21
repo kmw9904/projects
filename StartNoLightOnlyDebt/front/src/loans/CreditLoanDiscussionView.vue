@@ -128,7 +128,7 @@ const addComment = function () {
 const deleteComment = function (commentId) {
   axios({
     method: "delete",
-    url: `${API_URL}/credit/${props.productId}/comments/${commentId}/`,
+    url: `${API_URL}/credit/${props.productId}/comments/${commentId}/delete/`,
     headers: {
       Authorization: `Token ${token}`, // 인증 토큰 추가
     },
