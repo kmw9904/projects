@@ -29,6 +29,9 @@ export const useArticleStore = defineStore("articles", {
       axios({
         method: "get",
         url: `http://127.0.0.1:8000/articles/${articleId}/`,
+        headers: {
+          Authorization: `Token ${localStorage.getItem("token")}`,
+        },
       })
         .then((response) => {
           console.log("게시글 상세 정보 가져오기 성공:", response.data);

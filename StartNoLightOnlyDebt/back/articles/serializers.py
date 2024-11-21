@@ -21,7 +21,7 @@ class CommentSerializer(serializers.ModelSerializer):
 class ArticleSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)  # 게시글 작성자 정보를 포함
     comments = CommentSerializer(many=True, read_only=True)  # 댓글 목록 포함
-    likes_count = serializers.IntegerField(source='likes_count', read_only=True)
+    likes_count = serializers.IntegerField(read_only=True)
     is_liked = serializers.SerializerMethodField()
 
     class Meta:
