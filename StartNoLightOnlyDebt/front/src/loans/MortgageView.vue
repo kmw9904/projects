@@ -19,7 +19,7 @@
       년
       <br />
 
-      <label for="repaymentType">상환 방식:</label>
+      <label for="repaymentType">금리 유형:</label>
       <select id="repaymentType" v-model="filters.repaymentType">
         <option value="전체">전체</option>
         <option value="고정금리">고정금리</option>
