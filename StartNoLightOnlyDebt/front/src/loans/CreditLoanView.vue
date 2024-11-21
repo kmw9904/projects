@@ -40,8 +40,9 @@
     </form>
 
     <!-- 결과 출력 -->
-    <CreditLoanDetailView v-if="sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
-    <p v-else>검색 결과가 없습니다.</p>
+    <CreditLoanDetailView v-if="isReady && sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
+    <p v-else-if="isReady">검색 결과가 없습니다.</p>
+    <p v-else>결과를 로드 중입니다...</p>
   </div>
 </template>
 
@@ -59,9 +60,9 @@ const loanType = ref("전체"); // 대출 종류
 const sortByMinPayment = ref(false); // 최저 상환 금액 기준 정렬 여부
 const filterByPreferredBanks = ref(false); // 선호 은행 필터링 여부
 
-// 결과 데이터
-const products = ref([]);
-const preferredBanks = ref([]);
+const products = ref([]); // 결과 데이터
+const preferredBanks = ref([]); // 선호 은행 데이터
+const isReady = ref(false); // 데이터 로딩 상태
 
 // 사용자 선호 은행 가져오기
 const getPreferredBanks = () => {
@@ -81,14 +82,16 @@ const getPreferredBanks = () => {
 };
 
 // 검색 버튼 클릭 시 실행
-const handleSearch = () => {
+const handleSearch = async () => {
+  isReady.value = false; // 로딩 시작
   if (loanAmount.value <= 0 || loanPeriod.value <= 0) {
     alert("대출금액과 대출기간을 올바르게 입력하세요.");
+    isReady.value = true;
     return;
   }
 
-  axios
-    .get(`${API_URL}/credit-loans/`, {
+  try {
+    const response = await axios.get(`${API_URL}/credit-loans/`, {
       params: {
         loan_amount: loanAmount.value,
         loan_period: loanPeriod.value,
@@ -96,31 +99,70 @@ const handleSearch = () => {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
       },
-    })
+    });
+
+    const options = response.data;
+    const groupedProducts = {};
+
+    // 데이터 그룹화
+    options.forEach((option) => {
+      const productId = option.product.product_id;
+      if (!groupedProducts[productId]) {
+        groupedProducts[productId] = {
+          product_id: productId,
+          company_name: option.product.company_name || "금융 회사 정보 없음",
+          product_name: option.product.product_name || "상품명 정보 없음",
+          options: [],
+        };
+      }
+      groupedProducts[productId].options.push(option);
+    });
+
+    products.value = Object.values(groupedProducts);
+    await calculateAllPayments(); // 월 상환 금액 계산
+    isReady.value = true; // 로딩 완료
+  } catch (error) {
+    console.error("검색 중 오류:", error.response || error.message);
+    alert("검색 중 문제가 발생했습니다. 다시 시도해주세요.");
+    isReady.value = true;
+  }
+};
+
+// 월 상환 금액 계산 API 호출
+const calculateMonthlyPayment = (option) => {
+  return axios({
+    method: "get",
+    url: `${API_URL}/calculate/credit/${option.option_id}/`,
+    params: {
+      loan_amount: loanAmount.value,
+      years: loanPeriod.value,
+    },
+    headers: {
+      Authorization: `Token ${localStorage.getItem("token")}`,
+    },
+  })
     .then((response) => {
-      const options = response.data;
-
-      // products 데이터 재구성
-      const groupedProducts = {};
-      options.forEach((option) => {
-        const productId = option.product.product_id;
-        if (!groupedProducts[productId]) {
-          groupedProducts[productId] = {
-            product_id: productId,
-            company_name: option.product.company_name || "금융 회사 정보 없음",
-            product_name: option.product.product_name || "상품명 정보 없음",
-            options: [],
-          };
-        }
-        groupedProducts[productId].options.push(option);
-      });
-
-      products.value = Object.values(groupedProducts);
+      if (response.data.calculations && response.data.calculations.length > 0) {
+        const calculation = response.data.calculations.find((calc) => calc.option_id === option.option_id);
+        option.monthlyPayment = calculation ? calculation.monthly_payment : null;
+      } else {
+        console.warn("월 상환 금액 데이터가 없습니다.");
+      }
     })
     .catch((error) => {
-      console.error("검색 중 오류:", error.response || error.message);
-      alert("검색 중 문제가 발생했습니다. 다시 시도해주세요.");
+      console.error("월 상환 금액 계산 중 오류:", error.response || error.message);
     });
+};
+
+// 모든 옵션에 대해 월 상환 금액 계산
+const calculateAllPayments = async () => {
+  const promises = [];
+  products.value.forEach((product) => {
+    product.options.forEach((option) => {
+      promises.push(calculateMonthlyPayment(option));
+    });
+  });
+  await Promise.all(promises); // 모든 계산이 완료될 때까지 대기
 };
 
 // 필터링된 결과
@@ -131,20 +173,7 @@ const filteredProducts = computed(() => {
   if (loanType.value !== "전체") {
     result = result
       .map((product) => {
-        const filteredOptions = product.options.filter((option) => {
-          const type = option.product.product_name || ""; // 대출 상품명 확인
-          console.log("Product Name:", type);
-          console.log("Loan Type Filter:", loanType.value);
-
-          // "신용" 키워드 포함 여부로 필터링
-          if (loanType.value === "일반신용대출") {
-            return type.includes("신용");
-          } else {
-            return type === loanType.value; // 정확히 일치하는 경우
-          }
-        });
-
-        // 옵션이 존재하면 필터링된 상품 반환
+        const filteredOptions = product.options.filter((option) => option.product.product_name.toLowerCase().includes(loanType.value.toLowerCase()));
         return filteredOptions.length > 0 ? { ...product, options: filteredOptions } : null;
       })
       .filter((product) => product !== null);
@@ -167,15 +196,15 @@ const sortedProducts = computed(() => {
   return filteredProducts.value
     .map((product) => {
       const sortedOptions = [...product.options].sort((a, b) => {
-        const aPayment = a.monthly_payment || Infinity; // 월 상환 금액 필드명 확인 필요
-        const bPayment = b.monthly_payment || Infinity;
+        const aPayment = a.monthlyPayment || Infinity;
+        const bPayment = b.monthlyPayment || Infinity;
         return aPayment - bPayment;
       });
       return { ...product, options: sortedOptions };
     })
     .sort((a, b) => {
-      const aMin = a.options[0]?.monthly_payment || Infinity;
-      const bMin = b.options[0]?.monthly_payment || Infinity;
+      const aMin = a.options[0]?.monthlyPayment || Infinity;
+      const bMin = b.options[0]?.monthlyPayment || Infinity;
       return aMin - bMin;
     });
 });

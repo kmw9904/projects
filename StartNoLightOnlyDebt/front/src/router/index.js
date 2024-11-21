@@ -16,6 +16,9 @@ import PasswordChangeView from "@/accounts/PasswordChangeView.vue";
 import PreferredBanksView from "@/accounts/PreferredBanksView.vue";
 import ArticleView from "@/views/ArticleView.vue";
 import ArticleDetail from "@/views/ArticleDetail.vue";
+import CreditLoanDiscussionView from "@/loans/CreditLoanDiscussionView.vue";
+import JeonseDiscussionView from "@/loans/JeonseDiscussionView.vue";
+import MorgageDiscussionView from "@/loans/MorgageDiscussionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -105,6 +108,21 @@ const router = createRouter({
       name: "ArticleDetail",
       component: ArticleDetail,
     }, // 게시글 상세 보기
+    {
+      path: "/credit-discussion",
+      name: "CreditLoanDiscussionView",
+      component: CreditLoanDiscussionView,
+    },
+    {
+      path: "/jeonse-discussion",
+      name: "JeonseDiscussionView",
+      component: JeonseDiscussionView,
+    },
+    {
+      path: "/mortgage-discussion",
+      name: "MorgageDiscussionView",
+      component: MorgageDiscussionView,
+    },
   ],
 });
 

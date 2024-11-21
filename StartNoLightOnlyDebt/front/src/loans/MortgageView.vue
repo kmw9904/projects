@@ -44,114 +44,135 @@
       <button type="submit">검색</button>
     </form>
 
-    <MortgageDetailView v-if="sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
-    <p v-else>조건에 맞는 결과가 없습니다.</p>
+    <MortgageDetailView v-if="isReady && sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
+    <p v-else-if="isReady">조건에 맞는 결과가 없습니다.</p>
+    <p v-else>결과를 로드 중입니다...</p>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, watch, onMounted } from "vue";
-import { useBankStore } from "@/stores/bank";
-import { useNavigationStore } from "@/stores/navigation";
+import { ref, computed, onMounted } from "vue";
 import MortgageDetailView from "./MortgageDetailView.vue";
 import axios from "axios";
+import { useNavigationStore } from "@/stores/navigation";
 
-// Stores 초기화
-const store = useBankStore();
+// API URL 설정
+const API_URL = "http://127.0.0.1:8000/api/v1";
 const navigationStore = useNavigationStore();
-
-const API_URL = "http://127.0.0.1:8000";
 
 const loanAmount = ref(0); // 대출 금액
 const loanPeriod = ref(0); // 대출 기간
 const sortByMinPayment = ref(false); // 최저 상환 금액 기준 정렬 여부
 const filterByPreferredBanks = ref(false); // 선호 은행 필터링 여부
+const filters = ref({ repaymentType: "전체" }); // 상환 방식 필터
 
-// 선호 은행 데이터
-const preferredBanks = ref([]);
+const products = ref([]); // 결과 데이터
+const preferredBanks = ref([]); // 선호 은행 데이터
+const isReady = ref(false); // 데이터 로딩 상태
 
-// 선호 은행 가져오기
-const getPreferredBanks = () => {
-  return axios({
-    method: "get",
-    url: `${API_URL}/accounts/preferred-banks/`,
-    headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-  })
-    .then((res) => {
-      preferredBanks.value = res.data.banks.filter((bank) => bank.is_preferred).map((bank) => bank.company_name);
-    })
-    .catch((err) => {
-      console.error("선호 은행 데이터 가져오기 실패:", err.response?.data || err.message);
+// 선호 은행 데이터 가져오기
+const getPreferredBanks = async () => {
+  try {
+    const response = await axios.get(`http://127.0.0.1:8000/accounts/preferred-banks/`, {
+      headers: { Authorization: `Token ${localStorage.getItem("token")}` },
     });
+    preferredBanks.value = response.data.banks.filter((bank) => bank.is_preferred).map((bank) => bank.company_name);
+  } catch (err) {
+    console.error("선호 은행 데이터 가져오기 실패:", err.response?.data || err.message);
+  }
 };
 
-// 필터링 조건
-const filters = ref({
-  repaymentType: "전체", // 상환 방식 (전체, 고정금리, 변동금리)
-});
-
-// 원본 데이터 상태
-const products = ref([]);
-
-// store.mortgages 데이터를 products로 반영
-watch(
-  () => store.mortgages,
-  (newValue) => {
-    if (newValue) {
-      products.value = newValue; // 업데이트된 데이터를 products에 반영
-      console.log(products.value);
-    }
+// 검색 버튼 클릭 시 실행
+const handleSearch = async () => {
+  isReady.value = false; // 로딩 상태 시작
+  if (loanAmount.value <= 0 || loanPeriod.value <= 0) {
+    alert("대출금액과 대출기간을 올바르게 입력하세요.");
+    isReady.value = true;
+    return;
   }
-);
 
-// 특정 상품 ID로 옵션을 연결하고 상품과 함께 매핑
-const mergedProducts = computed(() => {
-  const groupedByProductId = products.value.reduce((acc, option) => {
-    const product = option.product;
-    const productId = product.product_id;
+  try {
+    const response = await axios.get(`${API_URL}/mortgage-loans/`, {
+      params: {
+        loan_amount: loanAmount.value,
+        loan_period: loanPeriod.value,
+      },
+      headers: {
+        Authorization: `Token ${localStorage.getItem("token")}`,
+      },
+    });
 
-    if (!acc[productId]) {
-      acc[productId] = {
-        product_id: productId,
-        product_name: product.product_name || "알 수 없음",
-        company_name: product.company_name || "금융 회사 정보 없음",
-        options: [],
-      };
+    const options = response.data;
+    const groupedProducts = {};
+
+    // 데이터 그룹화
+    options.forEach((option) => {
+      const productId = option.product.product_id;
+      if (!groupedProducts[productId]) {
+        groupedProducts[productId] = {
+          product_id: productId,
+          company_name: option.product.company_name || "금융 회사 정보 없음",
+          product_name: option.product.product_name || "상품명 정보 없음",
+          options: [],
+        };
+      }
+      groupedProducts[productId].options.push(option);
+    });
+
+    products.value = Object.values(groupedProducts);
+    await calculateAllPayments(); // 월 상환 금액 계산
+    isReady.value = true; // 로딩 상태 종료
+  } catch (error) {
+    console.error("검색 중 오류:", error.response || error.message);
+    alert("검색 중 문제가 발생했습니다. 다시 시도해주세요.");
+    isReady.value = true;
+  }
+};
+
+// 월 상환 금액 계산 API 호출
+const calculateMonthlyPayment = async (option) => {
+  try {
+    const response = await axios.get(`${API_URL}/calculate/mortgage/${option.option_id}/`, {
+      params: {
+        loan_amount: loanAmount.value,
+        years: loanPeriod.value,
+      },
+      headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+    });
+
+    if (response.data.calculations?.length > 0) {
+      const calculation = response.data.calculations.find((calc) => calc.option_id === option.option_id);
+      option.avgPayment = calculation ? calculation.monthly_payment : null;
     }
+  } catch (error) {
+    console.error("월 상환 금액 계산 중 오류:", error.response || error.message);
+  }
+};
 
-    acc[productId].options.push(option);
-
-    return acc;
-  }, {});
-
-  return Object.values(groupedByProductId);
-});
+// 모든 옵션에 대해 월 상환 금액 계산
+const calculateAllPayments = async () => {
+  const promises = [];
+  products.value.forEach((product) => {
+    product.options.forEach((option) => promises.push(calculateMonthlyPayment(option)));
+  });
+  await Promise.all(promises); // 모든 계산이 완료될 때까지 대기
+};
 
 // 필터링된 결과
 const filteredProducts = computed(() => {
-  let result = mergedProducts.value;
+  let result = products.value;
 
-  // 상환 방식(금리 유형) 필터링
+  // 상환 방식 필터링
   if (filters.value.repaymentType !== "전체") {
     result = result
       .map((product) => {
-        // 조건에 맞는 옵션만 필터링
         const filteredOptions = product.options.filter((option) => {
           const lendRateType = (option.lend_rate_type_nm || "").trim().toLowerCase();
-          const repaymentType = filters.value.repaymentType.trim().toLowerCase();
-          return lendRateType === repaymentType;
+          return lendRateType === filters.value.repaymentType.trim().toLowerCase();
         });
-
-        // 옵션이 존재하면 상품을 반환
-        if (filteredOptions.length > 0) {
-          return {
-            ...product,
-            options: filteredOptions, // 조건에 맞는 옵션만 포함
-          };
-        }
-        return null; // 조건에 맞는 옵션이 없으면 상품 제외
+        return filteredOptions.length > 0 ? { ...product, options: filteredOptions } : null;
       })
-      .filter((product) => product !== null); // null 값을 제거
+      .filter((product) => product !== null);
   }
 
   // 선호 은행 필터링
@@ -159,15 +180,12 @@ const filteredProducts = computed(() => {
     result = result.filter((product) => preferredBanks.value.includes(product.company_name));
   }
 
-  console.log("Filtered products before returning:", result);
-
   return result;
 });
-// 최저 상환 금액 기준 정렬
+
+// 정렬된 결과
 const sortedProducts = computed(() => {
-  if (!sortByMinPayment.value) {
-    return filteredProducts.value;
-  }
+  if (!sortByMinPayment.value) return filteredProducts.value;
 
   return filteredProducts.value
     .map((product) => {
@@ -184,16 +202,6 @@ const sortedProducts = computed(() => {
       return aMin - bMin;
     });
 });
-
-// 검색 버튼 클릭 시 필터링 로직 실행
-const handleSearch = () => {
-  if (loanAmount.value <= 0 || loanPeriod.value <= 0) {
-    alert("대출금액과 대출기간을 올바르게 입력하세요.");
-    return;
-  }
-
-  store.getMortgage(); // 필요한 데이터 호출
-};
 
 // 초기화
 onMounted(() => {
