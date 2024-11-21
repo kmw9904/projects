@@ -33,70 +33,107 @@ const props = defineProps({
 });
 
 const API_URL = "http://127.0.0.1:8000/interactions";
+const token = localStorage.getItem("token");
 
 const likes = ref(0);
 const isLiked = ref(false);
 const comments = ref([]);
 const newComment = ref("");
 
-// 좋아요 조회 및 토글
-const fetchLikes = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/jeonse/${props.productId}/likes/`);
-    likes.value = response.data.likes;
-    isLiked.value = response.data.is_liked;
-  } catch (error) {
-    console.error("좋아요 조회 실패:", error);
-  }
-};
-
-const toggleLike = async () => {
-  try {
-    const response = await axios.post(
-      `${API_URL}/jeonse/${props.productId}/likes/toggle/`,
-      {},
-      {
-        headers: { Authorization: `Token ${localStorage.getItem("token")}` },
-      }
-    );
-    likes.value = response.data.likes;
-    isLiked.value = response.data.is_liked;
-  } catch (error) {
-    console.error("좋아요 토글 실패:", error);
-  }
-};
-
-// 댓글 조회, 추가, 삭제
-const fetchComments = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/jeonse/${props.productId}/comments/`);
-    comments.value = response.data;
-  } catch (error) {
-    console.error("댓글 조회 실패:", error);
-  }
-};
-
-const addComment = async () => {
-  if (!newComment.value.trim()) return;
-
-  try {
-    const response = await axios.post(`${API_URL}/jeonse/${props.productId}/comments/`, { content: newComment.value }, { headers: { Authorization: `Token ${localStorage.getItem("token")}` } });
-    comments.value.push(response.data);
-    newComment.value = "";
-  } catch (error) {
-    console.error("댓글 추가 실패:", error);
-  }
-};
-
-const deleteComment = async (commentId) => {
-  try {
-    await axios.delete(`${API_URL}/jeonse/${props.productId}/comments/${commentId}/`, {
-      headers: { Authorization: `Token ${localStorage.getItem("token")}` },
+// 좋아요 조회
+const fetchLikes = function () {
+  axios({
+    method: "get",
+    url: `${API_URL}/jeonse/${props.productId}/likes/`,
+    headers: {
+      Authorization: `Token ${token}`, // 인증 토큰 추가
+    },
+  })
+    .then((response) => {
+      likes.value = response.data.likes;
+      isLiked.value = response.data.is_liked;
+    })
+    .catch((error) => {
+      console.error("좋아요 조회 실패:", error.response?.data || error.message);
     });
-    comments.value = comments.value.filter((comment) => comment.id !== commentId);
-  } catch (error) {
-    console.error("댓글 삭제 실패:", error);
+};
+
+// 좋아요 토글
+const toggleLike = function () {
+  axios({
+    method: "post",
+    url: `${API_URL}/jeonse/${props.productId}/likes/toggle/`,
+    headers: {
+      Authorization: `Token ${token}`, // 인증 토큰 추가
+    },
+  })
+    .then((response) => {
+      likes.value = response.data.likes;
+      isLiked.value = response.data.is_liked;
+    })
+    .catch((error) => {
+      console.error("좋아요 토글 실패:", error.response?.data || error.message);
+    });
+};
+
+// 댓글 조회
+const fetchComments = function () {
+  axios({
+    method: "get",
+    url: `${API_URL}/jeonse/${props.productId}/comments/`,
+    headers: {
+      Authorization: `Token ${token}`, // 인증 토큰 추가
+    },
+  })
+    .then((response) => {
+      comments.value = response.data;
+    })
+    .catch((error) => {
+      console.error("댓글 조회 실패:", error.response?.data || error.message);
+    });
+};
+
+// 댓글 추가
+const addComment = function () {
+  if (!newComment.value.trim()) {
+    console.error("댓글 내용이 비어 있습니다.");
+    return;
   }
+
+  axios({
+    method: "post",
+    url: `${API_URL}/jeonse/${props.productId}/comments/add/`,
+    headers: {
+      Authorization: `Token ${token}`, // 인증 토큰 추가
+    },
+    data: {
+      content: newComment.value, // 댓글 내용
+    },
+  })
+    .then((response) => {
+      comments.value.push(response.data);
+      newComment.value = ""; // 입력 필드 초기화
+    })
+    .catch((error) => {
+      console.error("댓글 추가 실패:", error.response?.data || error.message);
+    });
+};
+
+// 댓글 삭제
+const deleteComment = function (commentId) {
+  axios({
+    method: "delete",
+    url: `${API_URL}/jeonse/${props.productId}/comments/${commentId}/delete/`,
+    headers: {
+      Authorization: `Token ${token}`, // 인증 토큰 추가
+    },
+  })
+    .then(() => {
+      comments.value = comments.value.filter((comment) => comment.id !== commentId);
+    })
+    .catch((error) => {
+      console.error("댓글 삭제 실패:", error.response?.data || error.message);
+    });
 };
 
 // 초기 데이터 로드
