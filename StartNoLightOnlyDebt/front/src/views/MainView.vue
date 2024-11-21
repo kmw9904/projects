@@ -33,9 +33,14 @@
             <br />
             좋아요: {{ product.likes }}
           </p>
-          <RouterLink :to="{ name: 'CreditLoanDiscussionView', params: { productId: product.product_id } }">댓글 보기</RouterLink>
+          <RouterLink :to="{ name: 'CreditLoanDiscussionView', params: { productId: product.product_id } }">
+            댓글 보기
+          </RouterLink>
         </li>
       </ul>
+    </div>
+    <div v-else>
+      <p>아직 좋아요를 받은 개인 대출 상품이 없습니다.</p>
     </div>
 
     <!-- 전세 대출 -->
@@ -49,9 +54,14 @@
             <br />
             좋아요: {{ product.likes }}
           </p>
-          <RouterLink :to="{ name: 'JeonseLoanDiscussionView', params: { productId: product.product_id } }">댓글 보기</RouterLink>
+          <RouterLink :to="{ name: 'JeonseLoanDiscussionView', params: { productId: product.product_id } }">
+            댓글 보기
+          </RouterLink>
         </li>
       </ul>
+    </div>
+    <div v-else>
+      <p>아직 좋아요를 받은 전세 대출 상품이 없습니다.</p>
     </div>
 
     <!-- 담보 대출 -->
@@ -65,11 +75,18 @@
             <br />
             좋아요: {{ product.likes }}
           </p>
-          <RouterLink :to="{ name: 'MortgageLoanDiscussionView', params: { productId: product.product_id } }">댓글 보기</RouterLink>
+          <RouterLink :to="{ name: 'MortgageLoanDiscussionView', params: { productId: product.product_id } }">
+            댓글 보기
+          </RouterLink>
         </li>
       </ul>
     </div>
+    <div v-else>
+      <p>아직 좋아요를 받은 담보 대출 상품이 없습니다.</p>
+    </div>
+  </div>
 
+  <div>
     <div v-if="topLikedArticle">
       <h3>가장 좋아요를 많이 받은 게시글</h3>
       <h4>{{ topLikedArticle.title }}</h4>
@@ -79,11 +96,6 @@
     </div>
     <div v-else>
       <p>아직 좋아요를 받은 게시글이 없습니다.</p>
-    </div>
-
-    <!-- 데이터가 없을 경우 -->
-    <div v-if="topLikedCredit.length === 0 && topLikedJeonse.length === 0 && topLikedMortgage.length === 0">
-      <p>아직 좋아요를 받은 상품이 없습니다. 상품을 검색하고 좋아요를 눌러보세요!</p>
     </div>
   </div>
 </template>
@@ -112,16 +124,16 @@ onMounted(() => {
 // 좋아요가 높은 상품 가져오기
 const fetchTopLikedProducts = async () => {
   try {
-    const creditResponse = await axios.get(`${API_URL}/credit/top-liked/`);
+    const creditResponse = await axios.get(`${API_URL}/interactions/credit/top-liked/`);
     topLikedCredit.value = creditResponse.data;
 
-    const jeonseResponse = await axios.get(`${API_URL}/jeonse/top-liked/`);
+    const jeonseResponse = await axios.get(`${API_URL}/interactions/jeonse/top-liked/`);
     topLikedJeonse.value = jeonseResponse.data;
 
-    const mortgageResponse = await axios.get(`${API_URL}/mortgage/top-liked/`);
+    const mortgageResponse = await axios.get(`${API_URL}/interactions/mortgage/top-liked/`);
     topLikedMortgage.value = mortgageResponse.data;
   } catch (error) {
-    console.error("최고 좋아요 상품 가져오기 실패:", error);
+    console.error("최고 좋아요 상품 가져오기 실패:", error.response?.data || error.message);
   }
 };
 
