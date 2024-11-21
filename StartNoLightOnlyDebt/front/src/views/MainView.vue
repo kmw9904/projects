@@ -70,8 +70,15 @@
       </ul>
     </div>
 
-    <div>
-      
+    <div v-if="topLikedArticle">
+      <h3>가장 좋아요를 많이 받은 게시글</h3>
+      <h4>{{ topLikedArticle.title }}</h4>
+      <p>{{ topLikedArticle.content }}</p>
+      <p>좋아요: {{ topLikedArticle.likes_count }}</p>
+      <RouterLink :to="{ name: 'ArticleDetail', params: { id: topLikedArticle.id } }">상세 보기</RouterLink>
+    </div>
+    <div v-else>
+      <p>아직 좋아요를 받은 게시글이 없습니다.</p>
     </div>
 
     <!-- 데이터가 없을 경우 -->
@@ -82,8 +89,9 @@
 </template>
 
 <script setup>
+import { useArticleStore } from "@/stores/articles";
 import { RouterLink } from "vue-router";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000";
@@ -91,6 +99,15 @@ const API_URL = "http://127.0.0.1:8000";
 const topLikedCredit = ref([]);
 const topLikedJeonse = ref([]);
 const topLikedMortgage = ref([]);
+const store = useArticleStore();
+
+// 좋아요가 가장 많은 게시글 가져오기
+const topLikedArticle = computed(() => store.topLikedArticle);
+
+// 게시글 목록 데이터 가져오기
+onMounted(() => {
+  store.fetchArticles();
+});
 
 // 좋아요가 높은 상품 가져오기
 const fetchTopLikedProducts = async () => {

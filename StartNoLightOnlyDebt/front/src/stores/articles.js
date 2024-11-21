@@ -136,4 +136,9 @@ export const useArticleStore = defineStore("articles", {
         });
     },
   },
+  getters: {
+    topLikedArticle(state) {
+      return state.articles.length ? state.articles.reduce((top, current) => (current.likes_count > (top.likes_count || 0) ? current : top), {}) : null;
+    },
+  },
 });
