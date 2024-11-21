@@ -133,7 +133,7 @@ export const useBankStore = defineStore(
             })
             .then(() => {
               // 프로필 페이지로 이동
-              router.push({ name: "ProfileView" });
+              router.push({ name: "AccountView" });
             })
             .catch((err) => {
               console.error("로그인 또는 프로필 가져오기 실패:", err.response?.data || err.message);

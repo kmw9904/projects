@@ -14,8 +14,8 @@
     <!-- 댓글 리스트 -->
     <ul>
       <li v-for="(comment, index) in comments" :key="comment.id">
-        <strong>{{ comment.author }}</strong>
-        : {{ comment.text }}
+        <strong>{{ comment.user }}</strong>
+        : {{ comment.content }}
         <button @click="deleteComment(comment.id)">삭제</button>
       </li>
     </ul>

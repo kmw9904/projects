@@ -70,6 +70,10 @@
       </ul>
     </div>
 
+    <div>
+      
+    </div>
+
     <!-- 데이터가 없을 경우 -->
     <div v-if="topLikedCredit.length === 0 && topLikedJeonse.length === 0 && topLikedMortgage.length === 0">
       <p>아직 좋아요를 받은 상품이 없습니다. 상품을 검색하고 좋아요를 눌러보세요!</p>
