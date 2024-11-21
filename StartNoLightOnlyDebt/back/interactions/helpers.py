@@ -77,6 +77,16 @@ def add_comment(model, serializer, request, user, product_id):
     except Exception as e:
         print("예외 발생:", e)  # 예외 출력
         return JsonResponse({"error": str(e)}, status=400)
+    
+def delete_comment(model, request, product_id, comment_id):
+    try:
+        comment = get_object_or_404(model, id=comment_id, product__option_id=product_id)
+        if comment.user != request.user:
+            return JsonResponse({"error": "삭제 권한이 없습니다."}, status=403)
+        comment.delete()
+        return JsonResponse({"message": "댓글이 삭제되었습니다."}, status=204)
+    except Exception as e:
+        return JsonResponse({"error": str(e)}, status=400)
 
 
 

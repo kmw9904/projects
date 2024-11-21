@@ -1,7 +1,7 @@
 from django.views.decorators.http import require_http_methods
 from .models import CreditLike, CreditComment, JeonseLike, JeonseComment, MortgageLike, MortgageComment
 from .serializers import CreditCommentSerializer, JeonseCommentSerializer, MortgageCommentSerializer
-from .helpers import get_likes, toggle_like, get_comments, add_comment
+from .helpers import get_likes, toggle_like, get_comments, add_comment, delete_comment
 from rest_framework.decorators import api_view
 
 # 개인 대출
@@ -23,6 +23,10 @@ def get_credit_comments(request, product_id):
 @api_view(['POST'])
 def add_credit_comment(request, product_id):
     return add_comment(CreditComment, CreditCommentSerializer, request=request, user=request.user, product_id=product_id)
+
+@api_view(['DELETE'])
+def delete_credit_comment(request, product_id, comment_id):
+    return delete_comment(CreditComment, request, product_id, comment_id)
 
 # 전세 대출
 
