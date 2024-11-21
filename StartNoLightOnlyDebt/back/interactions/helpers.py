@@ -1,4 +1,7 @@
 from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+
+from managebanks.models import CreditLoanOption
 
 def get_likes(model, product_id):
     """
@@ -17,21 +20,24 @@ def toggle_like(model, user, product_id):
     특정 상품에 대한 좋아요 토글
     """
     if not user.is_authenticated:
-        return JsonResponse({"error": "사용자가 로그인되지 않았습니다."}, status=401)  # 로그인되지 않은 경우 처리
+        return JsonResponse({"error": "사용자가 로그인되지 않았습니다."}, status=401)
 
     try:
-        # ForeignKey를 통해 product로 참조
-        like, created = model.objects.get_or_create(user=user, product=product_id)
+        # product_id로 CreditLoanOption 인스턴스 가져오기
+        product = get_object_or_404(CreditLoanOption, option_id=product_id)
+
+        # 좋아요 토글 처리
+        like, created = model.objects.get_or_create(user=user, product=product)
         if not created:
             like.delete()
             message = "좋아요 취소"
         else:
             message = "좋아요 추가"
-        like_count = model.objects.filter(product=product_id).count()
+        
+        like_count = model.objects.filter(product=product).count()
         return JsonResponse({"message": message, "likes": like_count}, status=200)
     except Exception as e:
         return JsonResponse({"error": str(e)}, status=400)
-
 
 
 def get_comments(model, serializer, product_id):

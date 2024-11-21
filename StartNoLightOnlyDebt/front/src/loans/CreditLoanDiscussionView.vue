@@ -109,7 +109,6 @@ const addComment = function () {
     url: `${API_URL}/credit/${props.productId}/comments/add/`,
     headers: {
       Authorization: `Token ${token}`, // 인증 토큰 추가
-      "Content-Type": "application/json", // JSON 데이터 전송
     },
     data: {
       content: newComment.value, // 댓글 내용
