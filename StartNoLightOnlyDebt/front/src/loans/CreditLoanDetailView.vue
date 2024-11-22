@@ -41,6 +41,7 @@
                 <strong>월 상환 금액:</strong>
                 {{ option.monthlyPayment !== undefined ? `${formatCurrency(option.monthlyPayment)}원` : "계산 중..." }}
               </p>
+              <RouterLink :to="{ name: 'FinancialProductDetail', params: { productId: product.product_id } }" class="btn btn-primary">상세 정보 보기</RouterLink>
               <!-- 댓글 및 좋아요 컴포넌트 -->
               <CreditLoanDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="'credit'" />
             </div>
@@ -61,6 +62,7 @@
 
 
 <script setup>
+import { RouterView, RouterLink } from "vue-router";
 import { defineProps, onMounted, ref } from "vue";
 import axios from "axios";
 import CreditLoanDiscussionView from "./CreditLoanDiscussionView.vue";

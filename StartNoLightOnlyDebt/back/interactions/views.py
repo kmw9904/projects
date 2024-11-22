@@ -173,8 +173,9 @@ class TopLikedProductsView(APIView):
                 return Response({
                     "product_id": top_product.option_id,
                     "product_type": option_type,
+                    "fin_prdt_cd": top_product.fin_prdt_cd_id,
                     "product_name": financial_product.product_name,
-                    "company_name":financial_company.company_name,
+                    "company_name": financial_company.company_name,   
                     "likes": top_product.likes_count,
                 }, status=status.HTTP_200_OK)
             return Response({"message": "No products found."}, status=status.HTTP_404_NOT_FOUND)

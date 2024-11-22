@@ -57,6 +57,7 @@
                 <br />
                 좋아요: {{ product.likes }}
               </span>
+              <RouterLink :to="{ name: 'FinancialProductDetail', params: { productId: product.fin_prdt_cd } }" class="btn btn-primary">상세 정보 보기</RouterLink>
               <div v-if="product.product_type == 'credit'">
                 <CreditLoanDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="product.product_id" />
               </div>

@@ -39,39 +39,9 @@ const router = createRouter({
       component: MainView,
     },
     {
-      path: "/jeonse",
-      name: "JeonseView",
-      component: JeonseView,
-    },
-    {
-      path: "/credit-loan",
-      name: "CreditLoanView",
-      component: CreditLoanView,
-    },
-    {
-      path: "/mortgage",
-      name: "MortgageView",
-      component: MortgageView,
-    },
-    {
       path: "/map",
       name: "map",
       component: MapView,
-    },
-    {
-      path: "/mortgage/detail",
-      name: "MortgageDetailView",
-      component: MortgageDetailView,
-    },
-    {
-      path: "/jeonse/detail",
-      name: "JeonseDetailView",
-      component: JeonseDetailView,
-    },
-    {
-      path: "/credit-loan/detail",
-      name: "CreditLoanDetailView",
-      component: CreditLoanDetailView,
     },
     {
       path: "/exchange",
@@ -109,19 +79,10 @@ const router = createRouter({
       component: ArticleDetail,
     }, // 게시글 상세 보기
     {
-      path: "/credit-discussion",
-      name: "creditLoanDiscussionView",
-      component: CreditLoanDiscussionView,
-    },
-    {
-      path: "/jeonse-discussion",
-      name: "jeonseLoanDiscussionView",
-      component: JeonseDiscussionView,
-    },
-    {
-      path: "/mortgage-discussion",
-      name: "mortgageLoanDiscussionView",
-      component: MortgageDiscussionView,
+      path: "/product/:productId",
+      name: "FinancialProductDetail",
+      component: () => import("@/views/FinancialProductDetail.vue"),
+      props: true, // productId를 props로 전달
     },
   ],
 });

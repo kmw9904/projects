@@ -292,4 +292,30 @@ class MortgageLoanView(APIView):
         return Response(serializer.data)
 
 
+class FinancialProductDetailView(APIView):
+    """
+    금융 상품 상세 정보를 반환합니다.
+    """
+    def get(self, request, product_id):
+        try:
+            product = FinancialProduct.objects.select_related('fin_co_no').get(product_id=product_id)
+            return Response({
+                "product_id": product.product_id,
+                "product_name": product.product_name,
+                "join_way": product.join_way,
+                "loan_inci_expn": product.loan_inci_expn,
+                "erly_rpay_fee": product.erly_rpay_fee,
+                "dly_rate": product.dly_rate,
+                "loan_lmt": product.loan_lmt,
+                "dcls_month": product.dcls_month,
+                "dcls_strt_day": product.dcls_strt_day,
+                "dcls_end_day": product.dcls_end_day,
+                "fin_co_subm_day": product.fin_co_subm_day,
+                "prdt_div": product.prdt_div,
+                "company_name": product.fin_co_no.company_name if product.fin_co_no else "정보 없음",
+            }, status=status.HTTP_200_OK)
+        except FinancialProduct.DoesNotExist:
+            return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
 
