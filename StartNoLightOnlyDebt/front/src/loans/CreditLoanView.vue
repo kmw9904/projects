@@ -1,6 +1,6 @@
 <template>
   <div class="credit-loan-container">
-    <h2 class="text-center mb-4">신용 대출 상품 조회</h2>
+    <h2 class="text-center mb-4"><img class="product-img" src="/pictures/개인신용상품조회.png" alt="" /></h2>
 
     <!-- 검색 조건 입력 -->
     <form @submit.prevent="handleSearch" class="search-form mb-4 p-3 shadow-sm rounded">
@@ -42,7 +42,7 @@
     <div class="results-container">
       <CreditLoanDetailView v-if="isReady && sortedProducts.length > 0" :products="sortedProducts" :loanAmount="loanAmount" :loanPeriod="loanPeriod" />
       <p v-else-if="isReady" class="text-center text-muted">검색 결과가 없습니다.</p>
-      <p v-else class="text-center text-muted">결과를 로드 중입니다...</p>
+      <p v-else class="text-center text-muted">조건을 입력하세요..</p>
     </div>
   </div>
 </template>
@@ -235,6 +235,10 @@ h2 {
 .search-form {
   background: #ffffff;
   border: 1px solid #ddd;
+}
+
+.product-img {
+  width: 400px;
 }
 
 .form-group {

@@ -118,14 +118,7 @@ const calculateAllPayments = () => {
     });
   });
 };
-
-// 은행사진가져오기
-const companyUrl = ref("");
-const getCompany = function (company) {
-  companyUrl.value = `/public/pictures/${company}.png`;
-  return companyUrl.value;
-};
-
+1
 // 컴포넌트가 로드될 때 자동으로 계산
 onMounted(() => {
   calculateAllPayments();
