@@ -5,7 +5,15 @@
         <h1 class="text-title">대출 정보 제공 서비스</h1>
         <p class="lead">신뢰할 수 있는 금융 정보를 제공합니다.</p>
         <p>
-          <button type="button" class="btn btn-start btn-secondary">빚으로 시작하기</button>
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <br />
+          <div id="product-section">
+            <a href="#product-section" class="btn btn-start btn-secondary">빚으로 시작하기</a>
+          </div>
         </p>
       </div>
     </div>
@@ -343,4 +351,9 @@ button.btn-link:hover {
     transform: translateY(0);
   }
 }
+
+html {
+  scroll-padding-top: 200px; /* 사진 크기만큼 간격 추가 */
+}
+
 </style>

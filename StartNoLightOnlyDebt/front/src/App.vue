@@ -5,13 +5,15 @@
       <div class="container d-flex justify-content-between align-items-center">
         <!-- 로고 -->
         <div class="logo">
-          <h1 class="logo-text fw-bold">
-            Start
-            <br />
-            No Light
-            <br />
-            Only Debt
-          </h1>
+          <a href="/" class="logo-link">
+            <h1 class="logo-text fw-bold">
+              Start
+              <br />
+              No Light
+              <br />
+              Only Debt
+            </h1>
+          </a>
         </div>
 
         <!-- 네비게이션 -->
@@ -28,23 +30,35 @@
             <div class="btn-group">
               <img class="btn dropdown-toggle" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" src="/public/pictures/토글이미지.png" alt="토글 메뉴" />
               <nav class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
-                <RouterLink class="dropdown-item" :to="{ name: 'map' }">은행찾기</RouterLink>
-                |
-                <RouterLink class="dropdown-item" :to="{ name: 'ExchangeView' }">환율</RouterLink>
-                |
-                <RouterLink class="dropdown-item" :to="{ name: 'article' }">커뮤니티</RouterLink>
-                |
+                <RouterLink class="dropdown-item" :to="{ name: 'map' }">
+                  <p class="menu-name">
+                    <img src="/public/pictures/은행찾기.png" alt="은행찾기" />
+                    은행찾기
+                  </p>
+                </RouterLink>
+                <RouterLink class="dropdown-item" :to="{ name: 'ExchangeView' }">
+                  <p class="menu-name">
+                    <img src="/public/pictures/환율.png" alt="환율" />
+                    환율
+                  </p>
+                </RouterLink>
+                <RouterLink class="dropdown-item" :to="{ name: 'article' }">
+                  <p class="menu-name">
+                    <img src="/public/pictures/커뮤니티.png" alt="커뮤니티" />
+                    커뮤니티
+                  </p>
+                </RouterLink>
                 <RouterLink class="dropdown-item" :to="{ name: 'AlgorithmView' }">chatbot</RouterLink>
               </nav>
             </div>
           </template>
           <!-- 비로그인 상태 -->
           <template v-else>
-            <RouterLink :to="{ name: 'SignUpView' }">회원가입</RouterLink>
-            |
-            <RouterLink :to="{ name: 'LoginView' }">로그인</RouterLink>
-            |
-            <RouterLink :to="{ name: 'MainView' }">홈</RouterLink>
+            <RouterLink class="btn btn-outline-dark" :to="{ name: 'SignUpView' }">회원가입</RouterLink>
+            <RouterLink class="btn btn-outline-dark" :to="{ name: 'LoginView' }">로그인</RouterLink>
+            <RouterLink :to="{ name: 'MainView' }">
+              <img src="/public/pictures/홈버튼.png" alt="홈버튼" />
+            </RouterLink>
           </template>
         </div>
       </div>
@@ -103,6 +117,16 @@ const Logout = function () {
   line-height: 1.2;
 }
 
+.logo-link {
+  color: black; /* 링크 텍스트를 검은색으로 설정 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+.logo-link:hover {
+  color: black; /* 호버 시에도 검은색 유지 */
+  text-decoration: none; /* 호버 시에도 밑줄 제거 */
+}
+
 /* 네비게이션 스타일 */
 .navigation {
   display: flex;
@@ -125,5 +149,10 @@ main {
   flex: 1; /* 헤더를 제외한 모든 공간 차지 */
   padding-top: 63px; /* 헤더 높이만큼 아래로 이동 */
   overflow-y: auto; /* 콘텐츠가 길어질 경우 스크롤 활성화 */
+}
+
+.menu-name {
+  font-size: 20px;
+  font-weight: bold;
 }
 </style>

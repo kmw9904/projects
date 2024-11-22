@@ -7,6 +7,9 @@
       <div v-for="product in products" :key="product.product_id" class="product-item card mb-3 shadow-sm">
         <div class="card-body">
           <p class="card-title">
+            <div class="bank-img">
+              <img :src="`/pictures/${product.company_name}.png`" alt="금융 회사 로고" />
+            </div>
             <strong>금융 회사:</strong>
             {{ product.company_name || "금융 회사 정보 없음" }}
           </p>
@@ -58,7 +61,7 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted } from "vue";
+import { defineProps, onMounted, ref } from "vue";
 import axios from "axios";
 import MorgageDiscussionView from "./MortgageDiscussionView.vue";
 
@@ -118,6 +121,13 @@ const calculateAllPayments = () => {
   });
 };
 
+// 은행사진가져오기
+const companyUrl = ref("");
+const getCompany = function (company) {
+  companyUrl.value = `/public/pictures/${company}.png`;
+  return companyUrl.value;
+};
+
 // 컴포넌트가 로드될 때 자동으로 계산
 onMounted(() => {
   calculateAllPayments();
@@ -145,10 +155,17 @@ onMounted(() => {
   border: none;
   border-radius: 10px;
   padding: 15px;
+  margin-bottom: 15px; /* 카드 간격 추가 */
 }
 
 .card-body {
   padding: 20px;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #007bff;
 }
 
 .options-list {
@@ -167,4 +184,21 @@ onMounted(() => {
   font-size: 0.9rem;
   color: #6c757d;
 }
+
+.bank-img {
+  width: 100%; /* 부모 컨테이너에 맞게 조정 */
+  max-width: 660px; /* 최대 너비 제한 */
+  height: 200px; /* 고정 높이 */
+  margin-bottom: 10px; /* 이미지와 텍스트 사이 간격 */
+}
+
+.bank-img img {
+  width: 100%; /* 컨테이너 너비에 맞게 이미지 조정 */
+  height: 100%; /* 고정 높이에 맞게 이미지 조정 */
+  object-fit: contain; /* 이미지가 비율에 맞게 축소되며 잘리지 않음 */
+  border: none; /* 테두리 제거 */
+  box-shadow: none; /* 그림자 제거 */
+}
 </style>
+
+

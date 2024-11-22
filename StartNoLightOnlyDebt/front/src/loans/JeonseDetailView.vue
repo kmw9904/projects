@@ -7,6 +7,9 @@
       <div v-for="product in products" :key="product.product_id" class="product-item card mb-4 shadow-sm">
         <div class="card-body">
           <p class="card-title">
+            <div class="bank-img">
+              <img :src="`/pictures/${product.company_name}.png`" alt="금융 회사 로고" />
+            </div>
             <strong>금융 회사:</strong>
             {{ product.company_name || "금융 회사 정보 없음" }}
           </p>
@@ -61,7 +64,7 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted } from "vue";
+import { defineProps, onMounted, ref } from "vue";
 import axios from "axios";
 import JeonseDiscussionView from "./JeonseDiscussionView.vue";
 
@@ -121,6 +124,13 @@ const calculateAllPayments = () => {
   });
 };
 
+// 은행사진가져오기
+const companyUrl = ref("");
+const getCompany = function (company) {
+  companyUrl.value = `/public/pictures/${company}.png`;
+  return companyUrl.value;
+};
+
 // 컴포넌트가 로드될 때 자동으로 계산
 onMounted(() => {
   calculateAllPayments();
@@ -173,5 +183,19 @@ onMounted(() => {
 .text-muted {
   font-size: 0.9rem;
   color: #6c757d;
+}
+
+.bank-img {
+  width: 660px; /* 이미지 컨테이너의 너비 */
+  height: auto;
+  flex-shrink: 0; /* 크기를 줄이지 않음 */
+}
+
+.bank-img img {
+  width: 100%; /* 컨테이너 너비에 맞게 이미지 조정 */
+  height: 200px; /* 비율 유지 */
+  object-fit: contain; /* 이미지가 비율에 맞게 축소되며 잘리지 않음 */
+  border: none; /* 테두리 제거 */
+  box-shadow: none; /* 그림자 제거 */
 }
 </style>
