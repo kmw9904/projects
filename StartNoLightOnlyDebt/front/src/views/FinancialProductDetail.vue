@@ -10,6 +10,7 @@
       <p>
         <strong>금융 회사:</strong>
         {{ product.company_name || "정보 없음" }}
+        <a :href="`${product.homp_url}`">바로가기</a>
       </p>
       <p>
         <strong>상품명:</strong>
@@ -55,6 +56,7 @@
         <strong>상품 구분:</strong>
         {{ product.prdt_div || "정보 없음" }}
       </p>
+      <button @click="store.goBack">뒤로 가기</button>
     </div>
 
     <div v-else class="text-center text-muted">
@@ -64,9 +66,12 @@
 </template>
 
 <script setup>
+import { useNavigationStore } from "@/stores/navigation";
 import { onMounted, ref } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+
+const store = useNavigationStore();
 
 // 현재 라우트에서 productId 가져오기
 const route = useRoute();
@@ -80,6 +85,7 @@ const fetchProductDetail = async () => {
   try {
     const response = await axios.get(`http://127.0.0.1:8000/api/v1/product/${productId}/`);
     product.value = response.data;
+    console.log(product.value);
   } catch (error) {
     console.error("상품 정보를 가져오는 중 오류 발생:", error.response || error.message);
   }

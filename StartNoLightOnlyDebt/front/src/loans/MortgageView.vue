@@ -17,11 +17,20 @@
       </div>
 
       <div class="form-group">
-        <label for="repaymentType" class="form-label">족쇄 유형:</label>
-        <select v-model="filters.repaymentType" id="repaymentType" class="form-select">
+        <label for="paymentType" class="form-label">족쇄 유형:</label>
+        <select v-model="filters.paymentType" id="paymentType" class="form-select">
           <option value="전체">전체</option>
           <option value="고정금리">고정금리</option>
           <option value="변동금리">변동금리</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="repaymentType" class="form-label">족쇄 방식:</label>
+        <select v-model="filters.repaymentType" id="repaymentType" class="form-select">
+          <option value="전체">전체</option>
+          <option value="분할상환방식">분할상환방식</option>
+          <option value="만기일시상환방식">만기일시상환방식</option>
         </select>
       </div>
 
@@ -61,7 +70,7 @@ const loanAmount = ref(0); // 대출 금액
 const loanPeriod = ref(0); // 대출 기간
 const sortByMinPayment = ref(false); // 최저 상환 금액 기준 정렬 여부
 const filterByPreferredBanks = ref(false); // 선호 은행 필터링 여부
-const filters = ref({ repaymentType: "전체" }); // 상환 방식 필터
+const filters = ref({ paymentType: "전체", repaymentType: "전체" }); // 상환 방식 필터
 
 const products = ref([]); // 결과 데이터
 const preferredBanks = ref([]); // 선호 은행 데이터
@@ -160,12 +169,25 @@ const filteredProducts = computed(() => {
   let result = products.value;
 
   // 상환 방식 필터링
-  if (filters.value.repaymentType !== "전체") {
+  if (filters.value.paymentType !== "전체") {
     result = result
       .map((product) => {
         const filteredOptions = product.options.filter((option) => {
           const lendRateType = (option.lend_rate_type_nm || "").trim().toLowerCase();
-          return lendRateType === filters.value.repaymentType.trim().toLowerCase();
+          return lendRateType === filters.value.paymentType.trim().toLowerCase();
+        });
+        return filteredOptions.length > 0 ? { ...product, options: filteredOptions } : null;
+      })
+      .filter((product) => product !== null);
+  }
+
+  // 상환 방식 필터링
+  if (filters.value.repaymentType !== "전체") {
+    result = result
+      .map((product) => {
+        const filteredOptions = product.options.filter((option) => {
+          const RpayType = (option.rpay_type_nm || "").trim().toLowerCase();
+          return RpayType === filters.value.repaymentType.trim().toLowerCase();
         });
         return filteredOptions.length > 0 ? { ...product, options: filteredOptions } : null;
       })

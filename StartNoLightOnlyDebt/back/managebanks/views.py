@@ -313,6 +313,7 @@ class FinancialProductDetailView(APIView):
                 "fin_co_subm_day": product.fin_co_subm_day,
                 "prdt_div": product.prdt_div,
                 "company_name": product.fin_co_no.company_name if product.fin_co_no else "정보 없음",
+                "homp_url": product.fin_co_no.homp_url if product.fin_co_no else "정보 없음",
             }, status=status.HTTP_200_OK)
         except FinancialProduct.DoesNotExist:
             return Response({"error": "Product not found"}, status=status.HTTP_404_NOT_FOUND)
