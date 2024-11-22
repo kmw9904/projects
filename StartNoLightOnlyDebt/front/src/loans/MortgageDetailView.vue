@@ -42,7 +42,7 @@
                 <strong>최고 상환 금액:</strong>
                 {{ option.maxPayment !== undefined ? `${formatCurrency(option.maxPayment)}원` : "계산 중..." }}
               </p>
-              <MorgageDiscussionView :productId="product.product_id" :productName="product.product_name" />
+              <MortgageDiscussionView :productId="product.product_id" :productName="product.product_name" />
             </div>
           </div>
           <div v-else class="text-muted">옵션이 없습니다.</div>

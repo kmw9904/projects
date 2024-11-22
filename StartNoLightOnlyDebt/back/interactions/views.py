@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Like, Comment
 from .serializers import LikeSerializer, CommentSerializer
 from managebanks.models import JeonseOption, CreditLoanOption, MortgageOption
+from django.db.models import Count
 
 class LikeToggleView(APIView):
     permission_classes = [IsAuthenticated]
@@ -142,3 +143,39 @@ class CommentView(APIView):
 
         except Comment.DoesNotExist:
             return Response({"error": "댓글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class TopLikedProductsView(APIView):
+    """
+    각 상품 유형에서 좋아요가 가장 많은 상품을 반환합니다.
+    """
+    def get(self, request, option_type):
+        try:
+            if option_type == "credit":
+                top_product = CreditLoanOption.objects.annotate(
+                    likes_count=Count('credit_likes')
+                ).order_by('-likes_count').first()
+            elif option_type == "jeonse":
+                top_product = JeonseOption.objects.annotate(
+                    likes_count=Count('jeonse_likes')
+                ).order_by('-likes_count').first()
+            elif option_type == "mortgage":
+                top_product = MortgageOption.objects.annotate(
+                    likes_count=Count('mortgage_likes')
+                ).order_by('-likes_count').first()
+            else:
+                return Response({"error": "Invalid option type"}, status=status.HTTP_400_BAD_REQUEST)
+
+            if top_product:
+                return Response({
+                    "product_id": top_product.option_id,
+                    "product_type": option_type,
+                    # "product_name": top_product.product_name,  # 확인 필요: 실제 상품 이름 필드명
+                    "company_name": top_product.company.name if hasattr(top_product, 'company') else "N/A",
+                    "likes": top_product.likes_count,
+                }, status=status.HTTP_200_OK)
+            return Response({"message": "No products found."}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            # 에러 반환
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
