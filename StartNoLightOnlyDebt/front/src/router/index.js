@@ -18,7 +18,7 @@ import ArticleView from "@/views/ArticleView.vue";
 import ArticleDetail from "@/views/ArticleDetail.vue";
 import CreditLoanDiscussionView from "@/loans/CreditLoanDiscussionView.vue";
 import JeonseDiscussionView from "@/loans/JeonseDiscussionView.vue";
-import MorgageDiscussionView from "@/loans/MortgageDiscussionView.vue";
+import MortgageDiscussionView from "@/loans/MortgageDiscussionView.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -110,18 +110,18 @@ const router = createRouter({
     }, // 게시글 상세 보기
     {
       path: "/credit-discussion",
-      name: "CreditLoanDiscussionView",
+      name: "creditLoanDiscussionView",
       component: CreditLoanDiscussionView,
     },
     {
       path: "/jeonse-discussion",
-      name: "JeonseDiscussionView",
+      name: "jeonseLoanDiscussionView",
       component: JeonseDiscussionView,
     },
     {
       path: "/mortgage-discussion",
-      name: "MorgageDiscussionView",
-      component: MorgageDiscussionView,
+      name: "mortgageLoanDiscussionView",
+      component: MortgageDiscussionView,
     },
   ],
 });

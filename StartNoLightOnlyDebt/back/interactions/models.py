@@ -14,21 +14,21 @@ class Like(models.Model):
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="likes"
+        related_name="jeonse_likes"
     )
     credit_loan_option = models.ForeignKey(
         CreditLoanOption,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="likes"
+        related_name="credit_likes"
     )
     mortgage_option = models.ForeignKey(
         MortgageOption,
         on_delete=models.CASCADE,
         null=True,
         blank=True,
-        related_name="likes"
+        related_name="mortgage_likes"
     )
     created_at = models.DateTimeField(auto_now_add=True)
 

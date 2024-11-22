@@ -5,6 +5,7 @@ from rest_framework import status
 from .models import Like, Comment
 from .serializers import LikeSerializer, CommentSerializer
 from managebanks.models import JeonseOption, CreditLoanOption, MortgageOption
+from django.db.models import Count
 
 class LikeToggleView(APIView):
     permission_classes = [IsAuthenticated]
@@ -142,3 +143,42 @@ class CommentView(APIView):
 
         except Comment.DoesNotExist:
             return Response({"error": "댓글을 찾을 수 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+        
+
+class TopLikedProductsView(APIView):
+    """
+    각 상품 유형에서 좋아요가 가장 많은 상품을 반환합니다.
+    """
+    def get(self, request, option_type):
+        try:
+            if option_type == "credit":
+                top_product = CreditLoanOption.objects.annotate(
+                    likes_count=Count('credit_likes')
+                ).order_by('-likes_count').first()
+            elif option_type == "jeonse":
+                top_product = JeonseOption.objects.annotate(
+                    likes_count=Count('jeonse_likes')
+                ).order_by('-likes_count').first()
+            elif option_type == "mortgage":
+                top_product = MortgageOption.objects.annotate(
+                    likes_count=Count('mortgage_likes')
+                ).order_by('-likes_count').first()
+            else:
+                return Response({"error": "Invalid option type"}, status=status.HTTP_400_BAD_REQUEST)
+
+            if top_product:
+                financial_product = top_product.fin_prdt_cd
+                financial_company = financial_product.fin_co_no
+                
+                return Response({
+                    "product_id": top_product.option_id,
+                    "product_type": option_type,
+                    "product_name": financial_product.product_name,
+                    "company_name":financial_company.company_name,
+                    "likes": top_product.likes_count,
+                }, status=status.HTTP_200_OK)
+            return Response({"message": "No products found."}, status=status.HTTP_404_NOT_FOUND)
+
+        except Exception as e:
+            # 에러 반환
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
