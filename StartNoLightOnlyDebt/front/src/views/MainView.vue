@@ -115,18 +115,30 @@
     </div>
   </div>
 </div>
-  <div>
-    <div v-if="topLikedArticle">
-      <h3>가장 좋아요를 많이 받은 게시글</h3>
-      <h4>{{ topLikedArticle.title }}</h4>
-      <p>{{ topLikedArticle.content }}</p>
-      <p>좋아요: {{ topLikedArticle.likes_count }}</p>
-      <RouterLink :to="{ name: 'ArticleDetail', params: { id: topLikedArticle.id } }">상세 보기</RouterLink>
-    </div>
-    <div v-else>
-      <p>아직 좋아요를 받은 게시글이 없습니다.</p>
+<div v-if="topLikedArticle" class="top-liked-article py-5 bg-light">
+  <div class="container text-center">
+    <h3 class="section-title mb-4"><img class="best-img" src="/pictures/최고게시글.png" alt="베스트 상품"></h3>
+    <div class="article-card card shadow-sm mx-auto">
+      <div class="card-body">
+        <h4 class="article-title card-title mb-3">{{ topLikedArticle.title }}</h4>
+        <p class="article-content mb-4">{{ topLikedArticle.content }}</p>
+        <p class="article-likes mb-3">
+          <strong>❤️</strong> {{ topLikedArticle.likes_count }}
+        </p>
+        <RouterLink
+          :to="{ name: 'ArticleDetail', params: { id: topLikedArticle.id } }"
+          class="btn btn-primary"
+        >
+          게시글 상세 보기
+        </RouterLink>
+      </div>
     </div>
   </div>
+</div>
+<div v-else class="text-center py-5">
+  <p class="text-muted">아직 좋아요를 받은 게시글이 없습니다.</p>
+</div>
+
 </template>
 
 <script setup>
@@ -437,6 +449,61 @@ button.btn-link:hover {
 .text-muted {
   font-size: 0.95rem;
   color: #6c757d;
+}
+
+/* 가장 좋아요를 많이 받은 게시글 스타일 */
+.top-liked-article {
+  background-color: #f8f9fa;
+  padding: 3rem 0;
+}
+
+.article-card {
+  max-width: 600px;
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.article-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.article-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #343a40;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.article-content {
+  font-size: 1.2rem;
+  color: #495057;
+  text-align: left;
+}
+
+.article-likes {
+  font-size: 1.1rem;
+  color: #6c757d;
+  text-align: right;
+}
+
+.btn-primary {
+  background-color: #6c757d;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #5a6268;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 </style>

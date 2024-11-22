@@ -4,7 +4,7 @@
 
     <!-- 좋아요 버튼 -->
     <div class="like-section">
-      <button class="btn btn-like" @click="toggleLike">{{ isLiked ? "💔 좋아요 취소" : "❤️ 좋아요" }} {{ likes }}</button>
+      <button class="btn btn-like" @click="toggleLike">{{ isLiked ? "💔" : "❤️" }} {{ likes }}</button>
     </div>
 
     <!-- 댓글 입력 -->
