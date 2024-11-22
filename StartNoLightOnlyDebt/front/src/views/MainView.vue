@@ -12,7 +12,7 @@
           <br />
           <br />
           <div id="product-section">
-            <a href="#product-section" class="btn btn-start btn-secondary">빚으로 시작하기</a>
+            <a href="#product-section" class="btn btn-start btn-secondary"><img class="light-button" src="/pictures/빚버튼.png" alt=""></a>
           </div>
         </p>
       </div>
@@ -231,9 +231,8 @@ const scrollToSection = function() {
 .btn-start {
   font-size: 1.2rem;
   padding: 0.8rem 2rem;
-  border-radius: 50px;
+  border: none;
   transition: all 0.3s ease-in-out;
-  background-color: #6c757d;
   color: #fff;
   border: none;
 }
@@ -397,6 +396,11 @@ button.btn-link:hover {
 
 .search-img {
   width: 1000px;
+  height: auto; 
+}
+
+.light-button {
+  width: 300px;
   height: auto; 
 }
 
