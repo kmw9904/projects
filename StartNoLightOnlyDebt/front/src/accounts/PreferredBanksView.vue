@@ -2,11 +2,18 @@
   <div class="preferred-banks-container">
     <h1 class="text-center mb-4">선호 은행 수정</h1>
     <form @submit.prevent="updatePreferredBanks" class="preferred-banks-form card shadow-sm p-4">
-      <div v-for="bank in banks" :key="bank.company_id" class="form-check mb-2">
-        <input type="checkbox" :value="bank.company_id" v-model="selectedBanks" class="form-check-input" :id="'bank_' + bank.company_id" />
-        <label :for="'bank_' + bank.company_id" class="form-check-label">
-          {{ bank.company_name }}
-        </label>
+      <div class="row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <div v-for="bank in banks" :key="bank.company_id" class="form-check mb-2">
+            <input type="checkbox" :value="bank.company_id" v-model="selectedBanks" class="form-check-input" :id="'bank_' + bank.company_id" />
+            <label :for="'bank_' + bank.company_id" class="form-check-label">
+              <div class="bank-img">
+                <img :src="`/pictures/${bank.company_name}.png`" alt="선호 은행 이미지" />
+              </div>
+              {{ bank.company_name }}
+            </label>
+          </div>
+        </div>
       </div>
 
       <!-- 제출 버튼 -->
@@ -95,5 +102,20 @@ const updatePreferredBanks = () => {
 
 .btn-secondary:hover {
   background-color: #5a6268;
+}
+
+.bank-img {
+  width: 100px; /* 이미지 컨테이너의 너비 */
+  height: 100px;
+  flex-shrink: 0; /* 크기를 줄이지 않음 */
+  margin-right: 10px;
+}
+
+.bank-img img {
+  width: 100px; /* 이미지 컨테이너의 너비 */
+  height: 100px;
+  object-fit: contain; /* 이미지가 비율에 맞게 축소되며 잘리지 않음 */
+  border: none; /* 테두리 제거 */
+  box-shadow: none; /* 그림자 제거 */
 }
 </style>

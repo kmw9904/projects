@@ -19,62 +19,101 @@
     </div>
   </div>
 
-  <div class="product-section py-5 bg-light">
-    <div class="container">
-      <h2 class="section-title text-center mb-4">금융 상품 조회</h2>
+  <div id="product-section" class="product-section py-5 bg-light">
+  <div class="container">
+    <h2 id="search" class="section-title text-center mb-4"><img class="search-img" src="/pictures/상품조회.png" alt="검색 상품"></h2>
 
-      <div class="menu d-flex justify-content-center mb-4">
-        <button class="btn btn-outline-primary mx-2" @click="targetLoan('CreditLoanView')">신용 대출</button>
-        <button class="btn btn-outline-primary mx-2" @click="targetLoan('JeonseView')">전세 대출</button>
-        <button class="btn btn-outline-primary mx-2" @click="targetLoan('MortgageView')">담보 대출</button>
+    <!-- 전체 레이아웃을 좌우로 분리 -->
+    <div class="row">
+      <!-- 왼쪽 버튼 섹션 -->
+      <div class="col-md-4 sticky-col">
+        <div class="menu">
+          <button class="btn btn-outline-secondary w-100 mb-3" @click="() => { scrollToSection(); targetLoan('CreditLoanView'); }"><img class="loan-img" src="/pictures/신용대출.png" alt="개인대출"></button>
+          <button class="btn btn-outline-secondary w-100 mb-3" @click="() => { scrollToSection(); targetLoan('JeonseView'); }"><img class="loan-img" src="/pictures/전세대출.png" alt="전세대출"></button>
+          <button class="btn btn-outline-secondary w-100"  @click="() => { scrollToSection(); targetLoan('MortgageView'); }"><img class="loan-img" src="/pictures/담보대출.png" alt="담보대출"></button>
+        </div>
       </div>
 
-      <div class="dynamic-view mt-4">
-        <div v-if="nowLoan === 'CreditLoanView'">
-          <CreditLoanView />
-        </div>
-        <div v-else-if="nowLoan === 'JeonseView'">
-          <JeonseView />
-        </div>
-        <div v-else-if="nowLoan === 'MortgageView'">
-          <MortgageView />
+      <!-- 오른쪽 계산 섹션 -->
+      <div class="col-md-8">
+        <div class="dynamic-view">
+          <div v-if="nowLoan === 'CreditLoanView'">
+            <CreditLoanView />
+          </div>
+          <div v-else-if="nowLoan === 'JeonseView'">
+            <JeonseView />
+          </div>
+          <div v-else-if="nowLoan === 'MortgageView'">
+            <MortgageView />
+          </div>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- 좋아요가 가장 많은 상품 -->
-  <div class="top-liked-products py-5 bg-white">
-    <div class="container text-center">
-      <h3 class="section-title">가장 좋아요가 많은 상품</h3>
-      <div v-if="topLikedProducts.length > 0">
-        <ul class="list-group list-group-flush">
-          <li v-for="product in topLikedProducts" :key="product.product_id" class="list-group-item">
-            <div class="d-flex justify-content-between align-items-center">
-              <span>
-                <strong>{{ product.product_name }}</strong>
-                ({{ product.company_name }})
-                <br />
-                좋아요: {{ product.likes }}
-              </span>
+<!-- 좋아요가 가장 많은 상품 -->
+<div class="top-liked-products py-5 bg-white">
+  <div class="container">
+    <h2 id="search" class="section-title text-center mb-4"><img class="best-img" src="/pictures/베스트상품.png" alt="베스트 상품"></h2>
+    <div v-if="topLikedProducts.length > 0" class="row">
+      <div
+        v-for="product in topLikedProducts"
+        :key="product.product_id"
+        class="col-lg-4 col-md-6 mb-4"
+      >
+      <div class="card product-card shadow-sm">
+        <div class="card-body">
+            <div id="title-name" class="card-title">
               <div v-if="product.product_type == 'credit'">
-                <CreditLoanDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="product.product_id" />
+                <p>개인 신용 대출</p>
               </div>
-              <div v-if="product.product_type == 'jeonse'">
-                <JeonseDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="product.product_id" />
+              <div v-else-if="product.product_type == 'jeonse'">
+                <p>전세 자금 대출</p>
               </div>
-              <div v-if="product.product_type == 'mortgage'">
-                <MortgageDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="product.product_id" />
+              <div v-else-if="product.product_type == 'mortgage'">
+                <p>주택 담보 대출</p>
               </div>
             </div>
-          </li>
-        </ul>
-      </div>
-      <div v-else>
-        <p>아직 좋아요를 받은 상품이 없습니다.</p>
+            <h5 class="card-title">{{ product.product_name }}</h5>
+            <p class="card-text">
+              {{ product.company_name }}
+            </p>
+            <p class="card-text">
+              <strong>❤️</strong> {{ product.likes }}
+            </p>
+
+            <!-- 조건별로 컴포넌트 표시 -->
+            <div v-if="product.product_type == 'credit'">
+              <CreditLoanDiscussionView
+                :productId="product.product_id"
+                :productName="product.product_name"
+                :optionType="product.product_id"
+              />
+            </div>
+            <div v-if="product.product_type == 'jeonse'">
+              <JeonseDiscussionView
+                :productId="product.product_id"
+                :productName="product.product_name"
+                :optionType="product.product_id"
+              />
+            </div>
+            <div v-if="product.product_type == 'mortgage'">
+              <MortgageDiscussionView
+                :productId="product.product_id"
+                :productName="product.product_name"
+                :optionType="product.product_id"
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
+    <div v-else class="text-center text-muted">
+      <p>아직 좋아요를 받은 상품이 없습니다.</p>
+    </div>
   </div>
+</div>
   <div>
     <div v-if="topLikedArticle">
       <h3>가장 좋아요를 많이 받은 게시글</h3>
@@ -129,11 +168,20 @@ const fetchTopLikedProducts = async () => {
 onMounted(() => {
   fetchTopLikedProducts();
 });
+
 const nowLoan = ref("CreditLoanView");
 const targetLoan = function (loan) {
   nowLoan.value = loan;
-  console.log(nowLoan.value);
 };
+
+const scrollToSection = function() {
+  const section = document.getElementById("product-section")
+  if (section) {
+    section.scrollIntoView({behavior:"smooth"})
+  }
+}
+
+
 </script>
 
 <style scoped>
@@ -193,23 +241,32 @@ const targetLoan = function (loan) {
   font-size: 2rem;
   font-weight: bold;
   color: #343a40;
+  margin-bottom: 2rem;
 }
 
+.menu {
+  padding-top: 100px;
+}
 .menu button {
-  font-size: 1rem;
+  font-size: 0,5rem;
+  padding: 0.8rem;
   border-radius: 5px;
+  border: none;
   transition: all 0.3s ease-in-out;
 }
 
 .menu button:hover {
   transform: scale(1.05);
-  background-color: #0056b3;
+  background-color: lightgray;
   color: #fff;
 }
 
 /* Dynamic View */
 .dynamic-view {
   margin-top: 2rem;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* 개인 대출 섹션 */
@@ -249,6 +306,9 @@ button.btn-link {
   font-size: 0.9rem;
 }
 
+.loan-img {
+  width: 100px;
+}
 button.btn-link:hover {
   text-decoration: underline;
 }
@@ -299,8 +359,83 @@ button.btn-link:hover {
   }
 }
 
-html {
-  scroll-padding-top: 200px; /* 사진 크기만큼 간격 추가 */
+/* 레이아웃 조정 */
+.row {
+  align-items: flex-start; /* 상단 정렬 */
+}
+
+.sticky-col {
+  position: sticky;
+  top: 20px; /* 상단에서의 고정 위치 */
+  z-index: 10; /* 다른 요소 위에 렌더링 */
+  height: max-content; /* 컨텐츠 높이에 맞춤 */
+}
+
+#search {
+  font-size: 3rem;
+  font-weight: bold;
+  padding-bottom: 30px;
+}
+
+.best-img {
+  width: 500px;
+  height: auto;
+}
+
+.search-img {
+  width: 1000px;
+  height: auto; 
+}
+
+/* 좋아요가 가장 많은 상품 스타일 */
+.top-liked-products {
+  background-color: #f9f9f9;
+  padding: 3rem 0;
+}
+
+.product-card {
+  border: 1px solid #eaeaea;
+  border-radius: 10px;
+  transition: all 0.3s ease-in-out;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #343a40;
+  margin-bottom: 0.5rem;
+  text-align: center;
+  padding-bottom: 10px;
+}
+
+#title-name {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #343a40;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.card-text {
+  font-size: 1.2rem;
+  color: #495057;
+  text-align: center;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* 텍스트 중앙 정렬 */
+.text-muted {
+  font-size: 0.95rem;
+  color: #6c757d;
 }
 
 </style>

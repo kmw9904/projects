@@ -28,6 +28,9 @@
         <strong>선호 은행</strong>
         <ul class="preferred-banks-list list-group mt-3">
           <li v-for="bank in profile.profile_user.preferred_banks" :key="bank.id" class="list-group-item">
+            <div class="bank-img">
+              <img :src="`/pictures/${bank.company_name}.png`" alt="선호 은행 이미지" />
+            </div>
             {{ bank.company_name }}
           </li>
         </ul>
@@ -101,5 +104,19 @@ onMounted(() => {
 
 .btn-primary:hover {
   background-color: #0056b3;
+}
+
+.bank-img {
+  width: 100px; /* 이미지 컨테이너의 너비 */
+  height: 100px;
+  flex-shrink: 0; /* 크기를 줄이지 않음 */
+}
+
+.bank-img img {
+  width: 100px; /* 이미지 컨테이너의 너비 */
+  height: 100px;
+  object-fit: contain; /* 이미지가 비율에 맞게 축소되며 잘리지 않음 */
+  border: none; /* 테두리 제거 */
+  box-shadow: none; /* 그림자 제거 */
 }
 </style>
