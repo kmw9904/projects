@@ -60,7 +60,7 @@
 <script setup>
 import { defineProps, onMounted } from "vue";
 import axios from "axios";
-import MorgageDiscussionView from "./MortgageDiscussionView.vue";
+import MortgageDiscussionView from "./MortgageDiscussionView.vue";
 
 // 부모 컴포넌트에서 전달받은 props
 const props = defineProps({

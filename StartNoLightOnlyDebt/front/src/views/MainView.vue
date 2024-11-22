@@ -35,87 +35,35 @@
     </div>
   </div>
 
-  <!-- 개인 대출 -->
-  <div v-if="topLikedCredit.length > 0">
-    <h5>개인 대출</h5>
-    <ul>
-      <li v-for="product in topLikedCredit" :key="product.product_id">
-        <p>
-          <strong>{{ product.product_name }}</strong>
-          ({{ product.company_name }})
-          <br />
-          좋아요: {{ product.likes }}
-        </p>
-        <RouterLink :to="{ name: 'CreditLoanDiscussionView', params: { productId: product.product_id } }">댓글 보기</RouterLink>
-      </li>
-    </ul>
-  </div>
-  <div v-else>
-    <p>아직 좋아요를 받은 개인 대출 상품이 없습니다.</p>
-  </div>
-
-  <!-- 전세 대출 -->
-  <div v-if="topLikedJeonse.length > 0">
-    <h5>전세 대출</h5>
-    <ul>
-      <li v-for="product in topLikedJeonse" :key="product.product_id">
-        <p>
-          <strong>{{ product.product_name }}</strong>
-          ({{ product.company_name }})
-          <br />
-          좋아요: {{ product.likes }}
-        </p>
-        <RouterLink :to="{ name: 'JeonseLoanDiscussionView', params: { productId: product.product_id } }">댓글 보기</RouterLink>
-      </li>
-    </ul>
-  </div>
-  <div v-else>
-    <p>아직 좋아요를 받은 전세 대출 상품이 없습니다.</p>
-  </div>
-  <!-- 담보 대출 -->
-  <div v-if="topLikedMortgage.length > 0">
-    <h5>담보 대출</h5>
-    <ul>
-      <li v-for="product in topLikedMortgage" :key="product.product_id">
-        <p>
-          <strong>{{ product.product_name }}</strong>
-          ({{ product.company_name }})
-          <br />
-          좋아요: {{ product.likes }}
-        </p>
-        <RouterLink :to="{ name: 'MortgageLoanDiscussionView', params: { productId: product.product_id } }">댓글 보기</RouterLink>
-      </li>
-    </ul>
-  </div>
-  <div v-else>
-    <p>아직 좋아요를 받은 담보 대출 상품이 없습니다.</p>
-  </div>
-
-  <div class="explore-section py-5 bg-white">
-    <div class="container">
-      <h3 class="explore-title text-center mb-4">상품 둘러보기</h3>
-    </div>
-  </div>
-
-  <div class="liked-products py-5 bg-light">
-    <div class="container">
-      <h4 class="liked-title text-center mb-4">사람들이 좋아요한 상품</h4>
-
-      <div v-if="topLikedCredit.length > 0">
-        <h5 class="product-category text-center">개인 대출</h5>
+  <!-- 좋아요가 가장 많은 상품 -->
+  <div class="top-liked-products py-5 bg-white">
+    <div class="container text-center">
+      <h3 class="section-title">가장 좋아요가 많은 상품</h3>
+      <div v-if="topLikedProducts.length > 0">
         <ul class="list-group list-group-flush">
-          <li v-for="product in topLikedCredit" :key="product.product_id" class="list-group-item">
+          <li v-for="product in topLikedProducts" :key="product.product_id" class="list-group-item">
             <div class="d-flex justify-content-between align-items-center">
               <span>
-                <strong>{{ product.product_name }}</strong>
+                <strong>{{ product.product_id }}</strong>
                 ({{ product.company_name }})
                 <br />
                 좋아요: {{ product.likes }}
               </span>
-              <RouterLink :to="{ name: 'CreditLoanDiscussionView', params: { productId: product.product_id } }" class="btn btn-link">댓글 보기</RouterLink>
+              <div v-if="product.product_type == 'credit'">
+                <CreditLoanDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="product.product_id" />
+              </div>
+              <div v-if="product.product_type == 'jeonse'">
+                <JeonseDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="product.product_id" />
+              </div>
+              <div v-if="product.product_type == 'mortgage'">
+                <MortgageDiscussionView :productId="product.product_id" :productName="product.product_name" :optionType="product.product_id" />
+              </div>
             </div>
           </li>
         </ul>
+      </div>
+      <div v-else>
+        <p>아직 좋아요를 받은 상품이 없습니다.</p>
       </div>
     </div>
   </div>
@@ -141,13 +89,13 @@ import axios from "axios";
 import CreditLoanView from "@/loans/CreditLoanView.vue";
 import JeonseView from "@/loans/JeonseView.vue";
 import MortgageView from "@/loans/MortgageView.vue";
-import { useBankStore } from "@/stores/bank";
+import CreditLoanDiscussionView from "@/loans/CreditLoanDiscussionView.vue";
+import JeonseDiscussionView from "@/loans/JeonseDiscussionView.vue";
+import MortgageDiscussionView from "@/loans/MortgageDiscussionView.vue";
 
 const API_URL = "http://127.0.0.1:8000";
 
-const topLikedCredit = ref([]);
-const topLikedJeonse = ref([]);
-const topLikedMortgage = ref([]);
+const topLikedProducts = ref([]);
 const store = useArticleStore();
 
 const topLikedArticle = computed(() => store.topLikedArticle);
@@ -158,14 +106,13 @@ onMounted(() => {
 
 const fetchTopLikedProducts = async () => {
   try {
+    // 상품 유형별 가장 좋아요가 많은 상품 가져오기
     const creditResponse = await axios.get(`${API_URL}/interactions/credit/top-liked/`);
-    topLikedCredit.value = creditResponse.data;
-
     const jeonseResponse = await axios.get(`${API_URL}/interactions/jeonse/top-liked/`);
-    topLikedJeonse.value = jeonseResponse.data;
-
     const mortgageResponse = await axios.get(`${API_URL}/interactions/mortgage/top-liked/`);
-    topLikedMortgage.value = mortgageResponse.data;
+
+    topLikedProducts.value = [creditResponse.data, jeonseResponse.data, mortgageResponse.data].filter((product) => product.likes); // 좋아요가 있는 상품만 필터링
+    console.log(topLikedProducts.value);
   } catch (error) {
     console.error("최고 좋아요 상품 가져오기 실패:", error.response?.data || error.message);
   }
