@@ -44,7 +44,7 @@
           <li v-for="product in topLikedProducts" :key="product.product_id" class="list-group-item">
             <div class="d-flex justify-content-between align-items-center">
               <span>
-                <strong>{{ product.product_id }}</strong>
+                <strong>{{ product.product_name }}</strong>
                 ({{ product.company_name }})
                 <br />
                 좋아요: {{ product.likes }}

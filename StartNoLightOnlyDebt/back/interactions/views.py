@@ -167,11 +167,14 @@ class TopLikedProductsView(APIView):
                 return Response({"error": "Invalid option type"}, status=status.HTTP_400_BAD_REQUEST)
 
             if top_product:
+                financial_product = top_product.fin_prdt_cd
+                financial_company = financial_product.fin_co_no
+                
                 return Response({
                     "product_id": top_product.option_id,
                     "product_type": option_type,
-                    # "product_name": top_product.product_name,  # 확인 필요: 실제 상품 이름 필드명
-                    "company_name": top_product.company.name if hasattr(top_product, 'company') else "N/A",
+                    "product_name": financial_product.product_name,
+                    "company_name":financial_company.company_name,
                     "likes": top_product.likes_count,
                 }, status=status.HTTP_200_OK)
             return Response({"message": "No products found."}, status=status.HTTP_404_NOT_FOUND)
