@@ -172,7 +172,7 @@ const fetchTopLikedProducts = async () => {
     const mortgageResponse = await axios.get(`${API_URL}/interactions/mortgage/top-liked/`);
 
     topLikedProducts.value = [creditResponse.data, jeonseResponse.data, mortgageResponse.data].filter((product) => product.likes); // 좋아요가 있는 상품만 필터링
-    console.log(topLikedProducts.value);
+    console.log('좋아요상품 :',topLikedProducts.value);
   } catch (error) {
     console.error("최고 좋아요 상품 가져오기 실패:", error.response?.data || error.message);
   }
