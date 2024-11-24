@@ -1,28 +1,30 @@
 <template>
-  <div class="map-component-under">
-    <v-chip elevation="2" class="mb-5 map-search-btn" @click="searchOnMap">검색하기</v-chip>
-    <!-- 지도를 표시할 컨테이너 -->
-    <div id="mapContainer" style="width: 100%; height: 350px"></div>
+  <div class="map-component">
+    <!-- 지도 -->
+    <div id="mapContainer" class="map-container"></div>
+
+    <!-- 검색 결과 -->
+    <div class="search-results">
+      <h4 class="results-title">검색 결과</h4>
+      <ul v-if="results.length > 0">
+        <li v-for="(place, index) in results" :key="index">
+          <strong>{{ place.place_name }}</strong> -
+          <a :href="place.place_url" target="_blank">자세히 보기</a>
+        </li>
+      </ul>
+      <p v-else>검색 결과가 없습니다.</p>
+    </div>
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 declare global {
   interface Window {
     kakao: any;
   }
 }
-export default {
-  name: "KakaoMap",
-  beforeDestroy() {
-    // 컴포넌트가 파괴될 때 이벤트 리스너 제거
-    window.removeEventListener("resize", handleWindowResize);
-  },
-};
-</script>
 
-<script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { ref, watch, onMounted } from "vue";
 
 const props = defineProps({
   province: String,
@@ -30,112 +32,140 @@ const props = defineProps({
   bank: String,
 });
 
-const map = ref();
-const infowindow = ref();
-const markers = ref<any[]>([]); // 마커를 저장할 배열 추가
-const searchKeyword = ref(""); // 검색어를 저장할 변수 추가
+const map = ref(null);
+const infowindow = ref(null);
+const markers = ref([]);
+const results = ref([]);
+const loaded = ref(false); // 지도 로드 완료 상태 확인
 
-const loadKakaoMap = function () {
-  // Kakao 지도 API 스크립트 동적으로 추가
+// Kakao 지도 로드 및 초기화
+const loadKakaoMap = () => {
+  if (loaded.value) return;
+
   const script = document.createElement("script");
-  const KAKAO_KEY = "b94dc4c8f7f1f5db7aec4e20ccf8d234";
-  script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&autoload=false&libraries=services`;
+  const KAKAO_KEY = "b94dc4c8f7f1f5db7aec4e20ccf8d234"
+  script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&autoload=false&libraries=services`;
   script.async = true;
   script.onload = () => {
-    // Kakao 지도 API 로드 완료 후 실행할 콜백 함수
-    window.kakao.maps.load(function () {
+    window.kakao.maps.load(() => {
       initializeKakaoMap();
+      loaded.value = true; // 로드 완료
     });
   };
-
   document.head.appendChild(script);
 };
 
-const initializeKakaoMap = function () {
-  // Kakao 지도 API 초기화
-  console.log("Initializing Kakao Map");
-  const mapContainer = document.querySelector("#mapContainer");
+const initializeKakaoMap = () => {
+  const mapContainer = document.getElementById("mapContainer");
   const mapOption = {
-    center: new window.kakao.maps.LatLng(37.566826, 126.9786567),
-    level: 3,
+    center: new window.kakao.maps.LatLng(37.566826, 126.9786567), // 기본 좌표
+    level: 3, // 확대 레벨
   };
 
   map.value = new window.kakao.maps.Map(mapContainer, mapOption);
   infowindow.value = new window.kakao.maps.InfoWindow({ zIndex: 1 });
 };
 
-const handleWindowResize = function () {
-  // 창 크기가 변경될 때 지도 크기 업데이트
-  if (map) {
-    map.value.relayout();
+// 장소 검색 실행
+const searchPlaces = () => {
+  if (!map.value || !loaded.value) {
+    console.error("지도 또는 Kakao API가 아직 초기화되지 않았습니다.");
+    return;
   }
-};
 
-onMounted(() => {
-  // Kakao 지도 API 스크립트 동적으로 추가
-  loadKakaoMap();
-  // 창 크기가 변경될 때의 이벤트 리스너 추가
-  window.addEventListener("resize", handleWindowResize);
-});
+  const keyword = `${props.province} ${props.city} ${props.bank}`;
+  if (!keyword.trim()) {
+    alert("검색어를 입력해주세요.");
+    return;
+  }
 
-const searchOnMap = function () {
-  console.log("Button clicked");
-  map.value.isLoading = true;
-  searchKeyword.value = `${props.province} ${props.city} ${props.bank}`;
-  console.log("Search Keyword:", searchKeyword);
-  searchPlaces(searchKeyword.value);
-};
-
-const searchPlaces = function (keyword: any) {
   const ps = new window.kakao.maps.services.Places();
-
   ps.keywordSearch(keyword, placesSearchCB);
 };
 
-const placesSearchCB = function (data: any, status: any, pagination: any) {
+const placesSearchCB = (data, status) => {
   if (status === window.kakao.maps.services.Status.OK) {
-    // 검색 결과가 OK일 때 기존 마커들을 모두 제거
+    results.value = data;
     removeAllMarkers();
-    // 검색된 장소 위치를 기준으로 지도 범위를 재설정하기위해
-    // LatLngBounds 객체에 좌표를 추가
-    var bounds = new window.kakao.maps.LatLngBounds();
 
-    for (var i = 0; i < data.length; i++) {
-      displayMarker(data[i]);
-      bounds.extend(new window.kakao.maps.LatLng(data[i].y, data[i].x));
-    }
-    // 검색된 장소 위치를 기준으로 지도 범위를 재설정
+    const bounds = new window.kakao.maps.LatLngBounds();
+    data.forEach((place) => {
+      displayMarker(place);
+      bounds.extend(new window.kakao.maps.LatLng(place.y, place.x));
+    });
+
     map.value.setBounds(bounds);
-    // 이전에 열린 인포윈도우 닫기
-    infowindow.value.close();
   } else {
-    alert("선택한 지역에 해당 은행이 없습니다. 다른 은행을 선택해주세요.");
+    results.value = [];
+    alert("검색 결과가 없습니다.");
   }
 };
 
-const displayMarker = function (place: any) {
+const displayMarker = (place) => {
   const marker = new window.kakao.maps.Marker({
     map: map.value,
     position: new window.kakao.maps.LatLng(place.y, place.x),
   });
 
   window.kakao.maps.event.addListener(marker, "click", () => {
-    infowindow.value.setContent('<div style="padding:5px;font-size:12px;">' + place.place_name + "</div>");
+    // 인포윈도우에 HTML 스타일 적용
+    const content = `
+      <div style="
+        padding:10px;
+        font-size:14px;
+        max-width:200px; /* 최대 너비 설정 */
+        word-wrap:break-word; /* 긴 단어 줄바꿈 */
+        white-space:normal; /* 텍스트 자동 줄바꿈 */
+        overflow:hidden; /* 오버플로우 숨김 */
+      ">
+        <a href="${place.place_url}" target="_blank" style="
+          color:blue;
+          font-weight:bold;
+          text-decoration:none;
+        ">
+          ${place.place_name}
+        </a>
+      </div>`;
+    infowindow.value.setContent(content);
     infowindow.value.open(map.value, marker);
   });
 
-  // 생성된 마커를 배열에 추가
   markers.value.push(marker);
 };
 
-const removeAllMarkers = function () {
-  // 배열에 저장된 모든 마커를 제거
-  for (let i = 0; i < markers.value.length; i++) {
-    markers.value[i].setMap(null);
-  }
-  // 배열 비우기
+
+const removeAllMarkers = () => {
+  markers.value.forEach((marker) => marker.setMap(null));
+  markers.value = [];
   markers.value = [];
 };
+
+// Props 값이 변경되면 장소 검색 실행
+watch([() => props.province, () => props.city, () => props.bank], searchPlaces);
+
+// 초기 지도 로드
+onMounted(loadKakaoMap);
 </script>
 
-<style scoped></style>
+<style scoped>
+.map-container {
+  width: 100%;
+  height: 400px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.search-results {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.results-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+</style>
