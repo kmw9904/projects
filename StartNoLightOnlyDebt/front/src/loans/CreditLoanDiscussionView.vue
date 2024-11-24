@@ -17,10 +17,10 @@
     <ul class="comment-list list-group mt-3">
       <li v-for="(comment, index) in comments" :key="comment.id" class="list-group-item d-flex justify-content-between align-items-center">
         <span>
-          <strong>{{ comment.user }}</strong>
+          <strong>{{ comment.username }}</strong>
           : {{ comment.content }}
         </span>
-        <button class="btn btn-sm btn-danger" @click="deleteComment(comment.id)">삭제</button>
+        <button v-if="profile.profile_user.username === comment.username" class="btn btn-sm btn-danger" @click="deleteComment(comment.id)">삭제</button>
       </li>
     </ul>
   </div>
@@ -29,6 +29,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import { useBankStore } from "@/stores/bank";
 
 // Props
 const props = defineProps({
@@ -43,6 +44,13 @@ const likes = ref(0);
 const isLiked = ref(false);
 const comments = ref([]);
 const newComment = ref("");
+const store = useBankStore();
+const profile = ref(null);
+
+onMounted(() => {
+  store.getUserProfile(); // 항상 최신 데이터를 가져오도록 설정
+  profile.value = store.profile;
+});
 
 // 좋아요 조회
 const fetchLikes = function () {

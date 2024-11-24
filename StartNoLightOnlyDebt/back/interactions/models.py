@@ -72,3 +72,8 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.content[:20]
+
+    @property
+    def username(self):
+        """Returns the username of the associated user."""
+        return self.user.username
