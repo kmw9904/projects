@@ -48,7 +48,6 @@
                     커뮤니티
                   </p>
                 </RouterLink>
-                <RouterLink class="dropdown-item" :to="{ name: 'AlgorithmView' }">chatbot</RouterLink>
               </nav>
             </div>
           </template>
@@ -68,17 +67,38 @@
     <main ref="mainContent">
       <RouterView />
     </main>
+
+    <!-- 챗봇 아이콘 및 채팅창 -->
+    <div class="chatbot-container">
+      <!-- 챗봇 아이콘 -->
+      <button class="chatbot-icon" @click="toggleChat">
+        <img src="/pictures/챗봇사진.png" alt="챗봇" />
+      </button>
+
+      <!-- 채팅창 -->
+      <div v-if="isChatVisible" class="chatbot">
+        <AlgorithmView />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { RouterView, RouterLink } from "vue-router";
+import { ref } from "vue";
 import { useBankStore } from "@/stores/bank";
+import AlgorithmView from "./algorithm/AlgorithmView.vue";
 
+// 상태 관리
 const store = useBankStore();
-
 const Logout = function () {
   store.Logout();
+};
+
+// 채팅창 상태 관리
+const isChatVisible = ref(false);
+const toggleChat = () => {
+  isChatVisible.value = !isChatVisible.value;
 };
 </script>
 
@@ -154,5 +174,56 @@ main {
 .menu-name {
   font-size: 20px;
   font-weight: bold;
+}
+
+/* 챗봇 컨테이너 */
+.chatbot-container {
+  position: fixed;
+  bottom: 70px; /* 화면 하단 */
+  right: 100px; /* 화면 오른쪽 */
+  z-index: 1000; /* 다른 콘텐츠 위에 표시 */
+}
+
+/* 챗봇 아이콘 */
+.chatbot-icon {
+  background-color: #ffffff; /* 흰색 배경 */
+  border: 2px solid #000000; /* 검은 테두리 */
+  border-radius: 50%;
+  width: 70px; /* 크기 증가 */
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  outline: none;
+}
+
+.chatbot-icon img {
+  width: 90%;
+  height: 90%;
+}
+
+/* 채팅창 */
+.chatbot {
+  position: fixed;
+  bottom: 145px; /* 버튼 위로 띄우기 */
+  right: 37px;
+  width: 300px; /* 크기 증가 */
+  height: 300px;
+  background-color: #ffffff; /* 흰색 배경 */
+  border: 2px solid #000000; /* 검은 테두리 */
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* iframe 스타일 */
+.chatbot-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 </style>
