@@ -290,4 +290,22 @@ small {
   font-size: 0.9rem;
   color: #6c757d;
 }
+
+.btn-secondary {
+  font-size: 1.2rem; /* 글씨 크기 */
+  color: white; /* 글씨 색상 */
+  background-color: #6c757d; /* 기본 배경색 */
+  border: none; /* 테두리 제거 */
+  padding: 0.8rem 2rem; /* 버튼 크기 */
+  border-radius: 30px; /* 둥근 모서리 */
+  transition: all 0.3s ease-in-out; /* 호버 애니메이션 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268; /* 호버 시 배경색 */
+  color: #f1f1f1; /* 호버 시 글씨 색상 */
+  transform: translateY(-3px); /* 호버 시 살짝 떠오르는 효과 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 강화 */
+}
 </style>

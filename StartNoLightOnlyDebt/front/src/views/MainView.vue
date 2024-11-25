@@ -11,7 +11,7 @@
           <br />
           <br />
           <br />
-          <div id="product-section">
+          <div id="product-section" class="lightbutton">
             <a href="#product-section" class="btn btn-start btn-secondary"><img class="light-button" src="/pictures/빚버튼.png" alt=""></a>
           </div>
         </p>
@@ -75,14 +75,13 @@
                 <p>주택 담보 대출</p>
               </div>
             </div>
-            <h5 class="card-title">{{ product.product_name }}</h5>
+            <h5 class="card-title"><RouterLink :to="{ name: 'FinancialProductDetail', params: { productId: product.fin_prdt_cd } }" class="product-name">{{ product.product_name }}</RouterLink></h5>
             <p class="card-text">
               {{ product.company_name }}
             </p>
             <p class="card-text">
               <strong>❤️</strong> {{ product.likes }}
             </p>
-            <RouterLink :to="{ name: 'FinancialProductDetail', params: { productId: product.fin_prdt_cd } }" class="btn btn-primary">상세 정보 보기</RouterLink>
 
             <!-- 조건별로 컴포넌트 표시 -->
             <div v-if="product.product_type == 'credit'">
@@ -243,6 +242,8 @@ const scrollToSection = function() {
   background-color: #5a6268;
 }
 
+
+
 /* Product Section */
 .product-section {
   padding: 2rem 0;
@@ -399,9 +400,24 @@ button.btn-link:hover {
   height: auto; 
 }
 
+#product-section {
+  background-color: transparent !important; /* 부모 요소 배경색 제거 */
+}
+
+a.btn {
+  background-color: transparent !important; /* 부모 링크 배경 제거 */
+  border: none !important; /* 테두리 제거 */
+  box-shadow: none !important; /* 그림자 제거 */
+  padding: 0 !important; /* 여백 제거 */
+  margin: 0 !important; /* 외부 여백 제거 */
+}
+
 .light-button {
+  background-color: transparent !important;
+  border: none; /* 테두리 제거 */
+  box-shadow: none; /* 그림자 제거 */
   width: 300px;
-  height: auto; 
+  height: auto;
 }
 
 /* 좋아요가 가장 많은 상품 스타일 */
@@ -510,4 +526,8 @@ button.btn-link:hover {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.product-name {
+  color: black; /* 링크 텍스트를 검은색으로 설정 */
+  text-decoration: none; /* 밑줄 제거 */
+}
 </style>

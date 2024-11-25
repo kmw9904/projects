@@ -84,6 +84,7 @@ const formatCurrency = (value) => {
   }).format(value);
 };
 
+const calculateLst = ref([])
 // 월 상환 금액 계산 API 호출
 const calculateMonthlyPayment = (option) => {
   return axios({
@@ -101,6 +102,8 @@ const calculateMonthlyPayment = (option) => {
       if (response.data.calculations && response.data.calculations.length > 0) {
         const calculation = response.data.calculations.find((calc) => calc.option_id === option.option_id);
         option.monthlyPayment = calculation ? calculation.monthly_payment : null;
+        calculateLst.value.push(option.monthlyPayment)
+        calculateLst
       } else {
         console.warn("월 상환 금액 데이터가 없습니다.");
       }

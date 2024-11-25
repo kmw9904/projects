@@ -52,7 +52,6 @@ const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // OpenAI API 호출
 const fetchOpenAIResponse = async (userMessage) => {
-  await delay(10000); // 1초 지연
   const apiUrl = "https://api.openai.com/v1/chat/completions";
   const headers = {
     "Content-Type": "application/json",
