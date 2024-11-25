@@ -2,11 +2,20 @@
   <div class="article-detail-page">
     <div v-if="article" class="article-detail">
       <div class="article-header">
-        <h2>{{ article.title }}</h2>
-        <p class="article-info">
-          <span>❤️ 좋아요 {{ article.likes_count }}</span>
-          <span>💬 댓글 {{ article.comments.length }}</span>
-        </p>
+        <div class="header-content">
+          <h2>{{ article.title }}</h2>
+          <p class="article-info">
+            <span>❤️ 좋아요 {{ article.likes_count }}</span>
+            <span>💬 댓글 {{ article.comments.length }}</span>
+          </p>
+        </div>
+        <button
+          v-if="profile?.profile_user?.username === article?.user?.username"
+          class="delete-article-header"
+          @click="deleteArticle"
+        >
+          삭제
+        </button>
       </div>
 
       <p class="article-content">{{ article.content }}</p>
@@ -33,7 +42,13 @@
               <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
             </div>
             <p class="comment-content">{{ comment.content }}</p>
-            <button class="delete-comment" @click="deleteComment(comment.id)">댓글 삭제</button>
+            <button
+              v-if="profile?.profile_user?.username === comment.user.username"
+              class="delete-comment"
+              @click="deleteComment(comment.id)"
+            >
+              댓글 삭제
+            </button>
           </div>
         </div>
       </div>
@@ -47,20 +62,34 @@
   </div>
 </template>
 
+
 <script setup>
 import { useArticleStore } from "@/stores/articles";
-import { onMounted, computed, reactive } from "vue";
+import { onMounted, computed, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { useBankStore } from "@/stores/bank";
 
 const store = useArticleStore();
 const route = useRoute();
 const router = useRouter();
+const userstore = useBankStore();
+const profile = ref(null);
 
-onMounted(() => {
-  store.fetchArticleDetail(route.params.id);
+onMounted(async () => {
+  await store.fetchArticleDetail(route.params.id);
+  await userstore.getUserProfile(); // 항상 최신 데이터를 가져오도록 설정
+  profile.value = userstore.profile;
 });
 
 const article = computed(() => store.selectedArticle);
+
+const deleteArticle = async () => {
+  if (confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
+    await store.deleteArticle(route.params.id);
+    alert("게시글이 삭제되었습니다.");
+    router.push("/articles"); // 게시글 목록 페이지로 이동
+  }
+};
 
 const newComment = reactive({
   content: "",
@@ -77,9 +106,12 @@ const submitComment = () => {
 };
 
 const deleteComment = (commentId) => {
-  store.deleteComment(route.params.id, commentId);
+  if (profile.value?.profile_user?.username) {
+    store.deleteComment(route.params.id, commentId);
+  } else {
+    alert("권한이 없습니다.");
+  }
 };
-
 const toggleLike = (articleId) => {
   store.toggleLike(articleId);
 };
@@ -104,41 +136,94 @@ const formatDate = (dateString) => {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
-  font-family: Arial, sans-serif;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .article-header {
-  display: flex;
-  flex-direction: column;
+  position: relative;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 20px;
   margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .article-header h2 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   margin-bottom: 10px;
+  color: #333;
+  font-weight: bold;
 }
 
 .article-info {
   font-size: 0.9rem;
-  color: #6c757d;
+  color: #757575;
   display: flex;
   justify-content: space-between;
 }
 
 .article-content {
   font-size: 1.2rem;
+  line-height: 1.8;
+  color: #555;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 10px;
   margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.like-button {
+.like-button,
+.delete-article,
+.back-button {
   padding: 10px 15px;
   font-size: 1rem;
   border: none;
-  background-color: #007bff;
-  color: white;
   border-radius: 5px;
   cursor: pointer;
-  margin-bottom: 30px;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.like-button {
+  background-color: #ff6f61;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.like-button:hover {
+  background-color: #ff4a3d;
+}
+
+.delete-article-header {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding: 5px 10px;
+  font-size: 0.9rem;
+  background-color: transparent;
+  color: #d9534f;
+  border: 1px solid #d9534f;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-article-header:hover {
+  background-color: #d9534f;
+  color: white;
+}
+
+.back-button {
+  background-color: #6c757d;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.back-button:hover {
+  background-color: #5a6268;
 }
 
 .comments-section {
@@ -149,23 +234,32 @@ const formatDate = (dateString) => {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 15px;
+  color: #333;
 }
 
 .comment-form textarea {
   width: 100%;
   margin-bottom: 10px;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid #ddd;
-  border-radius: 5px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 .comment-form button {
-  padding: 10px;
-  background-color: #007bff;
+  padding: 10px 15px;
+  background-color: #5bc0de;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.comment-form button:hover {
+  background-color: #31b0d5;
 }
 
 .comment-list {
@@ -174,10 +268,11 @@ const formatDate = (dateString) => {
 
 .comment-item {
   margin-bottom: 15px;
-  padding: 15px;
-  border: 1px solid #ddd;
+  padding: 20px;
+  border: 1px solid #eee;
   border-radius: 10px;
-  background-color: #f8f9fa;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .comment-header {
@@ -185,38 +280,32 @@ const formatDate = (dateString) => {
   justify-content: space-between;
   margin-bottom: 10px;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: #555;
 }
 
 .comment-author {
   font-weight: bold;
+  color: #333;
 }
 
 .comment-content {
   margin-bottom: 10px;
   font-size: 1rem;
+  line-height: 1.5;
+  color: #555;
 }
 
 .delete-comment {
   font-size: 0.8rem;
   background-color: transparent;
-  color: #dc3545;
+  color: #d9534f;
   border: none;
   cursor: pointer;
+  font-weight: bold;
 }
 
-.back-button {
-  margin-top: 20px;
-  padding: 10px 15px;
-  font-size: 1rem;
-  border: none;
-  background-color: #6c757d;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
+.delete-comment:hover {
+  color: #c9302c;
 }
 
-.back-button:hover {
-  background-color: #5a6268;
-}
 </style>
