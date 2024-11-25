@@ -50,6 +50,7 @@
   <p class="subtitle" >SNO와 함께 추천 받으세요</p>
 </div>
 
+
 <!-- 상품 조회 -->
 <div id="product-section" class="product-section py-5 bg-light">
   <div class="container">
@@ -82,6 +83,14 @@
       </div>
     </div>
   </div>
+</div>
+
+<div class="article-description-img">
+  <img src="/pictures/게시글.jpg" alt="게시글">
+</div>
+<div class="article-description">
+  <p class="title">가장 인기많은 상품을 둘러보세요</p>
+  <p class="subtitle">사람들의 다양한 의견을 들어볼 수 있어요</p>
 </div>
 
 <!-- 좋아요가 가장 많은 상품 조회-->
@@ -145,6 +154,14 @@
       <p>아직 좋아요를 받은 상품이 없습니다.</p>
     </div>
   </div>
+</div>
+
+<div class="best-description-img">
+  <img src="/pictures/알티클.jpg" alt="베스트 게시글">
+</div>
+<div class="best-description">
+  <p class="title">가끔은 재미있는 글, 은행 정보에 대해서 둘러보세요</p>
+  <p class="subtitle">SNO는 은행 정보 뿐만 아니라 커뮤니케이션 장소도 제공합니다.</p>
 </div>
 
 <!-- 베스트 게시글 조회 -->
@@ -400,7 +417,158 @@ onMounted(() => {
   } else {
     console.log("Product description section NOT found");
   }
+
+  // 추가된 섹션: product-description-img에 대한 Observer
+  const productDescriptionImgNew = document.querySelector(".product-description-img");
+  if (productDescriptionImgNew) {
+    console.log("Product description image section found");
+
+    const observerProductDescriptionImgNew = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          productDescriptionImgNew.classList.add("scrolled");
+          console.log("Scrolled class added to product-description-img");
+        } else {
+          productDescriptionImgNew.classList.remove("scrolled");
+          console.log("Scrolled class removed from product-description-img");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerProductDescriptionImgNew.observe(productDescriptionImgNew);
+    console.log("Intersection Observer added for product-description-img");
+  } else {
+    console.log("Product description image section NOT found");
+  }
+
+  // 추가된 섹션: product-description에 대한 Observer
+  const productDescriptionNew = document.querySelector(".product-description");
+  if (productDescriptionNew) {
+    console.log("Product description section found");
+
+    const observerProductDescriptionNew = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          productDescriptionNew.classList.add("scrolled");
+          console.log("Scrolled class added to product-description");
+        } else {
+          productDescriptionNew.classList.remove("scrolled");
+          console.log("Scrolled class removed from product-description");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerProductDescriptionNew.observe(productDescriptionNew);
+    console.log("Intersection Observer added for product-description");
+  } else {
+    console.log("Product description section NOT found");
+  }
+  
+    // 추가된 섹션: article-description-img에 대한 Observer
+  const articleDescriptionImg = document.querySelector(".article-description-img");
+  if (articleDescriptionImg) {
+    console.log("Article description image section found");
+
+    const observerArticleDescriptionImg = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          articleDescriptionImg.classList.add("scrolled");
+          console.log("Scrolled class added to article-description-img");
+        } else {
+          articleDescriptionImg.classList.remove("scrolled");
+          console.log("Scrolled class removed from article-description-img");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerArticleDescriptionImg.observe(articleDescriptionImg);
+    console.log("Intersection Observer added for article-description-img");
+  } else {
+    console.log("Article description image section NOT found");
+  }
+
+  // 추가된 섹션: article-description에 대한 Observer
+  const articleDescription = document.querySelector(".article-description");
+  if (articleDescription) {
+    console.log("Article description section found");
+
+    const observerArticleDescription = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          articleDescription.classList.add("scrolled");
+          console.log("Scrolled class added to article-description");
+        } else {
+          articleDescription.classList.remove("scrolled");
+          console.log("Scrolled class removed from article-description");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerArticleDescription.observe(articleDescription);
+    console.log("Intersection Observer added for article-description");
+  } else {
+    console.log("Article description section NOT found");
+  }
+
+    // 추가된 섹션: best-description-img에 대한 Observer
+    const bestDescriptionImg = document.querySelector(".best-description-img");
+  if (bestDescriptionImg) {
+    console.log("Best description image section found");
+
+    const observerBestDescriptionImg = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          bestDescriptionImg.classList.add("scrolled");
+          console.log("Scrolled class added to best-description-img");
+        } else {
+          bestDescriptionImg.classList.remove("scrolled");
+          console.log("Scrolled class removed from best-description-img");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerBestDescriptionImg.observe(bestDescriptionImg);
+    console.log("Intersection Observer added for best-description-img");
+  } else {
+    console.log("Best description image section NOT found");
+  }
+
+  // 추가된 섹션: best-description에 대한 Observer
+  const bestDescription = document.querySelector(".best-description");
+  if (bestDescription) {
+    console.log("Best description section found");
+
+    const observerBestDescription = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          bestDescription.classList.add("scrolled");
+          console.log("Scrolled class added to best-description");
+        } else {
+          bestDescription.classList.remove("scrolled");
+          console.log("Scrolled class removed from best-description");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerBestDescription.observe(bestDescription);
+    console.log("Intersection Observer added for best-description");
+  } else {
+    console.log("Best description section NOT found");
+  }
 });
+
 
 
 </script>
@@ -587,6 +755,126 @@ h2 {
   color: black; /* 텍스트 색상 */
   margin-top: 2rem;
   padding: 1rem 0;
+}
+
+.article-description-img {
+  width: 550px; /* 이미지의 너비를 설정 */
+  margin: 20px auto; /* 수직 중앙 정렬, 여백 추가 */
+  text-align: center; /* 이미지 중앙 정렬 */
+  margin-top: 150px;
+  margin-bottom: 150px;
+  opacity: 0; /* 초기 상태: 투명 */
+  transform: translateY(50px); /* 아래쪽 위치 */
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* 부드러운 전환 */
+}
+
+.article-description-img.scrolled {
+  opacity: 1; /* 완전히 표시 */
+  transform: translateY(0); /* 원래 위치로 이동 */
+}
+
+.article-description-img img {
+  width: 100%; /* 부모 div에 맞춰 이미지 너비 조정 */
+  height: 600px; /* 높이는 자동 조정 */
+  display: block; /* 이미지 아래 공백 제거 */
+  border-radius: 0; /* 모서리를 네모나게 설정 */
+  box-shadow: none; /* 그림자 제거 */
+}
+
+.article-description {
+  font-family: 'Noto Sans KR', sans-serif; /* Noto Sans KR 폰트 사용 */
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
+}
+
+.article-description.scrolled {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.article-description .title {
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+/* 부 타이틀 스타일 */
+.article-description .subtitle {
+  font-size: 1.2rem; /* 부 타이틀 글씨 크기 */
+  color: #666; /* 회색으로 색상 변경 */
+  font-weight: 400; /* 기본 굵기로 설정 */
+  margin-top: 10px; /* 위쪽 여백 추가 */
+  line-height: 1.5; /* 줄 간격 조절 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.best-description-img {
+  width: 550px; /* 이미지의 너비를 설정 */
+  margin: 20px auto; /* 수직 중앙 정렬, 여백 추가 */
+  text-align: center; /* 이미지 중앙 정렬 */
+  margin-top: 150px;
+  margin-bottom: 150px;
+  opacity: 0; /* 초기 상태: 투명 */
+  transform: translateY(50px); /* 아래쪽 위치 */
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* 부드러운 전환 */
+}
+
+.best-description-img.scrolled {
+  opacity: 1; /* 완전히 표시 */
+  transform: translateY(0); /* 원래 위치로 이동 */
+}
+
+.best-description-img img {
+  width: 100%; /* 부모 div에 맞춰 이미지 너비 조정 */
+  height: 600px; /* 높이는 자동 조정 */
+  display: block; /* 이미지 아래 공백 제거 */
+  border-radius: 0; /* 모서리를 네모나게 설정 */
+  box-shadow: none; /* 그림자 제거 */
+}
+
+.best-description{
+  font-family: 'Noto Sans KR', sans-serif; /* Noto Sans KR 폰트 사용 */
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
+}
+
+.best-description.scrolled {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.best-description .title {
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+/* 부 타이틀 스타일 */
+.best-description .subtitle {
+  font-size: 1.2rem; /* 부 타이틀 글씨 크기 */
+  color: #666; /* 회색으로 색상 변경 */
+  font-weight: 400; /* 기본 굵기로 설정 */
+  margin-top: 10px; /* 위쪽 여백 추가 */
+  line-height: 1.5; /* 줄 간격 조절 */
+  text-align: center; /* 텍스트 중앙 정렬 */
 }
 
 /* Jumbotron 스타일 */
