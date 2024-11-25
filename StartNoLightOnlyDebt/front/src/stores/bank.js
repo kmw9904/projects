@@ -92,7 +92,6 @@ export const useBankStore = defineStore(
         },
       })
         .then((res) => {
-          console.log("프로필 가져오기 성공:", res.data);
           profile.value = res.data; // 프로필 데이터 저장
           return res.data; // 성공 데이터 반환
         })

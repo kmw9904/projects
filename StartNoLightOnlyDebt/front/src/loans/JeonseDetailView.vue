@@ -45,7 +45,7 @@
                 <strong>최고 상환 금액:</strong>
                 {{ option.maxPayment !== undefined ? `${formatCurrency(option.maxPayment)}원` : "계산 중..." }}
               </p>
-              <RouterLink :to="{ name: 'FinancialProductDetail', params: { productId: product.product_id } }" class="btn btn-primary">상세 정보 보기</RouterLink>
+              <RouterLink :to="{ name: 'FinancialProductDetail', params: { productId: product.options[0].product.product_id } }" class="btn btn-primary">상세 정보 보기</RouterLink>
               <JeonseDiscussionView :productId="product.product_id" :productName="product.product_name" />
             </div>
           </div>
