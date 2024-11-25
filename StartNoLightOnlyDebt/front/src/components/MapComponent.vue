@@ -8,7 +8,8 @@
       <h4 class="results-title">검색 결과</h4>
       <ul v-if="results.length > 0">
         <li v-for="(place, index) in results" :key="index">
-          <strong>{{ place.place_name }}</strong> -
+          <strong>{{ place.place_name }}</strong>
+          -
           <a :href="place.place_url" target="_blank">자세히 보기</a>
         </li>
       </ul>
@@ -43,7 +44,7 @@ const loadKakaoMap = () => {
   if (loaded.value) return;
 
   const script = document.createElement("script");
-  const KAKAO_KEY = "b94dc4c8f7f1f5db7aec4e20ccf8d234"
+  const KAKAO_KEY = "b94dc4c8f7f1f5db7aec4e20ccf8d234";
   script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&autoload=false&libraries=services`;
   script.async = true;
   script.onload = () => {
@@ -113,9 +114,10 @@ const displayMarker = (place) => {
       <div style="
         padding:10px;
         font-size:14px;
-        max-width:200px; /* 최대 너비 설정 */
-        word-wrap:break-word; /* 긴 단어 줄바꿈 */
+        width:200px; /* 너비 고정 */
+        overflow-wrap:break-word; /* 긴 단어 줄바꿈 */
         white-space:normal; /* 텍스트 자동 줄바꿈 */
+        box-sizing:border-box; /* 패딩 포함한 박스 크기 계산 */
         overflow:hidden; /* 오버플로우 숨김 */
       ">
         <a href="${place.place_url}" target="_blank" style="
@@ -132,7 +134,6 @@ const displayMarker = (place) => {
 
   markers.value.push(marker);
 };
-
 
 const removeAllMarkers = () => {
   markers.value.forEach((marker) => marker.setMap(null));
@@ -164,8 +165,8 @@ onMounted(loadKakaoMap);
 }
 
 .results-title {
-  font-size: 1.2rem;
+  font-size: 1.7rem;
   font-weight: bold;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 </style>
