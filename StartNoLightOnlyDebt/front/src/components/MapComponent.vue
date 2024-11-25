@@ -1,9 +1,6 @@
 <template>
   <div class="map-component">
-    <!-- 지도 -->
     <div id="mapContainer" class="map-container"></div>
-
-    <!-- 검색 결과 -->
     <div class="search-results">
       <h4 class="results-title">검색 결과</h4>
       <ul v-if="results.length > 0">
@@ -16,78 +13,70 @@
       <p v-else>검색 결과가 없습니다.</p>
     </div>
   </div>
-  <!-- 푸터 -->
-  <footer class="footer">
-    <div class="container">
-      <p>© 2024 Start No Light Only Debt. All rights reserved.</p>
-      <p>어려운 대출 정보를 모두가 손쉽고 편리하게 대출 정보를 받을 수 있도록 우리 프로그램은 계속 노력합니다.</p>
-      <p>
-        Contact us:
-        <a href="mailto:support@example.com">kms990415@naver.com</a>
-      </p>
-    </div>
-  </footer>
 </template>
 
-<script lang="ts" setup>
-declare global {
-  interface Window {
-    kakao: any;
-  }
-}
-
+<script setup>
 import { ref, watch, onMounted } from "vue";
 
+// Props 설정
 const props = defineProps({
   province: String,
   city: String,
   bank: String,
 });
 
+// 상태 변수
 const map = ref(null);
 const infowindow = ref(null);
 const markers = ref([]);
 const results = ref([]);
-const loaded = ref(false); // 지도 로드 완료 상태 확인
+const loaded = ref(false);
 
-// Kakao 지도 로드 및 초기화
+// 환경 변수에서 Kakao API 키 가져오기
+const KAKAO_KEY = import.meta.env.VITE_KAKAO_MAP_KEY || ""; // 기본값으로 빈 문자열 설정
+
+if (!KAKAO_KEY) {
+  console.error("Kakao API Key가 설정되지 않았습니다. .env 파일을 확인하세요.");
+}
+
+// Kakao 지도 로드
 const loadKakaoMap = () => {
   if (loaded.value) return;
 
   const script = document.createElement("script");
-  const KAKAO_KEY = "b94dc4c8f7f1f5db7aec4e20ccf8d234";
   script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${KAKAO_KEY}&autoload=false&libraries=services`;
   script.async = true;
   script.onload = () => {
     window.kakao.maps.load(() => {
       initializeKakaoMap();
-      loaded.value = true; // 로드 완료
+      loaded.value = true;
     });
   };
   document.head.appendChild(script);
 };
 
+// Kakao 지도 초기화
 const initializeKakaoMap = () => {
   const mapContainer = document.getElementById("mapContainer");
   const mapOption = {
-    center: new window.kakao.maps.LatLng(37.566826, 126.9786567), // 기본 좌표
-    level: 3, // 확대 레벨
+    center: new window.kakao.maps.LatLng(37.566826, 126.9786567),
+    level: 3,
   };
 
   map.value = new window.kakao.maps.Map(mapContainer, mapOption);
   infowindow.value = new window.kakao.maps.InfoWindow({ zIndex: 1 });
 };
 
-// 장소 검색 실행
+// 장소 검색
 const searchPlaces = () => {
   if (!map.value || !loaded.value) {
-    console.error("지도 또는 Kakao API가 아직 초기화되지 않았습니다.");
+    console.error("지도 또는 Kakao API가 초기화되지 않았습니다.");
     return;
   }
 
   const keyword = `${props.province} ${props.city} ${props.bank}`;
   if (!keyword.trim()) {
-    alert("검색어를 입력해주세요.");
+    alert("검색어를 입력하세요.");
     return;
   }
 
@@ -95,6 +84,7 @@ const searchPlaces = () => {
   ps.keywordSearch(keyword, placesSearchCB);
 };
 
+// 장소 검색 콜백
 const placesSearchCB = (data, status) => {
   if (status === window.kakao.maps.services.Status.OK) {
     results.value = data;
@@ -113,6 +103,7 @@ const placesSearchCB = (data, status) => {
   }
 };
 
+// 마커 표시
 const displayMarker = (place) => {
   const marker = new window.kakao.maps.Marker({
     map: map.value,
@@ -120,21 +111,21 @@ const displayMarker = (place) => {
   });
 
   window.kakao.maps.event.addListener(marker, "click", () => {
-    // 인포윈도우에 HTML 스타일 적용
     const content = `
       <div style="
-        padding:10px;
-        font-size:14px;
-        width:200px; /* 너비 고정 */
+        padding:10px; 
+        font-size:14px; 
+        width:200px; /* 박스 너비 고정 */
         overflow-wrap:break-word; /* 긴 단어 줄바꿈 */
-        white-space:normal; /* 텍스트 자동 줄바꿈 */
-        box-sizing:border-box; /* 패딩 포함한 박스 크기 계산 */
-        overflow:hidden; /* 오버플로우 숨김 */
+        white-space:normal; /* 텍스트 줄바꿈 허용 */
+        box-sizing:border-box; /* 패딩 포함한 크기 계산 */
+        overflow:hidden; /* 넘치는 텍스트 숨기기 */
       ">
         <a href="${place.place_url}" target="_blank" style="
-          color:blue;
-          font-weight:bold;
+          color:blue; 
+          font-weight:bold; 
           text-decoration:none;
+          display:block; /* 텍스트가 박스 안에 있도록 블록으로 지정 */
         ">
           ${place.place_name}
         </a>
@@ -146,16 +137,16 @@ const displayMarker = (place) => {
   markers.value.push(marker);
 };
 
+// 모든 마커 제거
 const removeAllMarkers = () => {
   markers.value.forEach((marker) => marker.setMap(null));
   markers.value = [];
-  markers.value = [];
 };
 
-// Props 값이 변경되면 장소 검색 실행
+// Props 변경 시 장소 검색 실행
 watch([() => props.province, () => props.city, () => props.bank], searchPlaces);
 
-// 초기 지도 로드
+// 지도 로드
 onMounted(loadKakaoMap);
 </script>
 
@@ -179,30 +170,5 @@ onMounted(loadKakaoMap);
   font-size: 1.7rem;
   font-weight: bold;
   margin-bottom: 15px;
-}
-
-/* 푸터 스타일 */
-.footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-color: #f8f9fa; /* 밝은 회색 배경 */
-  text-align: center;
-  padding: 10px 0;
-  font-size: 14px;
-  color: #333; /* 텍스트 색상 */
-  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* 상단 그림자 */
-  border-top: 1px solid #ddd; /* 상단 테두리 */
-}
-
-.footer a {
-  color: #007bff; /* 링크 색상 */
-  text-decoration: none; /* 밑줄 제거 */
-}
-
-.footer a:hover {
-  text-decoration: underline; /* 링크 호버 시 밑줄 */
-  color: #0056b3; /* 링크 호버 시 색상 */
 }
 </style>
