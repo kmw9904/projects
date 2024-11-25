@@ -15,6 +15,7 @@ import AccountView from "@/accounts/AccountView.vue";
 import PasswordChangeView from "@/accounts/PasswordChangeView.vue";
 import PreferredBanksView from "@/accounts/PreferredBanksView.vue";
 import ArticleView from "@/views/ArticleView.vue";
+import ArticleCreate from "@/views/ArticleCreate.vue";
 import ArticleDetail from "@/views/ArticleDetail.vue";
 import CreditLoanDiscussionView from "@/loans/CreditLoanDiscussionView.vue";
 import JeonseDiscussionView from "@/loans/JeonseDiscussionView.vue";
@@ -72,6 +73,11 @@ const router = createRouter({
       path: "/articles",
       name: "article",
       component: ArticleView,
+    },
+    {
+      path: "/articles/create",
+      name: "ArticleCreate",
+      component: ArticleCreate,
     },
     {
       path: "/articles/:id",

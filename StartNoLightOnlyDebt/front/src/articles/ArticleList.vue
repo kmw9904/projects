@@ -29,6 +29,13 @@
         {{ page }}
       </button>
     </div>
+
+    <!-- 새 게시글 작성 버튼 추가 -->
+    <div class="create-button">
+      <RouterLink :to="{ name: 'ArticleCreate' }">
+        <button>새 게시글 작성</button>
+      </RouterLink>
+    </div>
   </div>
 </template>
 
