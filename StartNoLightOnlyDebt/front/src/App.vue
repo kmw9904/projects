@@ -296,8 +296,8 @@ main {
   position: fixed;
   bottom: 145px; /* 버튼 위로 띄우기 */
   right: 37px;
-  width: 300px; /* 크기 증가 */
-  height: 300px;
+  width: 400px; /* 크기 증가 */
+  height: 450px;
   background-color: #ffffff; /* 흰색 배경 */
   border: 2px solid #000000; /* 검은 테두리 */
   border-radius: 10px;

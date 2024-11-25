@@ -229,36 +229,50 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 컨테이너 스타일 */
 .mortgage-container {
-  padding: 20px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin: 20px auto;
-  max-width: 800px;
+  padding: 30px;
+  background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+  border-radius: 15px;
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+  margin: 40px auto;
+  max-width: 900px;
+  animation: fadeIn 1s ease-in-out;
 }
 
+/* 제목 이미지 스타일 */
 .mortgage-title {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: bold;
   color: gray;
-}
-
-.search-form {
-  background: #ffffff;
-  border: 1px solid #ddd;
-}
-
-.form-group {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
 }
 
 .product-img {
-  width: 400px;
+  width: 100%;
+  max-width: 450px;
+  height: auto;
+  animation: slideIn 1s ease-out;
+}
+
+/* 검색 폼 스타일 */
+.search-form {
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* 폼 그룹 */
+.form-group {
+  margin-bottom: 20px;
 }
 
 label {
   font-weight: bold;
+  color: #495057;
 }
 
 small {
@@ -267,45 +281,86 @@ small {
   color: #6c757d;
 }
 
+/* 인풋 필드 스타일 */
+input.form-control,
+select.form-select {
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease-in-out;
+}
+
+input.form-control:focus,
+select.form-select:focus {
+  border-color: #6c757d;
+  box-shadow: 0 0 8px rgba(108, 117, 125, 0.2);
+}
+
+/* 체크박스 */
 .form-check-label {
-  margin-left: 5px;
+  color: #495057;
+  font-size: 0.95rem;
 }
 
-.btn {
-  display: block;
-  margin-top: 10px;
-  background-color: #6c757d;
-  color: white;
+.form-check-input {
+  margin-right: 8px;
+  accent-color: #6c757d;
 }
 
-.btn:hover {
-  background-color: #5a6268;
-}
-
-.results-container {
-  margin-top: 20px;
-}
-
-.text-muted {
-  font-size: 0.9rem;
-  color: #6c757d;
-}
-
+/* 버튼 스타일 */
 .btn-secondary {
-  font-size: 1.2rem; /* 글씨 크기 */
-  color: white; /* 글씨 색상 */
-  background-color: #6c757d; /* 기본 배경색 */
-  border: none; /* 테두리 제거 */
-  padding: 0.8rem 2rem; /* 버튼 크기 */
-  border-radius: 30px; /* 둥근 모서리 */
-  transition: all 0.3s ease-in-out; /* 호버 애니메이션 */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 그림자 효과 */
+  font-size: 1.2rem;
+  color: white;
+  background: linear-gradient(45deg, #6c757d, #5a6268);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 25px;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+  max-width: 200px;
+  display: block;
+  margin: 20px auto 0;
+  text-align: center;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
 }
 
 .btn-secondary:hover {
-  background-color: #5a6268; /* 호버 시 배경색 */
-  color: #f1f1f1; /* 호버 시 글씨 색상 */
-  transform: translateY(-3px); /* 호버 시 살짝 떠오르는 효과 */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 호버 시 그림자 강화 */
+  background: linear-gradient(45deg, #5a6268, #6c757d);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* 결과 컨테이너 */
+.results-container {
+  margin-top: 30px;
+}
+
+.text-muted {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+/* 애니메이션 효과 */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 </style>
