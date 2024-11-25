@@ -16,6 +16,17 @@
       <p v-else>검색 결과가 없습니다.</p>
     </div>
   </div>
+  <!-- 푸터 -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2024 Start No Light Only Debt. All rights reserved.</p>
+      <p>어려운 대출 정보를 모두가 손쉽고 편리하게 대출 정보를 받을 수 있도록 우리 프로그램은 계속 노력합니다.</p>
+      <p>
+        Contact us:
+        <a href="mailto:support@example.com">kms990415@naver.com</a>
+      </p>
+    </div>
+  </footer>
 </template>
 
 <script lang="ts" setup>
@@ -168,5 +179,30 @@ onMounted(loadKakaoMap);
   font-size: 1.7rem;
   font-weight: bold;
   margin-bottom: 15px;
+}
+
+/* 푸터 스타일 */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: #f8f9fa; /* 밝은 회색 배경 */
+  text-align: center;
+  padding: 10px 0;
+  font-size: 14px;
+  color: #333; /* 텍스트 색상 */
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* 상단 그림자 */
+  border-top: 1px solid #ddd; /* 상단 테두리 */
+}
+
+.footer a {
+  color: #007bff; /* 링크 색상 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+.footer a:hover {
+  text-decoration: underline; /* 링크 호버 시 밑줄 */
+  color: #0056b3; /* 링크 호버 시 색상 */
 }
 </style>

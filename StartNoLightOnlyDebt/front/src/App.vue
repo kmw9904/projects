@@ -71,17 +71,24 @@
     <!-- 챗봇 아이콘 및 채팅창 -->
     <div class="chatbot-container">
       <!-- 챗봇 아이콘 -->
-      <button class="chatbot-icon" @click="toggleChat">
+      <button class="chatbot-icon" @click="toggleChatBot">
         <img src="/pictures/챗봇사진.png" alt="챗봇" />
       </button>
-      
+      <div v-if="isChatBotVisible" class="navigation-buttons">
+        <AlgorithmView />
+      </div>
+    </div>
+
+    <div class="list-container">
+      <button class="chatbot-icon" @click="toggleMoveClone">
+        <img src="/pictures/움직이기클론.png" alt="이동" />
+      </button>
       <!-- 네비게이션 버튼들 -->
-      <div v-if="isChatVisible" class="navigation-buttons">
-        <button class="btn btn-link" @click="scrollToSection('top')">맨 위로 가기</button>
-        <button class="btn btn-link" @click="scrollToSection('product-section')">상품 조회 섹션</button>
-        <button class="btn btn-link" @click="scrollToSection('best-products')">베스트 상품 섹션</button>
-        <button class="btn btn-link" @click="scrollToSection('top-article')">베스트 게시글 섹션</button>
-        <button><AlgorithmView></AlgorithmView></button>
+      <div v-if="isMoveCloneVisible" class="navigation-scroll-buttons">
+        <button class="btn btn-link" @click="scrollToSection('top')">최상단</button>
+        <button class="btn btn-link" @click="scrollToSection('product-section')">상품 조회</button>
+        <button class="btn btn-link" @click="scrollToSection('best-products')">베스트 상품</button>
+        <button class="btn btn-link" @click="scrollToSection('top-article')">베스트 게시글</button>
       </div>
     </div>
   </div>
@@ -99,10 +106,16 @@ const Logout = function () {
   store.Logout();
 };
 
-// 채팅창 상태 관리
-const isChatVisible = ref(false);
-const toggleChat = () => {
-  isChatVisible.value = !isChatVisible.value;
+// 챗봇 상태 관리
+const isChatBotVisible = ref(false);
+const toggleChatBot = () => {
+  isChatBotVisible.value = !isChatBotVisible.value;
+};
+
+// 움직이기 클론 상태 관리
+const isMoveCloneVisible = ref(false);
+const toggleMoveClone = () => {
+  isMoveCloneVisible.value = !isMoveCloneVisible.value;
 };
 
 // 특정 섹션으로 부드럽게 스크롤하는 함수
@@ -193,13 +206,21 @@ main {
   position: fixed;
   bottom: 70px; /* 화면 하단 */
   right: 100px; /* 화면 오른쪽 */
+  z-index: 1100; /* 다른 콘텐츠 위에 표시 */
+}
+
+/* 리스트 컨테이너 */
+.list-container {
+  position: fixed;
+  bottom: 150px; /* 화면 하단 */
+  right: 100px; /* 화면 오른쪽 */
   z-index: 1000; /* 다른 콘텐츠 위에 표시 */
 }
 
 /* 챗봇 아이콘 */
 .chatbot-icon {
-  background-color: #ffffff; /* 흰색 배경 */
-  border: 2px solid #000000; /* 검은 테두리 */
+  background-color: transparent; /* 배경 투명 */
+  border: none; /* 테두리 제거 */
   border-radius: 50%;
   width: 70px; /* 크기 증가 */
   height: 70px;
@@ -211,9 +232,11 @@ main {
   outline: none;
 }
 
+/* 아이콘 이미지 */
 .chatbot-icon img {
-  width: 90%;
-  height: 90%;
+  width: 100%; /* 크기를 아이콘 전체에 맞춤 */
+  height: 100%;
+  object-fit: contain; /* 이미지를 비율에 맞게 조정 */
 }
 
 /* 네비게이션 버튼들 */
@@ -229,15 +252,39 @@ main {
   z-index: 1000;
 }
 
-.navigation-buttons button {
+.navigation-scroll-buttons {
+  position: fixed;
+  bottom: 230px; /* 버튼 위로 띄우기 */
+  right: 60px;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+/* 스크롤 네비게이션 버튼 스타일 */
+.navigation-scroll-buttons button {
   display: block;
   width: 100%;
-  margin-bottom: 5px;
+  margin-bottom: 10px; /* 버튼 간 간격 */
   text-align: left;
-  background: none;
-  border: none;
-  color: #007bff;
+  background: none; /* 배경 제거 */
+  border: none; /* 테두리 제거 */
+  color: #333; /* 텍스트 색상 (기본 색상으로 설정) */
+  font-size: 16px; /* 글씨 크기 */
+  font-weight: bold; /* 글씨 굵게 */
   cursor: pointer;
+  padding: 5px 10px; /* 여백 추가 */
+  transition: all 0.2s ease-in-out; /* 부드러운 호버 효과 */
+  text-decoration: none; /* 밑줄 제거 */
+}
+
+.navigation-scroll-buttons button:hover {
+  background-color: #f1f1f1; /* 호버 시 배경색 변경 */
+  border-radius: 5px; /* 약간의 둥근 모서리 */
+  color: #000; /* 호버 시 글씨 색상 유지 */
 }
 
 .navigation-buttons button:hover {
