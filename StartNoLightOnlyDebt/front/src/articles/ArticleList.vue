@@ -10,36 +10,33 @@
     </div>
 
     <!-- 게시글 목록 -->
-    <table class="article-table table table-hover shadow-sm">
-      <thead class="table-header">
-        <tr>
-          <th class="title">제목</th>
-          <th class="author">작성자</th>
-          <th class="date">작성일</th>
-          <th class="likes">좋아요</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="article in articles" :key="article.id">
-          <td class="title">
-            <RouterLink :to="{ name: 'ArticleDetail', params: { id: article.id } }">
-              {{ article.title }}
-            </RouterLink>
-            <span v-if="article.comments_count > 0" class="comment-count">[{{ article.comments_count }}]</span>
-          </td>
-          <td class="author">{{ article.user.username }}</td>
-          <td class="date">{{ formatDate(article.created_at) }}</td>
-          <td class="likes text-center">
-            <strong>❤️</strong>
-            {{ article.likes_count }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="article-list">
+      <div v-for="article in articles" :key="article.id" class="article-item shadow-sm">
+        <RouterLink :to="{ name: 'ArticleDetail', params: { id: article.id } }" class="article-title">
+          <h3>{{ article.title }}</h3>
+        </RouterLink>
+        <p class="article-info">
+          <span class="author">작성자: {{ article.user.username }}</span>
+          <span class="date">작성일: {{ formatDate(article.created_at) }}</span>
+        </p>
+        <p class="likes">
+          <strong>❤️</strong> {{ article.likes_count }}
+        </p>
+        <p v-if="article.comments_count > 0" class="comment-count">
+          댓글 {{ article.comments_count }}개
+        </p>
+      </div>
+    </div>
 
     <!-- 페이지네이션 -->
     <div class="pagination d-flex justify-content-center mt-4">
-      <button class="btn btn-pagination mx-1" v-for="page in totalPages" :key="page" @click="goToPage(page)" :class="{ active: page === currentPage }">
+      <button
+        class="btn btn-pagination mx-1"
+        v-for="page in totalPages"
+        :key="page"
+        @click="goToPage(page)"
+        :class="{ active: page === currentPage }"
+      >
         {{ page }}
       </button>
     </div>
@@ -89,6 +86,17 @@ const formatDate = (dateString) => {
 </script>
 
 <style scoped>
+/* 페이지 스타일 */
+.article-list-page {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
 /* 제목 스타일 */
 .section-title {
   font-size: 2rem;
@@ -97,67 +105,73 @@ const formatDate = (dateString) => {
   margin-bottom: 2rem;
 }
 
-/* 테이블 스타일 */
-.article-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 20px;
-  border: 1px solid #ddd;
-  background-color: #fff;
+/* 게시글 목록 스타일 */
+.article-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.article-table th,
-.article-table td {
-  border: 1px solid #ddd;
-  padding: 10px;
-  text-align: left;
-  font-size: 1rem;
+.article-item {
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.article-table th {
-  background-color: #f8f9fa;
+.article-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.article-title {
+  font-size: 1.5rem;
   font-weight: bold;
+  color: #007bff;
+  text-decoration: none;
+  margin-bottom: 10px;
+  display: block;
 }
 
-.article-table .title {
-  width: 40%;
+.article-title:hover {
+  color: #0056b3;
 }
 
-.article-table .author {
-  width: 20%;
-  text-align: center;
+.article-info {
+  font-size: 0.9rem;
+  color: #757575;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
-.article-table .date {
-  width: 20%;
-  text-align: center;
-}
-
-.article-table .likes {
-  width: 10%;
-  text-align: center;
-}
-
-.article-table .comment-count {
-  color: red;
-  margin-left: 5px;
-}
-
-/* 새 게시글 작성 버튼 스타일 */
-.create-button .btn-create {
-  background-color: #007bff; /* 기본 파란색 배경 */
-  color: white; /* 텍스트 흰색 */
+.likes {
   font-size: 1rem;
-  padding: 10px 20px; /* 버튼 패딩 */
+  color: #ff6f61;
+  margin-bottom: 5px;
+}
+
+.comment-count {
+  font-size: 0.9rem;
+  color: #ff6f61;
+}
+
+/* 새 게시글 작성 버튼 */
+.create-button .btn-create {
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
   border: none;
-  border-radius: 5px; /* 둥근 모서리 */
+  border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease; /* 호버 애니메이션 */
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .create-button .btn-create:hover {
-  background-color: #0056b3; /* 호버 시 어두운 파란색 */
-  transform: translateY(-2px); /* 살짝 떠오르는 효과 */
+  background-color: #0056b3;
+  transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
