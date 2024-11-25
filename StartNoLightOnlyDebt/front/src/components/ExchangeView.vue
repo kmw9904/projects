@@ -31,9 +31,9 @@
     </div>
 
     <!-- 계산 결과 -->
-    <div v-if="result !== null" class="result-container mt-4 text-center">
+    <div v-if="lastResult !== null" class="result-container mt-4 text-center">
       <h2>환전 결과</h2>
-      <p class="fw-bold">{{ amount }} {{ fromCurrency }} → {{ result.toFixed(2) }} {{ toCurrency }}</p>
+      <p class="fw-bold">{{ lastAmount }} {{ lastFromCurrency }} → {{ lastResult.toFixed(2) }} {{ lastToCurrency }}</p>
       <button @click="resetCalculator" class="btn btn-outline-secondary mt-3">초기화</button>
     </div>
   </div>
@@ -48,6 +48,10 @@ const fromCurrency = ref("KRW"); // 기본값: 원화
 const toCurrency = ref("USD"); // 기본값: 미국 달러
 const amount = ref(0); // 입력 금액
 const result = ref(null); // 계산 결과
+const lastResult = ref(null); // 최종 결과
+const lastFromCurrency = ref(""); // 마지막 출발 통화
+const lastToCurrency = ref(""); // 마지막 도착 통화
+const lastAmount = ref(0); // 마지막 입력 금액
 
 // 환율 계산 함수
 const calculateExchange = () => {
@@ -59,6 +63,12 @@ const calculateExchange = () => {
 
   // 계산: (출발 통화 금액 × 출발 통화 환율) / 도착 통화 환율
   result.value = amount.value * (fromRate / toRate);
+
+  // 결과를 최종 변수에 저장하여 이후 변경에도 유지
+  lastResult.value = result.value;
+  lastFromCurrency.value = fromCurrency.value;
+  lastToCurrency.value = toCurrency.value;
+  lastAmount.value = amount.value;
 };
 
 // 음수 입력 방지
@@ -74,6 +84,10 @@ const resetCalculator = () => {
   toCurrency.value = "USD";
   amount.value = 0;
   result.value = null; // 결과 초기화
+  lastResult.value = null; // 최종 결과 초기화
+  lastFromCurrency.value = "";
+  lastToCurrency.value = "";
+  lastAmount.value = 0;
 };
 </script>
 

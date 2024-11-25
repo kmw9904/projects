@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid p-0">
-    <div class="jumbotron">
+    <div id="top" class="jumbotron">
       <div class="text-container">
         <h1 class="text-title">대출 정보 제공 서비스</h1>
         <p class="lead">신뢰할 수 있는 금융 정보를 제공합니다.</p>
@@ -21,7 +21,7 @@
 
   <div id="product-section" class="product-section py-5 bg-light">
   <div class="container">
-    <h2 id="search" class="section-title text-center mb-4"><img class="search-img" src="/pictures/상품조회.png" alt="검색 상품"></h2>
+    <h2 id="search" class="section-title text-center mb-4"><img class="search-img" @click="scrollToSection('product-section')" src="/pictures/상품조회.png" alt="검색 상품"></h2>
 
     <!-- 전체 레이아웃을 좌우로 분리 -->
     <div class="row">
@@ -54,7 +54,7 @@
 
 <!-- 좋아요가 가장 많은 상품 -->
 <div class="top-liked-products py-5 bg-white">
-  <div class="container">
+  <div id="best-products" class="container">
     <h2 id="search" class="section-title text-center mb-4"><img class="best-img" src="/pictures/베스트상품.png" alt="베스트 상품"></h2>
     <div v-if="topLikedProducts.length > 0" class="row">
       <div
@@ -115,7 +115,7 @@
   </div>
 </div>
 <div v-if="topLikedArticle" class="top-liked-article py-5 bg-light">
-  <div class="container text-center">
+  <div id="top-article" class="container text-center">
     <h3 class="section-title mb-4"><img class="best-img" src="/pictures/최고게시글.png" alt="베스트 상품"></h3>
     <div class="article-card card shadow-sm mx-auto">
       <div class="card-body">

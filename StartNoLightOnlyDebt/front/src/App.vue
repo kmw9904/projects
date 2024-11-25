@@ -74,10 +74,14 @@
       <button class="chatbot-icon" @click="toggleChat">
         <img src="/pictures/챗봇사진.png" alt="챗봇" />
       </button>
-
-      <!-- 채팅창 -->
-      <div v-if="isChatVisible" class="chatbot">
-        <AlgorithmView />
+      
+      <!-- 네비게이션 버튼들 -->
+      <div v-if="isChatVisible" class="navigation-buttons">
+        <button class="btn btn-link" @click="scrollToSection('top')">맨 위로 가기</button>
+        <button class="btn btn-link" @click="scrollToSection('product-section')">상품 조회 섹션</button>
+        <button class="btn btn-link" @click="scrollToSection('best-products')">베스트 상품 섹션</button>
+        <button class="btn btn-link" @click="scrollToSection('top-article')">베스트 게시글 섹션</button>
+        <button><AlgorithmView></AlgorithmView></button>
       </div>
     </div>
   </div>
@@ -99,6 +103,14 @@ const Logout = function () {
 const isChatVisible = ref(false);
 const toggleChat = () => {
   isChatVisible.value = !isChatVisible.value;
+};
+
+// 특정 섹션으로 부드럽게 스크롤하는 함수
+const scrollToSection = (sectionId) => {
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
 };
 </script>
 
@@ -202,6 +214,34 @@ main {
 .chatbot-icon img {
   width: 90%;
   height: 90%;
+}
+
+/* 네비게이션 버튼들 */
+.navigation-buttons {
+  position: fixed;
+  bottom: 145px; /* 버튼 위로 띄우기 */
+  right: 37px;
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.navigation-buttons button {
+  display: block;
+  width: 100%;
+  margin-bottom: 5px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: #007bff;
+  cursor: pointer;
+}
+
+.navigation-buttons button:hover {
+  text-decoration: underline;
 }
 
 /* 채팅창 */
