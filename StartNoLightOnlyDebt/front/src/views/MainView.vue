@@ -12,8 +12,8 @@
           <br />
           <br />
           <br />
-          <div id="product-section" class="lightbutton">
-            <h2 @click="scrollToIntroduce" >시작하기</h2>
+          <div id="product-section1" class="lightbutton">
+            <h2 @click="goToIntroduceSection" >시작하기</h2>
           </div>
         </p>
       </div>
@@ -53,16 +53,16 @@
 <!-- 상품 조회 -->
 <div id="product-section" class="product-section py-5 bg-light">
   <div class="container">
-    <h2 id="search" class="section-title text-center mb-4" @click="scrollToSection('product-section')">대출 상품 검색하기</h2>
+    <h2 id="search" class="section-title text-center mb-4">대출 상품 검색하기</h2>
   
     <!-- 전체 레이아웃을 좌우로 분리 -->
     <div class="row">
       <!-- 왼쪽 버튼 섹션 -->
       <div class="col-md-4 sticky-col">
         <div class="menu">
-          <button class="btn btn-outline-secondary w-100 mb-3" @click="() => { scrollToSection(); targetLoan('CreditLoanView'); }"><img class="loan-img" src="/pictures/신용대출.png" alt="개인대출"></button>
-          <button class="btn btn-outline-secondary w-100 mb-3" @click="() => { scrollToSection(); targetLoan('JeonseView'); }"><img class="loan-img" src="/pictures/전세대출.png" alt="전세대출"></button>
-          <button class="btn btn-outline-secondary w-100"  @click="() => { scrollToSection(); targetLoan('MortgageView'); }"><img class="loan-img" src="/pictures/담보대출.png" alt="담보대출"></button>
+          <button class="btn btn-outline-secondary w-100 mb-3" @click="() => { scrollToIntroduce(); targetLoan('CreditLoanView'); }"><img class="loan-img" src="/pictures/신용대출.png" alt="개인대출"></button>
+          <button class="btn btn-outline-secondary w-100 mb-3" @click="() => { scrollToIntroduce(); targetLoan('JeonseView'); }"><img class="loan-img" src="/pictures/전세대출.png" alt="전세대출"></button>
+          <button class="btn btn-outline-secondary w-100"  @click="() => { scrollToIntroduce(); targetLoan('MortgageView'); }"><img class="loan-img" src="/pictures/담보대출.png" alt="담보대출"></button>
         </div>
       </div>
   
@@ -232,8 +232,17 @@ const targetLoan = function (loan) {
   nowLoan.value = loan;
 };
 
-const scrollToIntroduce = () => {
-  const section = document.getElementById("introduce-section");
+const goToIntroduceSection = () => {
+  const section = document.getElementById("product-section1");
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" }); // 부드러운 스크롤 이동
+  } else {
+    console.warn('Section "introduce-section" not found.');
+  }
+};
+
+const scrollToIntroduce = (sectionId) => {
+  const section = document.getElementById(sectionId);
   if (section) {
     section.scrollIntoView({ behavior: "smooth" });
   }
