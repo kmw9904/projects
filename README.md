@@ -247,8 +247,9 @@ src/
 │   ├── index.js                # 라우터 정의
 
 ```
+![image (2)](https://github.com/user-attachments/assets/0b11a19b-22e0-4fc1-a480-d4b49d570db3)
 
-![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/cde1e0b7-6fb8-4ac1-a76e-939dbb6b41ec/9b44c9ab-e370-462a-b826-1a9a6adae461/image.png)
+
 
 ### **페이지별 역할과 라우트**
 
