@@ -421,6 +421,6 @@ src/
 
 
 ## 참고
-참고 사항 URL = [https://finlife.fss.or.kr/finlife/ldng/lfstsFunds/list.do](https://finlife.fss.or.kr/finlife/main/main.do?menuNo=700000)
-일일 사항 및 계획 노션 정리 = https://www.notion.so/ssafy-jinhyeok/1427f669b133800baf92c74ae850c11e
-기능 구현 및 최종 ppt = 
+- 참고 사항 URL = [https://finlife.fss.or.kr/finlife/ldng/lfstsFunds/list.do](https://finlife.fss.or.kr/finlife/main/main.do?menuNo=700000)
+- 일일 사항 및 계획 노션 정리 = https://www.notion.so/ssafy-jinhyeok/1427f669b133800baf92c74ae850c11e
+- 기능 구현 및 최종 ppt = 
