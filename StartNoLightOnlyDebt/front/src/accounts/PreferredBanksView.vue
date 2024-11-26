@@ -78,6 +78,7 @@ const updatePreferredBanks = () => {
 <style scoped>
 /* 전체 컨테이너 스타일 */
 .preferred-banks-container {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;

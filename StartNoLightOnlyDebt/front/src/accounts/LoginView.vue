@@ -41,6 +41,7 @@ const Login = function () {
 
 <style scoped>
 .login-container {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 20px;
   max-width: 400px;
   margin: 0 auto;

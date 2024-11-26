@@ -59,6 +59,7 @@ onMounted(() => {
 <style scoped>
 /* 프로필 컨테이너 스타일 */
 .profile-container {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 20px;
   max-width: 800px; /* 전체 컨테이너 크기 조정 */
   margin: 0 auto;

@@ -568,6 +568,57 @@ onMounted(() => {
   } else {
     console.log("Best description section NOT found");
   }
+
+   // 추가된 섹션: product-section에 대한 Observer
+   const productSection = document.querySelector(".product-section");
+  if (productSection) {
+    console.log("Best description section found");
+
+    const observerProductSection = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          productSection.classList.add("scrolled");
+          console.log("Scrolled class added to product-section");
+        } else {
+          productSection.classList.remove("scrolled");
+          console.log("Scrolled class removed from product-section");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerProductSection.observe(productSection);
+    console.log("Intersection Observer added for product-section");
+  } else {
+    console.log("Best description section NOT found");
+  }
+   
+
+     // 추가된 섹션: top-liked-products에 대한 Observer
+     const topLikedProducts = document.querySelector(".top-liked-products");
+  if (topLikedProducts) {
+    console.log("Best description section found");
+
+    const observerTopLikedProducts = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          topLikedProducts.classList.add("scrolled");
+          console.log("Scrolled class added to top-liked-products");
+        } else {
+          topLikedProducts.classList.remove("scrolled");
+          console.log("Scrolled class removed from top-liked-products");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerTopLikedProducts.observe(topLikedProducts);
+    console.log("Intersection Observer added for top-liked-products");
+  } else {
+    console.log("Best description section NOT found");
+  }
 });
 
 
@@ -898,6 +949,7 @@ h2 {
 }
 
 .text-title {
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 3.5rem;
   font-weight: bold;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
@@ -939,7 +991,17 @@ body {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
   animation: fadeIn 1s ease-in-out;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
 }
+
+.product-section.scrolled {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 
 /* 섹션 제목 스타일 */
 .section-title {
@@ -1109,6 +1171,15 @@ a.btn {
 .top-liked-products {
   background-color: #f9f9f9;
   padding: 3rem 0;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
+}
+
+.top-liked-products.scrolled {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 #best-products {
@@ -1215,6 +1286,7 @@ a.btn {
   background-color: #f8f9fa; /* 배경색 */
   padding: 3rem 0; /* 위아래 패딩 */
 }
+
 
 .article-card {
   max-width: 600px; /* 카드 최대 너비 */

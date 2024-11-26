@@ -159,6 +159,7 @@ onMounted(loadKakaoMap);
 }
 
 .search-results {
+  font-family: "Noto Sans KR", sans-serif;
   margin-top: 20px;
   padding: 10px;
   background-color: #f9f9f9;
@@ -167,6 +168,7 @@ onMounted(loadKakaoMap);
 }
 
 .results-title {
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 1.7rem;
   font-weight: bold;
   margin-bottom: 15px;

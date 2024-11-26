@@ -157,6 +157,7 @@ onMounted(() => {
 
 <style scoped>
 .interaction-container {
+  font-family: "Noto Sans KR", sans-serif;
   background-color: #f9f9f9;
   padding: 20px;
   border-radius: 10px;

@@ -100,6 +100,7 @@ const SignUp = function () {
 
 <style scoped>
 .signup-container {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 20px;
   max-width: 600px;
   margin: 0 auto;

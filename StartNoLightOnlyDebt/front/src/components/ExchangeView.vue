@@ -115,6 +115,7 @@ const resetCalculator = () => {
 
 /* 제목 스타일 */
 h1 {
+  font-family: "Noto Sans KR", sans-serif;
   font-size: 2rem;
   font-weight: bold;
   color: #343a40;
@@ -125,6 +126,7 @@ h1 {
 
 /* 카드 스타일 */
 .card {
+  font-family: "Noto Sans KR", sans-serif;
   background-color: #ffffff;
   border-radius: 15px;
   padding: 20px;

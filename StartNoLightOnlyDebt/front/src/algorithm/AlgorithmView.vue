@@ -167,6 +167,7 @@ onMounted(() => {
 }
 
 .messages .user {
+  font-family: "Noto Sans KR", sans-serif;
   text-align: right;
   margin: 5px 0;
   color: white;
@@ -177,6 +178,7 @@ onMounted(() => {
 }
 
 .messages .bot {
+  font-family: "Noto Sans KR", sans-serif;
   text-align: left;
   margin: 5px 0;
   color: #333;
@@ -201,6 +203,7 @@ onMounted(() => {
 }
 
 .input-container button {
+  font-family: "Noto Sans KR", sans-serif;
   margin-left: 10px;
   padding: 5px 15px;
   font-size: 14px;

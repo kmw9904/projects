@@ -130,6 +130,7 @@ const scrollToSection = (sectionId) => {
 <style scoped>
 /* 전체 앱 영역 */
 .app {
+  font-family: "Noto Sans KR", sans-serif;
   width: 100%;
   height: 100vh; /* 뷰포트 전체 높이 */
   display: flex;
@@ -152,6 +153,7 @@ const scrollToSection = (sectionId) => {
 
 /* 로고 스타일 */
 .logo {
+  font-family: "Noto Sans KR", sans-serif;
   display: flex;
   align-items: center;
 }

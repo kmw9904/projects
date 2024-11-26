@@ -120,6 +120,7 @@ const formatDate = (dateString) => {
 
 <style scoped>
 .article-detail-page {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;

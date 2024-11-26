@@ -219,6 +219,7 @@ onMounted(() => {
 <style scoped>
 /* 컨테이너 스타일 */
 .credit-loan-container {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 30px;
   background: linear-gradient(to bottom, #ffffff, #f9f9f9);
   border-radius: 15px;

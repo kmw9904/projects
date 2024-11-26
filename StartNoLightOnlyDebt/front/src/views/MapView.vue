@@ -16,34 +16,10 @@
           <div class="col-md-4">
             <div class="card shadow-sm p-4 search-card">
               <h5 class="card-title text-center mb-4">검색 옵션</h5>
-              <v-select
-                v-model="province"
-                :items="infos.map(info => info.prov)"
-                label="도/시 선택"
-                outlined
-                dense
-                class="mb-3"
-                @change="updateCities"
-              ></v-select>
-              <v-select
-                v-model="city"
-                :items="cities"
-                label="시/군/구 선택"
-                outlined
-                dense
-                class="mb-3"
-              ></v-select>
-              <v-select
-                v-model="bank"
-                :items="banks"
-                label="은행 선택"
-                outlined
-                dense
-                class="mb-4"
-              ></v-select>
-              <button class="btn btn-primary btn-block" @click="triggerSearch">
-                검색하기
-              </button>
+              <v-select v-model="province" :items="infos.map((info) => info.prov)" label="도/시 선택" outlined dense class="mb-3" @change="updateCities"></v-select>
+              <v-select v-model="city" :items="cities" label="시/군/구 선택" outlined dense class="mb-3"></v-select>
+              <v-select v-model="bank" :items="banks" label="은행 선택" outlined dense class="mb-4"></v-select>
+              <button class="btn btn-primary btn-block" @click="triggerSearch">검색하기</button>
             </div>
           </div>
 
@@ -87,6 +63,7 @@ const triggerSearch = () => {
 <style scoped>
 /* 스타일 그대로 유지 */
 .map-page {
+  font-family: "Noto Sans KR", sans-serif;
   background-color: #f9f9f9;
   min-height: 100vh;
 }

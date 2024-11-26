@@ -62,6 +62,7 @@ const changePasswordHandler = () => {
 
 <style scoped>
 .password-change-container {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 20px;
   max-width: 500px;
   margin: 0 auto;

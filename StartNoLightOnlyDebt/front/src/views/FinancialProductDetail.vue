@@ -116,6 +116,7 @@ onMounted(() => {
 
 <style scoped>
 .detail-container {
+  font-family: "Noto Sans KR", sans-serif;
   max-width: 800px;
   margin: 20px auto;
   padding: 20px;

@@ -46,10 +46,11 @@ const submitArticle = async () => {
 <style scoped>
 /* 페이지 전체 스타일 */
 .article-create-page {
+  font-family: "Noto Sans KR", sans-serif;
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
