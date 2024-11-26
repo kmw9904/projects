@@ -89,167 +89,157 @@
 복잡한 계산과 정보의 벽을 허물고, 누구나 쉽게 금융에 접근할 수 있는 세상을 만들어갑니다.
 
 
-# ERD 구성
+## ERD 개요
+이 시스템은 금융 회사, 금융 상품, 주택담보대출, 전세자금대출, 개인신용대출 옵션을 관리하는 구조를 설계합니다.  
+금융 상품은 금융 회사와 연계되며, 각 상품은 세부 옵션 정보를 가지고 있습니다.  
+
+---
 
 ## 1. 금융회사 테이블 (FinancialCompany)
 **설명**: 금융회사에 대한 기본 정보를 저장합니다.
 
-- **컬럼**:
-  - `fin_co_no` (PK): 금융회사 번호
-  - `kor_co_nm`: 금융회사명
+### 컬럼 구성
+- **fin_co_no** (PK): 금융회사 번호
+- **kor_co_nm**: 금융회사명
 
 ---
 
 ## 2. 금융상품 테이블 (FinancialProduct)
-**설명**: 금융상품의 기본 정보를 저장하는 테이블로, 주택담보대출, 전세자금대출, 개인신용대출을 모두 포함합니다.
+**설명**: 금융상품의 기본 정보를 저장하는 테이블로, 주택담보대출, 전세자금대출, 개인신용대출을 포함합니다.
 
-- **컬럼**:
-  - `fin_prdt_cd` (PK): 금융상품 코드
-  - `fin_co_no` (FK): 금융회사 번호 (`FinancialCompany.fin_co_no` 참조)
-  - `fin_prdt_nm`: 금융상품명
-  - `join_way`: 가입 방법
-  - `loan_inci_expn`: 부대 비용
-  - `erly_rpay_fee`: 중도상환수수료
-  - `dly_rate`: 연체 이자율
-  - `loan_lmt`: 대출 한도
-  - `dcls_month`: 공시 제출 월
-  - `dcls_strt_day`: 공시 시작일
-  - `dcls_end_day`: 공시 종료일
-  - `fin_co_subm_day`: 금융회사 제출일
-  - `prdt_div`: 상품 구분 (`M`: 주택담보대출, `R`: 전세자금대출, `C`: 개인신용대출)
-  - **개인신용대출 전용 컬럼**:
-    - `crdt_prdt_type`: 신용대출 상품 구분
-    - `crdt_prdt_type_nm`: 신용대출 상품 구분명
+### 컬럼 구성
+- **fin_prdt_cd** (PK): 금융상품 코드
+- **fin_co_no** (FK): 금융회사 번호 (FinancialCompany 참조)
+- **fin_prdt_nm**: 금융상품명
+- **join_way**: 가입 방법
+- **loan_inci_expn**: 부대 비용
+- **erly_rpay_fee**: 중도상환수수료
+- **dly_rate**: 연체 이자율
+- **loan_lmt**: 대출 한도
+- **prdt_div**: 상품 구분 (`M`: 주택담보대출, `R`: 전세자금대출, `C`: 개인신용대출)
 
 ---
 
 ## 3. 주택담보대출 옵션 테이블 (MortgageOption)
 **설명**: 주택담보대출 상품의 세부 옵션 정보를 저장합니다.
 
-- **컬럼**:
-  - `id` (PK): 옵션 ID
-  - `fin_prdt_cd` (FK): 금융상품 코드 (`FinancialProduct.fin_prdt_cd` 참조)
-  - `dcls_month`: 공시 제출 월
-  - `mrtg_type`: 담보 종류 코드
-  - `mrtg_type_nm`: 담보 종류명
-  - `rpay_type`: 상환 방식 코드
-  - `rpay_type_nm`: 상환 방식명
-  - `lend_rate_type`: 금리 유형 코드
-  - `lend_rate_type_nm`: 금리 유형명
-  - `lend_rate_min`: 최소 금리
-  - `lend_rate_max`: 최대 금리
-  - `lend_rate_avg`: 평균 금리
+### 컬럼 구성
+- **id** (PK): 옵션 ID
+- **fin_prdt_cd** (FK): 금융상품 코드 (FinancialProduct 참조)
+- **mrtg_type**: 담보 종류 코드
+- **mrtg_type_nm**: 담보 종류명
+- **rpay_type**: 상환 방식 코드
+- **rpay_type_nm**: 상환 방식명
+- **lend_rate_min**: 최소 금리
+- **lend_rate_max**: 최대 금리
+- **lend_rate_avg**: 평균 금리
 
 ---
 
 ## 4. 전세자금대출 옵션 테이블 (JeonseOption)
 **설명**: 전세자금대출 상품의 세부 옵션 정보를 저장합니다.
 
-- **컬럼**:
-  - `id` (PK): 옵션 ID
-  - `fin_prdt_cd` (FK): 금융상품 코드 (`FinancialProduct.fin_prdt_cd` 참조)
-  - `dcls_month`: 공시 제출 월
-  - `rpay_type`: 상환 방식 코드
-  - `rpay_type_nm`: 상환 방식명
-  - `lend_rate_type`: 금리 유형 코드
-  - `lend_rate_type_nm`: 금리 유형명
-  - `lend_rate_min`: 최소 금리
-  - `lend_rate_max`: 최대 금리
-  - `lend_rate_avg`: 평균 금리
+### 컬럼 구성
+- **id** (PK): 옵션 ID
+- **fin_prdt_cd** (FK): 금융상품 코드 (FinancialProduct 참조)
+- **rpay_type**: 상환 방식 코드
+- **rpay_type_nm**: 상환 방식명
+- **lend_rate_min**: 최소 금리
+- **lend_rate_max**: 최대 금리
+- **lend_rate_avg**: 평균 금리
 
 ---
 
 ## 5. 개인신용대출 옵션 테이블 (CreditLoanOption)
 **설명**: 개인신용대출 상품의 세부 옵션 정보를 저장합니다.
 
-- **컬럼**:
-  - `id` (PK): 옵션 ID
-  - `fin_prdt_cd` (FK): 금융상품 코드 (`FinancialProduct.fin_prdt_cd` 참조)
-  - `dcls_month`: 공시 제출 월
-  - `crdt_prdt_type`: 신용대출 상품 구분
-  - `crdt_lend_rate_type`: 금리 구분 코드
-  - `crdt_lend_rate_type_nm`: 금리 구분명
-  - `crdt_grad_1`: 신용 등급 1등급 금리
-  - `crdt_grad_4`: 신용 등급 4등급 금리
-  - `crdt_grad_5`: 신용 등급 5등급 금리
-  - `crdt_grad_6`: 신용 등급 6등급 금리
-  - `crdt_grad_10`: 신용 등급 10등급 금리
-  - `crdt_grad_11`: 신용 등급 11등급 금리
-  - `crdt_grad_12`: 신용 등급 12등급 금리
-  - `crdt_grad_13`: 신용 등급 13등급 금리
-  - `crdt_grad_avg`: 평균 금리
+### 컬럼 구성
+- **id** (PK): 옵션 ID
+- **fin_prdt_cd** (FK): 금융상품 코드 (FinancialProduct 참조)
+- **crdt_prdt_type**: 신용대출 상품 구분
+- **crdt_grad_avg**: 평균 금리
+- **crdt_grad_1**: 신용 등급 1등급 금리
+- **crdt_grad_4**: 신용 등급 4등급 금리
 
 ---
 
 ## ERD 관계
-- **FinancialCompany** `1 --- N` **FinancialProduct**  
-  - 하나의 금융회사는 여러 금융상품을 가질 수 있습니다.
-  
-- **FinancialProduct** `1 --- N` **MortgageOption**  
-  - 주택담보대출 상품은 여러 옵션을 가질 수 있습니다.
-  
-- **FinancialProduct** `1 --- N` **JeonseOption**  
-  - 전세자금대출 상품은 여러 옵션을 가질 수 있습니다.
-  
-- **FinancialProduct** `1 --- N` **CreditLoanOption**  
-  - 개인신용대출 상품은 여러 옵션을 가질 수 있습니다.
+### 주요 관계:
+1. **FinancialCompany** `1 --- N` **FinancialProduct**  
+   - 금융회사는 여러 금융상품을 가질 수 있습니다.  
+2. **FinancialProduct** `1 --- N` **MortgageOption**  
+   - 금융상품 중 주택담보대출은 여러 옵션을 가질 수 있습니다.  
+3. **FinancialProduct** `1 --- N` **JeonseOption**  
+   - 금융상품 중 전세자금대출은 여러 옵션을 가질 수 있습니다.  
+4. **FinancialProduct** `1 --- N` **CreditLoanOption**  
+   - 금융상품 중 개인신용대출은 여러 옵션을 가질 수 있습니다.
+
 
 ---
 
-## 키(Key) 구성
+## 🔑 키(Key) 구성
 
-### 기본 키(PK):
+### **기본 키 (Primary Key, PK):**
 - `FinancialCompany.fin_co_no`
 - `FinancialProduct.fin_prdt_cd`
 - 각 옵션 테이블의 `id`
 
-### 외래 키(FK):
+### **외래 키 (Foreign Key, FK):**
 - `FinancialProduct.fin_co_no` → `FinancialCompany.fin_co_no`
 - 각 옵션 테이블의 `fin_prdt_cd` → `FinancialProduct.fin_prdt_cd`
 
-## ERD 수정
+---
 
-### 1차 ERD 수정 24.11.08 
+## **ERD 수정 기록**
+
+### **1차 수정 (2024-11-08)**  
+**내용**: 기본적인 금융 상품 테이블 설계 및 옵션 테이블 연결 설계  
 ![LoanCalculator](https://github.com/user-attachments/assets/f13d3eb6-6588-4631-932c-bdcb318aef21)
 
-### 2차 ERD 수정 24.11.18
-#### 금융회사 정보와 전화번호를 받기 위해 금융정보 API를 새로 받아 ERD 구성 요소 추가
+---
+
+### **2차 수정 (2024-11-18)**  
+**내용**: 금융회사 정보와 전화번호를 추가하기 위해 금융정보 API 기반 데이터 구조 확장  
 ![Copy of LoanCalculator (1) (1)](https://github.com/user-attachments/assets/6b48993b-2425-4c33-87ab-0f904acb4205)
 
-### 3차 ERD 수정 24.11.25
-#### 금융회사 홈페이지 정보가 기존 ERD구성에 존재하여 추가한 Information ERD 삭제 및 기존 ERD에 테이블에 홈페이지 정보 추가
-#### 게시글과 댓글, 좋아요 기능 구현을 위해 각각의 ERD 구성 추가
+---
+
+### **3차 수정 (2024-11-25)**  
+**내용**: 금융회사 홈페이지 정보 통합 및 불필요한 ERD 구성 요소 제거  
+- 게시글 및 댓글, 좋아요 기능 추가  
 ![Copy of LoanCalculator (3)](https://github.com/user-attachments/assets/bc4225e8-3844-4d63-92e4-b04679f16e6f)
 
-## 백엔드 컴포는 구조
+---
+
+## **백엔드 컴포넌트 구조**
+
 ```jsx
 project_root/
 ├── accounts/                 # 계정 관련 기능
-│   ├── [models.py](http://models.py/)             # 사용자 모델 정의
-│   ├── [views.py](http://views.py/)              # 로그인, 회원가입, 프로필 조회
-│   ├── [urls.py](http://urls.py/)               # 계정 관련 URL 라우팅
-│   ├── [serializers.py](http://serializers.py/)        # 계정 관련 직렬화 클래스
+│   ├── models.py             # 사용자 모델 정의
+│   ├── views.py              # 로그인, 회원가입, 프로필 조회
+│   ├── urls.py               # 계정 관련 URL 라우팅
+│   ├── serializers.py        # 계정 관련 직렬화 클래스
 ├── articles/                 # 게시글 및 댓글 관리
-│   ├── [models.py](http://models.py/)             # 게시글, 댓글 모델 정의
-│   ├── [views.py](http://views.py/)              # 게시글 및 댓글 CRUD 기능
-│   ├── [urls.py](http://urls.py/)               # 게시글 관련 URL 라우팅
-│   ├── [serializers.py](http://serializers.py/)        # 게시글 및 댓글 직렬화 클래스
-├── interactions/             # 좋아요 및 댓글 관리
-│   ├── [models.py](http://models.py/)             # 좋아요 및 상호작용 모델 정의
-│   ├── [views.py](http://views.py/)              # 좋아요 토글, 댓글 관리
-│   ├── [urls.py](http://urls.py/)               # 상호작용 관련 URL 라우팅
-│   ├── [serializers.py](http://serializers.py/)        # 상호작용 관련 직렬화 클래스
+│   ├── models.py             # 게시글, 댓글 모델 정의
+│   ├── views.py              # 게시글 및 댓글 CRUD 기능
+│   ├── urls.py               # 게시글 관련 URL 라우팅
+│   ├── serializers.py        # 게시글 및 댓글 직렬화 클래스
+├── interactions/             # 좋아요 및 상호작용 관리
+│   ├── models.py             # 좋아요 및 상호작용 모델 정의
+│   ├── views.py              # 좋아요 토글, 댓글 관리
+│   ├── urls.py               # 상호작용 관련 URL 라우팅
+│   ├── serializers.py        # 상호작용 관련 직렬화 클래스
 ├── managebanks/              # 금융 상품 및 대출 관리
-│   ├── [models.py](http://models.py/)             # 금융 상품, 은행 모델 정의
-│   ├── [views.py](http://views.py/)              # 금융 데이터, 대출 상품 조회 및 계산
-│   ├── [urls.py](http://urls.py/)               # 금융 상품 관련 URL 라우팅
-│   ├── [serializers.py](http://serializers.py/)        # 금융 상품 직렬화 클래스
+│   ├── models.py             # 금융 상품, 은행 모델 정의
+│   ├── views.py              # 금융 데이터, 대출 상품 조회 및 계산
+│   ├── urls.py               # 금융 상품 관련 URL 라우팅
+│   ├── serializers.py        # 금융 상품 직렬화 클래스
 ├── project_name/             # 프로젝트 설정 파일
-│   ├── [settings.py](http://settings.py/)           # Django 프로젝트 설정
-│   ├── [urls.py](http://urls.py/)               # 프로젝트 전체 URL 라우팅
-│   ├── [wsgi.py](http://wsgi.py/)               # WSGI 설정
-│   ├── [asgi.py](http://asgi.py/)               # ASGI 설정
-```
+│   ├── settings.py           # Django 프로젝트 설정
+│   ├── urls.py               # 프로젝트 전체 URL 라우팅
+│   ├── wsgi.py               # WSGI 설정
+│   ├── asgi.py               # ASGI 설정
 
 ### **페이지별 역할과 라우트**
 
