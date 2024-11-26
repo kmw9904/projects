@@ -50,6 +50,29 @@
   <p class="subtitle" >SNO와 함께 추천 받으세요</p>
 </div>
 
+<div class="mokup-container">
+  <div class="mokup-description-img">
+    <img src="/pictures/목업.png" alt="목업">
+  </div>
+  <img class="enlarge-img" src="/pictures/확대.png" alt="확대">
+  <div class="mokup-description">
+    <div>
+      <img class="mokup-img" src="/pictures/신용대출.png" alt="신용">
+    </div>
+    <div>
+      <img class="mokup-img" src="/pictures/전세대출.png" alt="전세">
+    </div>
+    <div>
+      <img class="mokup-img" src="/pictures/담보대출.png" alt="담보">
+    </div>
+  </div>
+</div>
+
+<div class="mokup-container-msg">
+  <p class="title">다양한 대출 종류와 손쉬운 검색 방법</p>
+  <p class="subtitle">사용자의 편의성을 증진시킵니다</p>
+</div>
+
 
 <!-- 상품 조회 -->
 <div id="product-section" class="product-section py-5 bg-light">
@@ -85,12 +108,21 @@
   </div>
 </div>
 
+<div class="balance-description-img">
+  <img src="/pictures/저울.jpg" alt="저울">
+</div>
+<div class="balance-description">
+  <p class="title">정보의 비대칭성 해결을 위해</p>
+  <p class="subtitle">SNO는 고객의 의견을 제공합니다.</p>
+</div>
+
+
 <div class="article-description-img">
   <img src="/pictures/게시글.jpg" alt="게시글">
 </div>
 <div class="article-description">
   <p class="title">가장 인기많은 상품을 둘러보세요</p>
-  <p class="subtitle">사람들의 다양한 의견을 들어볼 수 있어요</p>
+  <p class="subtitle">고객들의 다양한 의견을 들어볼 수 있어요</p>
 </div>
 
 <!-- 좋아요가 가장 많은 상품 조회-->
@@ -119,9 +151,6 @@
             <h5 class="card-title"><RouterLink :to="{ name: 'FinancialProductDetail', params: { productId: product.fin_prdt_cd } }" class="product-name">{{ product.product_name }}</RouterLink></h5>
             <p class="card-text">
               {{ product.company_name }}
-            </p>
-            <p class="card-text">
-              <strong>❤️</strong> {{ product.likes }}
             </p>
 
             <!-- 조건별로 컴포넌트 표시 -->
@@ -618,6 +647,156 @@ onMounted(() => {
   } else {
     console.log("Best description section NOT found");
   }
+
+      // 추가된 섹션: mokup-description-img에 대한 Observer
+      const mokupDescriptionImg = document.querySelector(".mokup-description-img");
+  if (mokupDescriptionImg) {
+    console.log("Best description section found");
+
+    const observerMokupDescriptionImg = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          mokupDescriptionImg.classList.add("scrolled");
+          console.log("Scrolled class added to mokup-description-img");
+        } else {
+          mokupDescriptionImg.classList.remove("scrolled");
+          console.log("Scrolled class removed from mokup-description-img");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerMokupDescriptionImg.observe(mokupDescriptionImg);
+    console.log("Intersection Observer added for mokup-description-img");
+  } else {
+    console.log("Best description section NOT found");
+  }
+
+      // 추가된 섹션: mokup-description에 대한 Observer
+      const mokupDescription = document.querySelector(".mokup-description");
+  if (mokupDescription) {
+    console.log("Best description section found");
+
+    const observerMokupDescription = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          mokupDescription.classList.add("scrolled");
+          console.log("Scrolled class added to mokup-description");
+        } else {
+          mokupDescription.classList.remove("scrolled");
+          console.log("Scrolled class removed from mokup-description");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerMokupDescription.observe(mokupDescription);
+    console.log("Intersection Observer added for mokup-description");
+  } else {
+    console.log("Best description section NOT found");
+  }
+
+        // 추가된 섹션: mokup-container-msg에 대한 Observer
+        const mokupContainerMsg = document.querySelector(".mokup-container-msg");
+  if (mokupContainerMsg) {
+    console.log("Best description section found");
+
+    const observerMokupContainerMsg = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          mokupContainerMsg.classList.add("scrolled");
+          console.log("Scrolled class added to mokup-container-msg");
+        } else {
+          mokupContainerMsg.classList.remove("scrolled");
+          console.log("Scrolled class removed from mokup-container-msg");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerMokupContainerMsg.observe(mokupContainerMsg);
+    console.log("Intersection Observer added for mokup-container-msg");
+  } else {
+    console.log("Best description section NOT found");
+  }
+
+      // 추가된 섹션: enlarge-img에 대한 Observer
+      const enlargeImg = document.querySelector(".enlarge-img");
+  if (enlargeImg) {
+    console.log("Best description section found");
+
+    const observerenlargeImg = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          enlargeImg.classList.add("scrolled");
+          console.log("Scrolled class added to enlarge-img");
+        } else {
+          enlargeImg.classList.remove("scrolled");
+          console.log("Scrolled class removed from enlarge-img");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerenlargeImg.observe(enlargeImg);
+    console.log("Intersection Observer added for enlarge-img");
+  } else {
+    console.log("Best description section NOT found");
+  }
+
+      // 추가된 섹션: balance-description-img에 대한 Observer
+      const balanceDescriptionImg = document.querySelector(".balance-description-img");
+  if (balanceDescriptionImg) {
+    console.log("Best description section found");
+
+    const observerbalanceDescriptionImg = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          balanceDescriptionImg.classList.add("scrolled");
+          console.log("Scrolled class added to balance-description-img");
+        } else {
+          balanceDescriptionImg.classList.remove("scrolled");
+          console.log("Scrolled class removed from balance-description-img");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerbalanceDescriptionImg.observe(balanceDescriptionImg);
+    console.log("Intersection Observer added for balance-description-img");
+  } else {
+    console.log("Best description section NOT found");
+  }
+
+        // 추가된 섹션: balance-description에 대한 Observer
+        const balanceDescription = document.querySelector(".balance-description");
+  if (balanceDescription) {
+    console.log("Best description section found");
+
+    const observerbalanceDescription = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          balanceDescription.classList.add("scrolled");
+          console.log("Scrolled class added to balance-description");
+        } else {
+          balanceDescription.classList.remove("scrolled");
+          console.log("Scrolled class removed from balance-description");
+        }
+      });
+    }, {
+      threshold: 0.5
+    });
+
+    observerbalanceDescription.observe(balanceDescription);
+    console.log("Intersection Observer added for balance-description");
+  } else {
+    console.log("Best description section NOT found");
+  }
 });
 
 
@@ -832,6 +1011,66 @@ h2 {
   box-shadow: none; /* 그림자 제거 */
 }
 
+.balance-description-img {
+  width: 550px; /* 이미지의 너비를 설정 */
+  margin: 20px auto; /* 수직 중앙 정렬, 여백 추가 */
+  text-align: center; /* 이미지 중앙 정렬 */
+  margin-top: 150px;
+  margin-bottom: 150px;
+  opacity: 0; /* 초기 상태: 투명 */
+  transform: translateY(50px); /* 아래쪽 위치 */
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* 부드러운 전환 */
+}
+
+.balance-description-img.scrolled {
+  opacity: 1; /* 완전히 표시 */
+  transform: translateY(0); /* 원래 위치로 이동 */
+}
+
+.balance-description-img img {
+  width: 100%; /* 부모 div에 맞춰 이미지 너비 조정 */
+  height: 600px; /* 높이는 자동 조정 */
+  display: block; /* 이미지 아래 공백 제거 */
+  border-radius: 0; /* 모서리를 네모나게 설정 */
+  box-shadow: none; /* 그림자 제거 */
+}
+
+.balance-description {
+  font-family: 'Noto Sans KR', sans-serif; /* Noto Sans KR 폰트 사용 */
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
+}
+
+.balance-description.scrolled {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.balance-description .title {
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+/* 부 타이틀 스타일 */
+.balance-description .subtitle {
+  font-size: 1.2rem; /* 부 타이틀 글씨 크기 */
+  color: #666; /* 회색으로 색상 변경 */
+  font-weight: 400; /* 기본 굵기로 설정 */
+  margin-top: 10px; /* 위쪽 여백 추가 */
+  line-height: 1.5; /* 줄 간격 조절 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
 .article-description {
   font-family: 'Noto Sans KR', sans-serif; /* Noto Sans KR 폰트 사용 */
   text-align: center;
@@ -920,6 +1159,109 @@ h2 {
 
 /* 부 타이틀 스타일 */
 .best-description .subtitle {
+  font-size: 1.2rem; /* 부 타이틀 글씨 크기 */
+  color: #666; /* 회색으로 색상 변경 */
+  font-weight: 400; /* 기본 굵기로 설정 */
+  margin-top: 10px; /* 위쪽 여백 추가 */
+  line-height: 1.5; /* 줄 간격 조절 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.mokup-description-img {
+  width: 550px; /* 이미지의 너비를 설정 */
+  margin: 20px auto; /* 수직 중앙 정렬, 여백 추가 */
+  text-align: center; /* 이미지 중앙 정렬 */
+  margin-top: 150px;
+  margin-bottom: 150px;
+  opacity: 0; /* 초기 상태: 투명 */
+  transform: translateY(50px); /* 아래쪽 위치 */
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* 부드러운 전환 */
+}
+
+.mokup-description-img.scrolled {
+  opacity: 1; /* 완전히 표시 */
+  transform: translateY(0); /* 원래 위치로 이동 */
+}
+
+.mokup-description-img img {
+  width: 100%; /* 부모 div에 맞춰 이미지 너비 조정 */
+  height: 600px; /* 높이는 자동 조정 */
+  display: block; /* 이미지 아래 공백 제거 */
+  border-radius: 0; /* 모서리를 네모나게 설정 */
+  box-shadow: none; /* 그림자 제거 */
+}
+
+.mokup-description{
+  font-family: 'Noto Sans KR', sans-serif; /* Noto Sans KR 폰트 사용 */
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
+}
+
+.mokup-img {
+  width: 100px;
+  height: 30px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.mokup-description.scrolled {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mokup-description .title {
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+/* 부 타이틀 스타일 */
+.mokup-description .subtitle {
+  font-size: 1.2rem; /* 부 타이틀 글씨 크기 */
+  color: #666; /* 회색으로 색상 변경 */
+  font-weight: 400; /* 기본 굵기로 설정 */
+  margin-top: 10px; /* 위쪽 여백 추가 */
+  line-height: 1.5; /* 줄 간격 조절 */
+  text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.mokup-container-msg{
+  font-family: 'Noto Sans KR', sans-serif; /* Noto Sans KR 폰트 사용 */
+  text-align: center;
+  margin-top: 3rem;
+  padding: 2rem 1rem;
+  background-color: #ffffff;
+  border-radius: 10px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
+}
+
+.mokup-container-msg.scrolled {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.mokup-container-msg .title {
+  font-weight: 700;
+  font-size: 2.5rem;
+}
+
+/* 부 타이틀 스타일 */
+.mokup-container-msg .subtitle {
   font-size: 1.2rem; /* 부 타이틀 글씨 크기 */
   color: #666; /* 회색으로 색상 변경 */
   font-weight: 400; /* 기본 굵기로 설정 */
@@ -1458,4 +1800,60 @@ a.btn {
   transform: translateY(0);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.mokup-container {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* 수직 가운데 정렬 */
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto; /* 가운데 정렬 */
+  margin-bottom: -100px;
+}
+
+.enlarge-img {
+  position: absolute; /* 절대 위치를 사용하여 원하는 곳에 띄움 */
+  top: 24%; /* 부모 컨테이너 기준으로 수직 위치 */
+  left: 40.5%; /* 부모 컨테이너 기준으로 수평 위치 */
+  transform: translate(-50%, -50%); /* 이미지의 중심이 위치하도록 조정 */
+  z-index: 10; /* 다른 요소들보다 위에 표시 */
+  width: 600px; /* 원하는 크기로 설정 */
+  height: 600px;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  margin-bottom: 100px;
+}
+
+.enlarge-img.scrolled {
+  opacity: 1; /* 완전히 표시 */
+  transform: translateY(0); /* 원래 위치로 이동 */
+}
+
+
+.mokup-description-img,
+.mokup-description {
+  flex: 1; /* 자식 요소들이 같은 비율로 공간을 차지하도록 설정 */
+  text-align: center; /* 이미지 가운데 정렬 */
+}
+
+.mokup-description {
+  padding: 20px;
+}
+
+.mokup-description p {
+  margin: 10px 0;
+}
+
+.mokup-description .title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.mokup-description .subtitle {
+  font-size: 1.2rem;
+  color: #555;
+}
+
 </style>

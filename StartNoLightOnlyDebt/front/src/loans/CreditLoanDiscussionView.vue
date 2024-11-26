@@ -1,7 +1,5 @@
 <template>
   <div class="discussion-container">
-    <h3 class="discussion-title">{{ productName }} 댓글 및 좋아요</h3>
-
     <!-- 좋아요 버튼 -->
     <div class="like-section">
       <button class="btn btn-like" @click="toggleLike">{{ isLiked ? "💔" : "❤️" }} {{ likes }}</button>
@@ -182,8 +180,7 @@ onMounted(() => {
 }
 
 .btn-like {
-  background-color: #ff6b6b;
-  color: white;
+  color: black;
   border: none;
   padding: 10px 20px;
   font-size: 1rem;
