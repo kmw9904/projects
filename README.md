@@ -207,6 +207,20 @@
 - `FinancialProduct.fin_co_no` → `FinancialCompany.fin_co_no`
 - 각 옵션 테이블의 `fin_prdt_cd` → `FinancialProduct.fin_prdt_cd`
 
+## ERD 수정
+
+### 1차 ERD 수정 24.11.08 
+![LoanCalculator](https://github.com/user-attachments/assets/f13d3eb6-6588-4631-932c-bdcb318aef21)
+
+### 2차 ERD 수정 24.11.18
+#### 금융회사 정보와 전화번호를 받기 위해 금융정보 API를 새로 받아 ERD 구성 요소 추가
+![Copy of LoanCalculator (1) (1)](https://github.com/user-attachments/assets/6b48993b-2425-4c33-87ab-0f904acb4205)
+
+### 3차 ERD 수정 24.11.25
+#### 금융회사 홈페이지 정보가 기존 ERD구성에 존재하여 추가한 Information ERD 삭제 및 기존 ERD에 테이블에 홈페이지 정보 추가
+#### 게시글과 댓글, 좋아요 기능 구현을 위해 각각의 ERD 구성 추가
+![Copy of LoanCalculator (3)](https://github.com/user-attachments/assets/bc4225e8-3844-4d63-92e4-b04679f16e6f)
+
 ## 백엔드 컴포는 구조
 ```jsx
 project_root/
@@ -385,10 +399,6 @@ src/
 | `JeonseDiscussionView.vue` | `/loans/jeonse/discussion` | GET/POST | 전세 대출 논의 게시판 조회 및 생성 요청 페이지 |
 | `CreditLoanDiscussionView.vue` | `/loans/credit/discussion` | GET/POST | 신용 대출 논의 게시판 조회 및 생성 요청 페이지 |
 | `MortgageDiscussionView.vue` | `/loans/mortgage/discussion` | GET/POST | 주택담보대출 논의 게시판 조회 및 생성 요청 페이지 |
-## 수정
-
-### 1차 ERD 수정 24.11.08 
-![LoanCalculator](https://github.com/user-attachments/assets/f13d3eb6-6588-4631-932c-bdcb318aef21)
 
 
 
