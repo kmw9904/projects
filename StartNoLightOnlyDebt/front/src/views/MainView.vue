@@ -572,16 +572,16 @@ onMounted(() => {
    // 추가된 섹션: product-section에 대한 Observer
    const productSection = document.querySelector(".product-section");
   if (productSection) {
-    console.log("Best description section found");
+    console.log("Product section found");
 
     const observerProductSection = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           productSection.classList.add("scrolled");
           console.log("Scrolled class added to product-section");
-        } else {
-          productSection.classList.remove("scrolled");
-          console.log("Scrolled class removed from product-section");
+
+          // 한 번 scrolled 클래스가 추가되면 감시 중단
+          observerProductSection.unobserve(productSection);
         }
       });
     }, {
@@ -591,9 +591,8 @@ onMounted(() => {
     observerProductSection.observe(productSection);
     console.log("Intersection Observer added for product-section");
   } else {
-    console.log("Best description section NOT found");
+    console.log("Product section NOT found");
   }
-   
 
      // 추가된 섹션: top-liked-products에 대한 Observer
      const topLikedProducts = document.querySelector(".top-liked-products");
@@ -983,23 +982,23 @@ body {
   color: #ffffff
 }
 
-/* Product Section */
+/* Product Section 초기 상태 */
 .product-section {
   padding: 3rem 0;
   background: linear-gradient(to bottom, #ffffff, #f7f7f7);
   border: 1px solid #ddd;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
-  animation: fadeIn 1s ease-in-out;
-  opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
   margin-bottom: 100px;
+  opacity: 0; /* 초기에는 보이지 않도록 설정 */
+  transform: translateY(50px); /* 초기에는 아래로 이동한 상태 */
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out; /* 애니메이션 전환 */
 }
 
+/* 애니메이션 적용 상태 */
 .product-section.scrolled {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 1; /* 보이도록 설정 */
+  transform: translateY(0); /* 제자리로 이동 */
 }
 
 
