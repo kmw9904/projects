@@ -944,7 +944,7 @@ h2 {
 }
 
 .text-container {
-  max-width: 600px;
+  max-width: 650px;
   animation: fadeIn 2s ease-in-out;
 }
 
