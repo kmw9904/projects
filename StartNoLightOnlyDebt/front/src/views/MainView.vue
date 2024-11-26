@@ -160,7 +160,8 @@
   <img src="/pictures/알티클.jpg" alt="베스트 게시글">
 </div>
 <div class="best-description">
-  <p class="title">가끔은 재미있는 글, 은행 정보에 대해서 둘러보세요</p>
+  <p class="title">가끔은 재미있는 글, 은행 정보에 대해서</p>
+  <p class="title">둘러보세요</p>
   <p class="subtitle">SNO는 은행 정보 뿐만 아니라 커뮤니케이션 장소도 제공합니다.</p>
 </div>
 
@@ -176,10 +177,10 @@
           <strong>❤️</strong> {{ topLikedArticle.likes_count }}
         </p>
         <RouterLink
-          :to="{ name: 'ArticleDetail', params: { id: topLikedArticle.id } }"
-          class="btn btn-second"
-        >
-          게시글 상세 보기
+            :to="{ name: 'ArticleDetail', params: { id: topLikedArticle.id } }"
+            class="custom-btn"
+          >
+            게시글 상세 보기
         </RouterLink>
       </div>
     </div>
@@ -1358,5 +1359,32 @@ a.btn {
 .lightbutton h2:hover {
   transform: scale(1.2); /* 크기 10% 증가 */
   color: white; /* 호버 시 글씨 색상 변경 (금색) */
+}
+
+.custom-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background: linear-gradient(45deg, #6a11cb, #2575fc);
+  border: none;
+  border-radius: 8px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.custom-btn:hover {
+  background: linear-gradient(45deg, #2575fc, #6a11cb);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.custom-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 </style>

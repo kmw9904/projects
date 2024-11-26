@@ -5,23 +5,17 @@
         <div class="header-content">
           <h2>{{ article.title }}</h2>
           <p class="article-info">
-            <span>❤️ 좋아요 {{ article.likes_count }}</span>
+            <span>❤️ {{ article.likes_count }}</span>
             <span>💬 댓글 {{ article.comments.length }}</span>
           </p>
         </div>
-        <button
-          v-if="profile?.profile_user?.username === article?.user?.username"
-          class="delete-article-header"
-          @click="deleteArticle"
-        >
-          삭제
-        </button>
+        <button v-if="profile?.profile_user?.username === article?.user?.username" class="delete-article-header" @click="deleteArticle">삭제</button>
       </div>
 
       <p class="article-content">{{ article.content }}</p>
 
       <button class="like-button" @click="toggleLike(article.id)">
-        {{ article.is_liked ? "좋아요 취소" : "좋아요" }}
+        {{ article.is_liked ? "💔" : "❤️" }}
       </button>
 
       <!-- 댓글 섹션 -->
@@ -42,13 +36,7 @@
               <span class="comment-date">{{ formatDate(comment.created_at) }}</span>
             </div>
             <p class="comment-content">{{ comment.content }}</p>
-            <button
-              v-if="profile?.profile_user?.username === comment.user.username"
-              class="delete-comment"
-              @click="deleteComment(comment.id)"
-            >
-              댓글 삭제
-            </button>
+            <button v-if="profile?.profile_user?.username === comment.user.username" class="delete-comment" @click="deleteComment(comment.id)">댓글 삭제</button>
           </div>
         </div>
       </div>
@@ -61,7 +49,6 @@
     </div>
   </div>
 </template>
-
 
 <script setup>
 import { useArticleStore } from "@/stores/articles";
@@ -136,7 +123,7 @@ const formatDate = (dateString) => {
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
   background-color: #f9f9f9;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -189,7 +176,6 @@ const formatDate = (dateString) => {
 }
 
 .like-button {
-  background-color: #ff6f61;
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -244,7 +230,7 @@ const formatDate = (dateString) => {
   border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: "Noto Sans KR", sans-serif;
 }
 
 .comment-form button {
@@ -307,5 +293,4 @@ const formatDate = (dateString) => {
 .delete-comment:hover {
   color: #c9302c;
 }
-
 </style>

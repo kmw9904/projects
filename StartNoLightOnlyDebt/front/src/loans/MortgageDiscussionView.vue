@@ -10,7 +10,7 @@
     <!-- 댓글 입력 -->
     <div class="comment-input">
       <textarea v-model="newComment" class="form-control" placeholder="댓글을 입력하세요"></textarea>
-      <button class="btn btn-primary mt-2" @click="addComment">댓글 달기</button>
+      <button class="btn btn-primary mt-2 custom-add-comment" @click="addComment">댓글 달기</button>
     </div>
 
     <!-- 댓글 리스트 -->
@@ -20,7 +20,7 @@
           <strong>{{ comment.username }}</strong>
           : {{ comment.content }}
         </span>
-        <button v-if="profile.profile_user.username === comment.username" class="btn btn-sm btn-danger" @click="deleteComment(comment.id)">삭제</button>
+        <button v-if="profile.profile_user.username === comment.username" class="btn btn-sm custom-delete-comment" @click="deleteComment(comment.id)">삭제</button>
       </li>
     </ul>
   </div>
@@ -200,5 +200,51 @@ onMounted(() => {
   padding: 10px;
   border-radius: 5px;
   margin-bottom: 5px;
+}
+
+/* 댓글 달기 버튼 */
+.custom-add-comment {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #5bc0de; /* 연한 파란색 */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-add-comment:hover {
+  background-color: #5bc0de; /* 조금 더 진한 파란색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-add-comment:active {
+  background-color: #004085; /* 눌렸을 때 더 진한 파란색 */
+  transform: translateY(2px);
+}
+
+/* 삭제 버튼 */
+.custom-delete-comment {
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #d9534f; /* 연한 빨간색 */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.custom-delete-comment:hover {
+  background-color: #b52a37; /* 조금 더 진한 빨간색 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.custom-delete-comment:active {
+  background-color: #d9534f; /* 눌렸을 때 더 진한 빨간색 */
+  transform: translateY(2px);
 }
 </style>
