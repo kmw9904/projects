@@ -214,6 +214,92 @@
 - **데이터 계산**: 월 상환액 계산 및 최고, 최저, 평균 금리 등의 계산은 애플리케이션 로직에서 처리하며, 필요한 데이터는 각 옵션 테이블에서 가져옵니다.
 - **확장성**: 새로운 대출 상품이나 옵션이 추가될 경우, 해당 테이블에 새로운 레코드를 추가하면 되므로 확장성이 좋습니다.
 
+## Vue 컴포넌트 구조
+```jsx
+src/
+├── App.vue                     # 메인 Vue 파일
+├── components/                 # 재사용 가능한 컴포넌트
+│   ├── MapComponent.vue        # 지도 관련 컴포넌트
+│   ├── ExchangeView.vue        # 환율 정보 컴포넌트
+│   ├── AlgorithmView.vue       # 알고리즘 관련 컴포넌트
+├── accounts/                   # 계정 관련 페이지
+│   ├── SignUpView.vue          # 회원가입 페이지
+│   ├── LoginView.vue           # 로그인 페이지
+│   ├── AccountView.vue         # 사용자 정보 페이지
+│   ├── PasswordChangeView.vue  # 비밀번호 변경 페이지
+│   ├── PreferredBanksView.vue  # 선호 은행 변경 페이지
+├── views/                      # 메인 페이지 및 게시글 관련
+│   ├── MainView.vue            # 메인 페이지
+│   ├── ArticleList.vue         # 게시글 목록
+│   ├── ArticleCreate.vue       # 게시글 생성
+│   ├── ArticleDetail.vue       # 게시글 상세
+├── loans/                      # 대출 관련 페이지
+│   ├── JeonseView.vue          # 전세 대출 목록
+│   ├── CreditLoanView.vue      # 신용 대출 목록
+│   ├── MortgageView.vue        # 주택담보대출 목록
+│   ├── JeonseDetailView.vue    # 전세 대출 상세
+│   ├── CreditLoanDetailView.vue # 신용 대출 상세
+│   ├── MortgageDetailView.vue  # 주택담보대출 상세
+│   ├── JeonseDiscussionView.vue # 전세 대출 논의
+│   ├── CreditLoanDiscussionView.vue # 신용 대출 논의
+│   ├── MortgageDiscussionView.vue # 주택담보대출 논의
+├── router/                     # 라우터 설정
+│   ├── index.js                # 라우터 정의
+
+```
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/cde1e0b7-6fb8-4ac1-a76e-939dbb6b41ec/9b44c9ab-e370-462a-b826-1a9a6adae461/image.png)
+
+### **페이지별 역할과 라우트**
+
+---
+
+### **1. 계정 관련 페이지**
+
+| 파일명 | 경로 | HTTP 메서드 | 설명 |
+| --- | --- | --- | --- |
+| `SignUpView.vue` | `/signup` | POST | 회원가입 요청 페이지 |
+| `LoginView.vue` | `/login` | POST | 로그인 요청 페이지 |
+| `AccountView.vue` | `/profile` | GET | 사용자 정보 조회 페이지 |
+| `PasswordChangeView.vue` | `/change-password` | POST | 비밀번호 변경 요청 페이지 |
+| `PreferredBanksView.vue` | `/change-preferredbanks` | GET/POST | 선호 은행 조회 및 변경 페이지 |
+
+---
+
+### **2. 메인 및 공통 페이지**
+
+| 파일명 | 경로 | HTTP 메서드 | 설명 |
+| --- | --- | --- | --- |
+| `MainView.vue` | `/` | GET | 메인 페이지 |
+| `MapComponent.vue` | `/map` | GET | 지도 관련 데이터 요청 및 표시 |
+| `ExchangeView.vue` | `/exchange` | GET | 환율 정보 요청 및 표시 |
+| `AlgorithmView.vue` | `/algorithm` | GET | 알고리즘 관련 기능 요청 및 데이터 표시 |
+
+---
+
+### **3. 게시글 관련 페이지**
+
+| 파일명 | 경로 | HTTP 메서드 | 설명 |
+| --- | --- | --- | --- |
+| `ArticleList.vue` | `/articles` | GET | 게시글 목록 조회 페이지 |
+| `ArticleCreate.vue` | `/articles/create` | POST | 게시글 작성 요청 페이지 |
+| `ArticleDetail.vue` | `/articles/:id` | GET | 특정 게시글 상세 정보 조회 페이지 |
+
+---
+
+### **4. 대출 관련 페이지**
+
+| 파일명 | 경로 | HTTP 메서드 | 설명 |
+| --- | --- | --- | --- |
+| `JeonseView.vue` | `/loans/jeonse` | GET | 전세 대출 목록 조회 페이지 |
+| `CreditLoanView.vue` | `/loans/credit` | GET | 신용 대출 목록 조회 페이지 |
+| `MortgageView.vue` | `/loans/mortgage` | GET | 주택담보대출 목록 조회 페이지 |
+| `JeonseDetailView.vue` | `/loans/jeonse/:id` | GET | 특정 전세 대출 상세 정보 조회 페이지 |
+| `CreditLoanDetailView.vue` | `/loans/credit/:id` | GET | 특정 신용 대출 상세 정보 조회 페이지 |
+| `MortgageDetailView.vue` | `/loans/mortgage/:id` | GET | 특정 주택담보대출 상세 정보 조회 페이지 |
+| `JeonseDiscussionView.vue` | `/loans/jeonse/discussion` | GET/POST | 전세 대출 논의 게시판 조회 및 생성 요청 페이지 |
+| `CreditLoanDiscussionView.vue` | `/loans/credit/discussion` | GET/POST | 신용 대출 논의 게시판 조회 및 생성 요청 페이지 |
+| `MortgageDiscussionView.vue` | `/loans/mortgage/discussion` | GET/POST | 주택담보대출 논의 게시판 조회 및 생성 요청 페이지 |
 ## 수정
 
 ### 1차 ERD 수정 24.11.08 
