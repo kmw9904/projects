@@ -240,7 +240,7 @@ project_root/
 │   ├── urls.py               # 프로젝트 전체 URL 라우팅
 │   ├── wsgi.py               # WSGI 설정
 │   ├── asgi.py               # ASGI 설정
-
+```
 ### **페이지별 역할과 라우트**
 
 ---
