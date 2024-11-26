@@ -207,6 +207,86 @@
 - `FinancialProduct.fin_co_no` → `FinancialCompany.fin_co_no`
 - 각 옵션 테이블의 `fin_prdt_cd` → `FinancialProduct.fin_prdt_cd`
 
+## 백엔드 컴포는 구조
+```jsx
+project_root/
+├── accounts/                 # 계정 관련 기능
+│   ├── [models.py](http://models.py/)             # 사용자 모델 정의
+│   ├── [views.py](http://views.py/)              # 로그인, 회원가입, 프로필 조회
+│   ├── [urls.py](http://urls.py/)               # 계정 관련 URL 라우팅
+│   ├── [serializers.py](http://serializers.py/)        # 계정 관련 직렬화 클래스
+├── articles/                 # 게시글 및 댓글 관리
+│   ├── [models.py](http://models.py/)             # 게시글, 댓글 모델 정의
+│   ├── [views.py](http://views.py/)              # 게시글 및 댓글 CRUD 기능
+│   ├── [urls.py](http://urls.py/)               # 게시글 관련 URL 라우팅
+│   ├── [serializers.py](http://serializers.py/)        # 게시글 및 댓글 직렬화 클래스
+├── interactions/             # 좋아요 및 댓글 관리
+│   ├── [models.py](http://models.py/)             # 좋아요 및 상호작용 모델 정의
+│   ├── [views.py](http://views.py/)              # 좋아요 토글, 댓글 관리
+│   ├── [urls.py](http://urls.py/)               # 상호작용 관련 URL 라우팅
+│   ├── [serializers.py](http://serializers.py/)        # 상호작용 관련 직렬화 클래스
+├── managebanks/              # 금융 상품 및 대출 관리
+│   ├── [models.py](http://models.py/)             # 금융 상품, 은행 모델 정의
+│   ├── [views.py](http://views.py/)              # 금융 데이터, 대출 상품 조회 및 계산
+│   ├── [urls.py](http://urls.py/)               # 금융 상품 관련 URL 라우팅
+│   ├── [serializers.py](http://serializers.py/)        # 금융 상품 직렬화 클래스
+├── project_name/             # 프로젝트 설정 파일
+│   ├── [settings.py](http://settings.py/)           # Django 프로젝트 설정
+│   ├── [urls.py](http://urls.py/)               # 프로젝트 전체 URL 라우팅
+│   ├── [wsgi.py](http://wsgi.py/)               # WSGI 설정
+│   ├── [asgi.py](http://asgi.py/)               # ASGI 설정
+```
+
+### **페이지별 역할과 라우트**
+
+---
+
+### **1. 계정 관련 페이지**
+
+| **파일명** | **경로** | **HTTP 메서드** | **설명** |
+| --- | --- | --- | --- |
+| `SignUpView.vue` | `/signup` | POST | 회원가입 요청 페이지 |
+| `LoginView.vue` | `/login` | POST | 로그인 요청 페이지 |
+| `AccountView.vue` | `/profile` | GET | 사용자 정보 조회 페이지 |
+| `PasswordChangeView.vue` | `/change-password` | POST | 비밀번호 변경 요청 페이지 |
+| `PreferredBanksView.vue` | `/change-preferredbanks` | GET/POST | 선호 은행 조회 및 변경 페이지 |
+
+---
+
+### **2. 메인 및 공통 페이지**
+
+| **파일명** | **경로** | **HTTP 메서드** | **설명** |
+| --- | --- | --- | --- |
+| `MainView.vue` | `/` | GET | 메인 페이지 |
+| `MapComponent.vue` | `/map` | GET | 지도 관련 데이터 요청 및 표시 |
+| `ExchangeView.vue` | `/exchange` | GET | 환율 정보 요청 및 표시 |
+| `AlgorithmView.vue` | `/algorithm` | GET | 알고리즘 관련 기능 요청 및 데이터 표시 |
+
+---
+
+### **3. 게시글 관련 페이지**
+
+| **파일명** | **경로** | **HTTP 메서드** | **설명** |
+| --- | --- | --- | --- |
+| `ArticleList.vue` | `/articles` | GET | 게시글 목록 조회 페이지 |
+| `ArticleCreate.vue` | `/articles/create` | POST | 게시글 작성 요청 페이지 |
+| `ArticleDetail.vue` | `/articles/:id` | GET | 특정 게시글 상세 정보 조회 페이지 |
+
+---
+
+### **4. 대출 관련 페이지**
+
+| **파일명** | **경로** | **HTTP 메서드** | **설명** |
+| --- | --- | --- | --- |
+| `JeonseView.vue` | `/loans/jeonse` | GET | 전세 대출 목록 조회 페이지 |
+| `CreditLoanView.vue` | `/loans/credit` | GET | 신용 대출 목록 조회 페이지 |
+| `MortgageView.vue` | `/loans/mortgage` | GET | 주택담보대출 목록 조회 페이지 |
+| `JeonseDetailView.vue` | `/loans/jeonse/:id` | GET | 특정 전세 대출 상세 정보 조회 페이지 |
+| `CreditLoanDetailView.vue` | `/loans/credit/:id` | GET | 특정 신용 대출 상세 정보 조회 페이지 |
+| `MortgageDetailView.vue` | `/loans/mortgage/:id` | GET | 특정 주택담보대출 상세 정보 조회 페이지 |
+| `JeonseDiscussionView.vue` | `/loans/jeonse/discussion` | GET/POST | 전세 대출 논의 게시판 조회 및 생성 요청 페이지 |
+| `CreditLoanDiscussionView.vue` | `/loans/credit/discussion` | GET/POST | 신용 대출 논의 게시판 조회 및 생성 요청 페이지 |
+| `MortgageDiscussionView.vue` | `/loans/mortgage/discussion` | GET/POST | 주택담보대출 논의 게시판 조회 및 생성 요청 페이지 |
 ---
 
 ## 추가 고려 사항
@@ -214,7 +294,11 @@
 - **데이터 계산**: 월 상환액 계산 및 최고, 최저, 평균 금리 등의 계산은 애플리케이션 로직에서 처리하며, 필요한 데이터는 각 옵션 테이블에서 가져옵니다.
 - **확장성**: 새로운 대출 상품이나 옵션이 추가될 경우, 해당 테이블에 새로운 레코드를 추가하면 되므로 확장성이 좋습니다.
 
-## Vue 컴포넌트 구조
+# URL 구조
+![캡처](https://github.com/user-attachments/assets/279c1143-237b-42a8-9168-bdb79182d7c7)
+
+
+# Vue 컴포넌트 구조
 ```jsx
 src/
 ├── App.vue                     # 메인 Vue 파일
